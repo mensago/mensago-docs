@@ -19,19 +19,19 @@ another and organize their lives with privacy-respecting digital tools.
 The principles used to guide the decision-making process for the Anselus
 platform are as follows:
 
-* Server has near-zero knowledge of user data +
-* Compatibility with other standards where possible +
-* Complexity is a burden +
-* Utilize proven technologies and adapt concepts from others +
+* Server has near-zero knowledge of user data
+* Compatibility with other standards where possible
+* Complexity is a burden
+* Utilize proven technologies and adapt concepts from others
 * Openness
-** Open standard - documented and unencumbered by patents or IP +
-** Open source - reference implementation licensed for any purpose +
+** Open standard - documented and unencumbered by patents or IP
+** Open source - reference implementation licensed for any purpose
 ** Open federation - anyone can run a server
 
 Functionality that the Anselus platform provides:
 
-* Storage and synchronization of encrypted data +
-* Message delivery +
+* Storage and synchronization of encrypted data
+* Message delivery
 * Message flow control, both inbound and outbound
 
 == Terminology
