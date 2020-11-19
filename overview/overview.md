@@ -1,0 +1,94 @@
+---
+title: ""
+date: 2019-07-31T18:57:10-04:00
+draft: false
+---
+### Anselus Platform Specification Overview
+
+- [Introduction](#intro)
+- [Architecture](#architecture)
+	- [Workspaces, Users, and Identity](#architecture-workspaces)
+	- [Devices](#architecture-devices)
+- [Section Versioning](#section-versioning)
+- [License](#license)
+- [Sections](#sections)
+
+------
+
+<a name="intro"></a>
+### Introduction
+
+Anselus is an online communications platform intended to replace e-mail in its current form and cohesively add groupware features. The mission of Anselus is to provide to people the ability to connect with one another and organize their lives with privacy-respecting digital tools. The principles used to guide the decision-making process for the Anselus platform are as follows:  
+
+- Server has near-zero knowledge of user data  
+- Compatibility with other standards where possible  
+- Complexity is a burden  
+- Utilize proven technologies and adapt concepts from others  
+- Openness
+	- Open standard - documented and unencumbered by patents or IP  
+	- Open source - reference implementation licensed for any purpose  
+	- Open federation - anyone can run a server  
+
+Functionality that the Anselus platform provides:
+
+- Storage and synchronization of encrypted data  
+- Message delivery  
+- Message flow control, both inbound and outbound  
+
+<a name="terminology"></a>
+
+### Terminology
+
+**workspace** - a data container which comes in two types: individual and shared. Individual workspaces are tied to a user's identity. Shared workspaces are spaces for collaboration.
+
+**workspace ID** - a universally-unique identifier (UUID) which is the public representation of a specific workspace.  
+
+**workspace address** - a workspace ID combined with its associated domain and separated by a forward slash, similar to an IP address for a device on a network. Example: `301fa6cf-ce2d-4349-8d5b-4053b1808489/example.com`.  
+
+**Anselus address** - an optional public-facing name tied to a workspace ID intended for everyday usage, similar to a domain name assigned to an IP address on the Internet. Example: `SeñorJones/example.com`
+
+**user ID** - the optional human-friendly part of an Anselus address. Example: `SeñorJones` in `SeñorJones/example.com`.
+
+**keycard** - a digital certificate representing a person or organization that contains encryption keys and public information in a cryptographically secure and verifiable form.  
+
+**client item** - a server-side file containing JSON-structured Anselus data. It consists of a header, an encrypted payload, and some minimal metadata. Each client item represents a corresponding file on the user's device.  
+
+<a name="architecture"></a>
+
+### Architecture
+
+Electronic mail is a federated system in which messages are delivered from one carrier to another until it has been transported from the sender to the recipient. It is unlike instant messaging in that each message is a self-contained unit sent one-way; there is no dialog between sender and recipient involved in the delivery of that one message. This creates its own set of challenges.  
+
+Anselus is built such that the server is little more than a file synchronization and message delivery service; most of the real work is handled by client applications. This has many benefits, but the main two are offloading CPU-intensive encryption processes to the client and minimizing the knowledge a server has about client data.  
+
+One major departure from traditional e-mail is that messages are not just for user communications. Because each message is encrypted, potentially sensitive information can be sent without concern, and Anselus clients send messages intended for others' client software. These system-level messages are used to perform platform-level tasks, such as support requests for the provider or contact information updates.
+
+<a name="architecture-workspaces"></a>
+#### Workspaces, Users, and Identity
+
+Workspaces are the central concept of the platform. Similar to mailboxes, they store user data, but the files themselves can be of different types, including tasks, messages, files, and calendar events. Workspaces have one of two types: individual and shared. Identity is linked to individual workspaces and represent a person. Shared workspaces are spaces for collaboration. Instead of providing identity, a permissions system determines what actions members may take and which folders they may access.  
+
+Each workspace is tied to an ID and a domain. The ID itself is just a Universally Unique Identifier which exists to differentiate one workspace from another--it has no other significance. It is randomly generated when the workspace is created, never changes, and for security reasons, is never reused. A workspace address is a combination of this ID and its domain, separated by a slash. A slash is used to ensure that both workspace address and the person-friendly Anselus address, described below, are never confused with an e-mail address.
+
+A User ID can optionally be associated with a workspace. User IDs are much easier to exchange and are internationalization-friendly. Capitalization matters, and whitespace is restricted. User IDs may be up to 32 UTF-8 code points long. Example: `SeñorJones/example.com` Although many different other characters may be used as part of a User ID, such as emoji, it is not recommended.
+
+A folder hierarchy defines locations for different types of data within the workspace. Folders within a workspace use UUIDs for their names, making them uniquely identifiable while giving no clues to their contents. The data files in each folder are also named to be as generic as possible -- utilizing a UUID, a timestamp, and their file size so that quotas can be quickly calculated. Each "application" on the platform, such as calendars or address books, have their own folder for their data.  
+
+<a name="architecture-devices"></a>
+#### Devices
+
+A device is merely an access method to an Anselus server. Each user has a list of associated devices for his/her workspace, each identified by a UUID and its own asymmetric encryption key. Each application may utilize its own device ID. Thus, an Android phone with separate applications for accessing calendar, contacts, messages, notes, and tasks could have 6 different device IDs whereas a desktop PC running an all-in-one client could just have one. For maximum compatibility, there are defined locations for client-side user data.  
+
+<a name="section-versioning"></a>
+### Section Versioning
+
+API versions take the form of X.Y.Z: X is major version, Y is minor version, Z is patch level.
+
+- Major version changes indicate breaking changes in the API -- a client running 2.5.1 will need source code changes in order to be compatible with version 3.0.0. 
+- Minor version changes are for adjustments in an individual API, such as for tasks. Potential breaking changes may or may not be included in minor version changes, but such changes should require only minor adjustments.
+- Patch level changes are backwards-compatible API changes.
+
+<a name="license"></a>
+### License
+
+The Anselus specification is distributed under the Creative Commons CC-BY-SA license.
