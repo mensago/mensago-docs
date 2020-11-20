@@ -39,8 +39,7 @@ It would be completely silly to leave out notetaking abilities on the Anselus pl
 === Note Fields
 
 .Required Fields
-- _Type_ - This field is required for all payloads. It defines
-the type of payload.
+- _Type_ - This field is required for all payloads. It defines the type of payload.
 
 - _Version_ - The messaging API version.
 
