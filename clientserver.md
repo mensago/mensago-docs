@@ -482,3 +482,5 @@ Most commands require the context of an authenticated login session. Attempts to
 	- 409 Quota Insufficient
 	- 410 Hash Mismatch
 	- 411 Bad Keycard Data
+	- 412 Noncompliant Keycard Data
+	- 413 Invalid Signature
