@@ -131,7 +131,7 @@ Revocation processes TBD
 
 ### Field Definitions
 
-A keycard entry consists of a series of 1-line key-value pairs. Most of a keycard's fields are relatively self-explanatory. Fields are expected to be listed on a keycard in the order below, but with the exception of signature fields, cryptographic hash fields, and the Type field, readers MUST NOT consider a keycard invalid because of a different ordering of fields so long as the the fields themselves meet all other requirements. Each field is terminated by a carriage return-newline sequence (`\r\n`). Keycard fields are required unless indicated otherwise.  
+A keycard entry consists of a series of 1-line key-value pairs. Most of a keycard's fields are relatively self-explanatory. Fields are expected to be listed on a keycard in the order below, but with the exception of signature fields, cryptographic hash fields, and the Type field, readers MUST NOT consider a keycard invalid because of a different ordering of fields so long as the the fields themselves meet all other requirements. Each field is terminated by a carriage return-newline sequence (`\r\n`). All fields MUST be trimmed of leading and trailing whitespace except for the line ending. Field data has a maximum length of 6144 bytes to accommodate 4096-bit RSA keys. Keycard fields are required unless indicated otherwise.  
 
 Fields which contain encryption keys, verification keys, and entry hashes follow a particular subformat. First, the keys themselves utilize Base85 encoding like the rest of the platform, but the keys are prepended by the name of the algorithm in all capital letters, and the prefix is separated from the key by a colon. The prefix has a maximum length of 16 characters, not including the colon, and MUST contain only capital letters, numbers, or dashes. An example looks like this: `Contact-Request-Verification-Key:ED25519:q~NVs$%Z82g7ZfniK3@!N+FrzcYJnawDdyYa!}@W`. Currently the only supported algorithms are `ED25519` for signing, and `CURVE25519` for encryption. More hash algorithms are supported: `BLAKE3-256` is preferred for its speed, followed by `BLAKE2`, `SHA-256`, and `SHA3-256`. This subformat exists to enable future expansion.
 
@@ -148,7 +148,7 @@ Keycards which represent an organization contain both cryptographic information 
 
 **Index:** The index of the entry in the organization's keycard. The index for the first entry in a keycard is always 1. Each successive entry increments this value. Its purpose to easily order all entries in the keycard.  
 
-**Name:** name of the organization represented by the keycard.  
+**Name:** The name of the organization represented by the keycard. If this field exists, it must meet the following criteria: (1) contain at least 1 and no more than 64 Unicode codepoints, and (2) must contain at least 1 printable character.  
 
 **Contact-Admin:** the workspace address for the party responsible for administrating the Anselus services for the organization. Example: `6321fb6e-c68c-4279-a1f4-68f05a2bb9b0/example.com`. Support requests and abuse reports are sent to this address if the `Contact-Support` and `Contact-Abuse` fields are not populated.  
 
@@ -164,7 +164,7 @@ Keycards which represent an organization contain both cryptographic information 
 
 **Encryption-Key:** The public encryption key for the organization.  
 
-**Time-To-Live:** Number of days in which the keycard may remain in a resolver cache. Recommended value is 14. After this period of time, a resolver MUST check to ensure that the keycard has not changed.  
+**Time-To-Live:** Number of days in which the keycard may remain in a resolver cache. Recommended value is 14, but it may not be less than 1 or more than 30. After this period of time, a resolver MUST check to ensure that the keycard has not changed.  
 
 **Expires:** The date and time after which this keycard is considered to be expired. Because keycards themselves are not associated with any costs, ensuring an organization ALWAYS has a valid keycard is paramount to the security of its users. Keycard resolvers and clients MUST refuse to deliver messages to domains with expired keycards.  
 
@@ -183,9 +183,11 @@ Unlike organizational keycards, individual keycards are designed specifically fo
 
 **Index:** The index of the entry in the user's keycard. The index for the first entry in a keycard is always 1. Each successive entry increments this value. Its purpose to easily order all entries in the keycard.  
 
+**Name:** The name of the person represented by the keycard. This field is optional. If this field exists, it must meet the following criteria: (1) contain at least 1 and no more than 64 Unicode codepoints, and (2) must contain at least 1 printable character.  
+
 **Workspace-ID:** a version 4 universally-unique identifier (UUID) which is used to identify the workspace. This number is fixed for the lifetime of the workspace. It also may not be reused once a workspace has been deleted.   
 
-**User-ID:** a human-friendly name for the workspace. Its relationship to the `Workspace-ID` field is similar to that of a DNS name to an IP address. This value may change at any time as per the desire of the workspace user, but it does require the creation of a new keycard entry to do so. It is to be used for human identification of a workspace, such as display in a client application. Any UTF-8 printable character except the forward slash (`/`), the backslash (`\`), and the double quotation mark (`"`). Whitespace characters (tab, space, non-breaking space, etc.) are NOT permitted.  
+**User-ID:** a human-friendly name for the workspace. Its relationship to the `Workspace-ID` field is similar to that of a DNS name to an IP address. This value may change at any time as per the desire of the workspace user, but it does require the creation of a new keycard entry to do so. It is to be used for human identification of a workspace, such as display in a client application. Any UTF-8 printable character except the forward slash (`/`), the backslash (`\`), and the double quotation mark (`"`). Whitespace characters (tab, space, non-breaking space, etc.) are NOT permitted. The user ID may have up to 64 Unicode code points, although for the sake of ease of use, it recommended to be much shorter than the maximum.  
 
 **Domain:** The domain to which the workspace belongs, such as `example.com`.  
 
@@ -197,7 +199,7 @@ Unlike organizational keycards, individual keycards are designed specifically fo
 
 **Alternate-Encryption-Key:** another public key reserved for future use. This field is optional.  
 
-**Time-To-Live:** Number of days in which the keycard may remain in a resolver cache. Recommended value is 7. After this period of time, a resolver MUST check to ensure that the keycard has not changed.  
+**Time-To-Live:** Number of days in which the keycard may remain in a resolver cache. Recommended value is 7, but it may not be less than 1 or more than 30. After this period of time, a resolver MUST check to ensure that the keycard has not changed.  
 
 **Expires:** The date and time after which this keycard is considered to be expired. Keycard resolvers and clients MUST refuse to deliver messages to users with expired keycards.  
 
