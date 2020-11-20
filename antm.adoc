@@ -1,15 +1,41 @@
 = Anselus Text Markup (AnTM)
 Jon Yoder <jsyoder@mailfence.com>
-v1.0, 2020-11-19
+v1.0, 2019-08-08
 
 *Status:* Review +
-*Submission Date:* August 8, 2019 +
-*Submitted By:* Jon Yoder jsyoder@mailfence.com +
 *Abstract:* Rich text formatting language for client-side use
 
-* <<align-text,Align Text>>
+== Table of Contents
 
-== Description
+* <<description,Description>>
+** <<syntax,Syntax>>
+** <<embedded-content,Embedded Content>>
+* <<tag-reference,Tag Reference>>
+** <<align-text,Align Text>>
+** <<bold,Bold>>
+** <<cell,Cell>>
+** <<code,Code / Preformatted>>
+** <<document,Document>>
+** <<header,Header>>
+** <<image,Image>>
+** <<italics,Italics>>
+** <<link,Link>>
+** <<list,List / List Item>>
+** <<quote,Quote>>
+** <<row,Row>>
+** <<strikeout,Strikeout>>
+** <<styled-text,Styled Text>>
+** <<subscript,Subscript>>
+** <<superscript,Superscript>>
+** <<table,Table>>
+** <<underline,Underline>>
+* <<color-reference,Color Reference>> +
+* <<standard-fonts,Standard Fonts>> +
+* <<final-notes,Final Notes>>
+
+
+
+== anchor:description[]Description
 
 AnTM, pronounced _AN-tim_ or _an-tee-EM_, is a plaintext-with-markup format for describing rich formatting in a way that is expressive, easy to parse, and easy to implement with a measure of safety and security. It is heavily inspired by https://en.wikipedia.org/wiki/BBCode[BBCode], but introduces changes to make it more consistent and full-featured. It is intended to be the transmission format for all text on the Anselus platform, including messages, notes, and so on.
 
@@ -30,7 +56,7 @@ be a component of a messaging client, reducing binary size and code complexity.
 
 * _Privacy_ - Web beacons/bugs are eliminated because messages are self-contained. Read receipts require the request of the sender and permission of the recipient.
 
-=== Syntax
+=== anchor:syntax[]Syntax
 
 AnTM marks text with pairs of tags enclosed in square brackets. Each opening tag MUST have a corresponding closing tag. Each closing tag MUST begin with a forward slash (/) immediately before the text of the
 closing tag. White space MAY be found between the square brackets and the enclosed text, but space MUST NOT be found between the slash and the tag text. For example:
@@ -62,7 +88,7 @@ Each parameter MUST follow the format of parameter name, equal sign, and value e
 `+[font family='Helvetica' size='9' color='red']Styled text[/font]+` +
 `+[font family:"Helvetica" size:"9" color:"red"]Styled text[/font]+` +
 
-=== Embedded Content
+=== anchor:embedded-content[]Embedded Content
 
 As a security and privacy measure, all content referenced in a document MUST be local to the client, such as a file or database record. Only filenames are used. The exact method of storing and retrieving said content is left to the implementor. For example, in the case of a note in which the user has inserted an image, the image MUST be local to the PC on which the note is written. Images obtained from the World Wide Web MAY be used ONLY if the image is first downloaded to local storage and then a link created which points to the downloaded copy.
 
@@ -211,7 +237,7 @@ Unlike HTML, tag pairs are used with images in AnTM documents, with the enclosed
 
 This tag marks enclosed text as italicized.
 
-=== anchor:[]Link
+=== anchor:link[]Link
 
 *Syntax* 
 
