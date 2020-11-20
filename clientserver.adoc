@@ -767,3 +767,4 @@ a specific client item, `403 FORBIDDEN` is returned.
 ** 408 Resource Exists
 ** 409 Quota Insufficient
 ** 410 Hash Mismatch
+** 411 Bad Keycard Data

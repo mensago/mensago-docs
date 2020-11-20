@@ -481,3 +481,4 @@ Most commands require the context of an authenticated login session. Attempts to
 	- 408 Resource Exists
 	- 409 Quota Insufficient
 	- 410 Hash Mismatch
+	- 411 Bad Keycard Data
