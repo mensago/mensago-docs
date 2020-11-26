@@ -10,64 +10,50 @@ v1.0, 2019-08-10
 Client-server communications on the Anselus platform take inspiration from a number of other of protocols that have gone before it, including https://tools.ietf.org/html/rfc1939[POP3], http://www.courier-mta.org/cone/smap1.html[SMAP], and https://jmap.io/spec.html[JMAP]. The protocol operates under three guiding principles:
 
 [arabic]
-. Minimal Metadata: The server must know only the bare minimum amount of information necessary to perform its duties. +
-. Guarded Trust: Trust in an entity (user, device, server, etc.) does not imply free rein for that entity. Data is still checked for integrity, steps are taken to prevent abuse, and boundaries are kept to prevent problems from scaling larger. For example, it is possible that a contact in the user’s address book is unaware that he or she has been compromised and has a device that is attempting to send out spam. Thus, even though the device is given a level of trust, boundaries for behavior are maintained. +
-. Safety and Portability: technologies leveraged for the Anselus platform have been chosen for their portability and/or safety so that it is possible to run an Anselus server on NetBSD just as easily as on Windows. +
+. Minimal Metadata: The server must know only the bare minimum amount of information necessary to perform its duties.
+. Guarded Trust: Trust in an entity (user, device, server, etc.) does not imply free rein for that entity. Data is still checked for integrity, steps are taken to prevent abuse, and boundaries are kept to prevent problems from scaling larger. For example, a friend may be unaware that he or she has been compromised and has a device that is attempting to send out spam. Thus, even though the device is given a level of trust, boundaries for behavior are maintained.
+. Safety and Portability: technologies leveraged for the Anselus platform have been chosen for their portability and/or safety so that it is possible to run an Anselus server on NetBSD just as easily as on Windows.
 . The responsibilities of the server are:
 * To provide a transport mechanism for messages to and from other servers.
 * To provide a synchronization mechanism for a user’s devices.
 * To provide identity services
 
-Communication between Anselus clients and servers is a synchronous text-based protocol which operates on TCP port 2001 by default. The protocol is line-oriented and meant to be easy to parse and validate. Because client data is encrypted by default, it is assumed to be opaque and, thus, client-server commands focus on authentication, synchronization, and message delivery.
+Communication between Anselus clients and servers is a synchronous text-based protocol which operates on TCP port 2001. The protocol is line-oriented and meant to be easy to parse and validate. Client-server commands focus on authentication, synchronization, and message delivery because client data is encrypted by default.
 
 == Technology Conventions
 
-Much has changed in the more than 40 years since e-mail’s invention. Great heroics have been made in the name of compatibility with the legacy technologies POP, IMAP, and SMTP, but the architecture of these technologies is the reason behind the many problems which plague modern e-mail. A conscious choice to start fresh has been made, but not from scratch. Instead, technologies and methods have been selected which represent some of the best-of-breed in the technology industry at this time.
+Compatibility with POP, IMAP, and SMTP has prompted great heroics in the more than 40 years since e-mail’s invention, but these protocols are the root cause behind the many problems which plague modern e-mail. A fresh start is needed, based on best-of-breed technologies and methods available now.
 
-Some of these technologies will sound very familiar. The protocols are text-based to enable greater flexibility and easier troubleshooting. UTF-8 has been selected as the default text encoding to provide a well-supported means of representing text for all communities, not just English-speaking ones. JSON is the default data serialization format because it is human-readable, flexible, easy-to-parse, and easy-to-validate. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is intended to be compatible with source code, making it desirable for use with JSON and yielding less overhead (25%) than that of Base64 (33%). It is the standard encoding except where noted.
+Like those that came before, Anselus' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted.
 
-For encryption, recent developments in cryptography have created strong algorithms which are also efficient. ChaCha20 and Elliptic Curve 25519 have been selected as preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms, and BLAKE3 shows promise of even greater performance gains. Argon2id is utilized for password hashing.
-
-Because governmental IT tends to move at the speed of bureacracy, alternative methods are also permitted, even if not preferred. SHA2-256, AES-256 and the 2048- and 4096-bit versions of RSA are options for environments which require certified algorithms.
+Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms. Argon2id is utilized for password hashing. SHA2-256, AES-256 and the 2048- and 4096-bit versions of RSA are options for environments which require certified algorithms.
 
 == Client Items
 
-The Anselus server has a relatively small role: management of opaque +data files, called *client items*. These data files are JSON-formatted text files containing an encrypted payload and a header containing some minimal metadata. The actual content of the message is stored in the payload field and, by default, is encrypted.
+The Anselus server's main role is storage and synchronization of opaque data files called *client items*. These JSON-formatted text files contain an encrypted payload, where the actual message content is stored, and some minimal metadata in its header.
 
-[source,json]
-----
-{
-    "Item": {
-        "ClientItemVersion" : "1.0",
-        "KeyType" : "social",
-        "KeyHash" : "BLAKE2B-256:uWpi?&AVVKIo&m;O2r=i4tKT|KJ!o~fI0|@l};li",
-        "To" : "ec6214be-766b-4b82-9c53-893e048755ae/example.com"
-    },
-    "Payload" : "XSALSA20:p!!IiyNgX$CYU+3Hqqb}9wng#^S^-k({8$Ou~NMjT?o6-ARS}uOcGZE1~>_2pLWQt={W1(?L)v&kT*;img18NVf|blhL*_lo-)Th@gQ`vkGy<4MS+M*`A5fI!=U+J;!l1(uhtuR_F>4);OpvDmSITh+|pDcN&i)61Y^n+SLO25gZ>4g&Au3adOrg}+kO%c#E@Db%jpN0rh}$e9Bk;7"
-}
-----
+*TODO:* Message format sample here
 
 *Client Item Fields*
 
-_Item_ - REQUIRED. A dictionary containing header information for the item.
+Version::
+REQUIRED. A numeric string set to the client item API version. Until such time after this standard has reached final 1.0 status, this will be set to "1.0".
 
-_ClientItemVersion_ - REQUIRED. A numeric string set to the client item API version. Until such time after this standard has reached final 1.0 status, this will be set to ``1.0''.
+KeyHash::
+REQUIRED. A hash of the encryption key used. The hash itself is Base85-encoded and is prefixed by the algorithm used, which can be `BLAKE2B-256`, `SHA256`, `SHA512`, `SHA3-256`, or `SHA3-512`. `BLAKE2B-256` is preferred because of its speed apart from hardware acceleration.
 
-_KeyType_ - REQUIRED. This is the category of encryption key used. Current values may be `primary`, `system`, `broadcast`, or `social`.
-
-_KeyHash_ - REQUIRED. A hash of the encryption key used. The hash itself is Base85-encoded and is prefixed by the algorithm used, which can be `BLAKE2B-256`, `SHA256`, `SHA512`, `SHA3-256`, or `SHA3-512`. `BLAKE2B-256` is preferred because of its speed.
-
-_Payload_ - REQUIRED. A string containing the real data for the item. The data is encrypted by default, and it includes the useful bits of metadata. The actual structure of the payload depends on the context, but text data is JSON-formatted. For details on payload structure, consult the Aneslus client-side API standards. The string itself is a Base85-encoded string with a prefix of the algorithm used. For speed, a symmetric key is used to encrypt the payload. The algorithm must be `AES256`, `AES128`, or `XSALSA20`. The XSalsa20 cipher uses Poly1305 for message authentication and the AES ciphers use GCM. XSalsa20 is preferred because it is faster overall without depending on hardware acceleration.
+Payload::
+REQUIRED. A string containing the real data for the item, encrypted and Base85-encoded. The unencrypted payload is JSON data, but the schema is context-specific. For speed, a symmetric key is used to encrypt the payload. The algorithm must be `AES256`, `AES128`, or `XSALSA20`. The XSalsa20 cipher uses Poly1305 for message authentication and the AES ciphers use GCM. XSalsa20 is preferred because it is faster overall without depending on hardware acceleration.
 
 == Limitations, Maximums, and Timeouts
 
-E-mail has an imposed limit of 998 characters per line to account for the additional carriage return and line feed. This works for e-mail because it is limited to the ASCII character set. UTF-8 is the standard for the Anselus platform, and because UTF-8 characters can vary in size, maximums are measured in bytes. In order to accommodate 4096-bit RSA keys, one line in an client-server message may be up to 8KiB (8192 bytes), including the line ending (`\r\n`). Similar to http://www.courier-mta.org/cone/smap1.html[SMAP], Anselus commands and replies MUST be no more than 16 KiB (16384 bytes) including line ending. This maximum applies only to commands and replies themselves and not to file transfer data.
+Maximum line size for the Anselus protocol is measured in bytes, not characters, due to the varying size of UTF-8 code points. Each line in the protocol is expected to be terminated by a carriage return and line feed character pair (CR-LF, `\r\n`). In order to accommodate 4096-bit RSA keys, one line in an client-server message may be up to 8KiB (8192 bytes), including the line terminator. Similar to http://www.courier-mta.org/cone/smap1.html[SMAP], Anselus commands and replies MUST be no more than 16 KiB (16384 bytes) including line ending. This maximum applies only to commands and replies themselves and not to file transfer data.
 
-Although the format for client items has no theoretical limit, there are some practical limits placed on user messages. For efficency of transmission and storage, messages SHOULD be no more than 50 MiB. Server administrators MAY impose a hard limit of some size, but it SHOULD be no less than this. Client items which are not used for messages MAY be of any size, although server administrators MAY impose a maximum size for client items in general.
+Although client items have no theoretical size limit, there are some practical limits placed on user messages. For efficency of transmission and storage, messages SHOULD be no more than 50 MiB. Server administrators MAY impose a hard limit of some size, but it SHOULD be no less than this. Client items not scheduled for delivery MAY be of any size, although server administrators MAY impose a maximum size for client items in general.
 
 As part of the Guarded Trust principle and also general resource conservation, there are some soft limitations imposed on clients. An individual device is limited to 25 recipients per minute. This is a configurable soft default limit. It is intended to prevent spam and Reply All storms and encourage more thoughtful inclusion of others in group conversations.
 
-Idle sessions MAY be ended by a server. A server MUST wait a minimum of 30 minutes before terminating a connection. Likewise, clients which are left idle for extended periods of time should wait no more than 29 minutes to periodically send `NOOP` commands to keep the connection alive.
+Idle sessions MAY be ended by a server. A server MUST wait a minimum of 30 minutes before terminating a connection. Likewise, clients which are left idle for extended periods of time should wait no more than 29 minutes to periodically send `NOOP` commands to keep the connection alive, although a client's update polling may make this unnecessary. 
 
 In order to prevent a denial-of-service on servers which permit public account registration, by default a server limits account registration to once per 10 minute time period from an individual IP address. This timeout does not apply to an administrator creating accounts locally on the server itself. 10 minutes is the default, but an administrator may change this value.
 
@@ -75,11 +61,11 @@ In order to prevent a denial-of-service on servers which permit public account r
 
 Because a server is not permitted to know more than is necessary about the information it processes, the filesystem itself utilizes opaque, but unique, identifiers for files and directories.
 
-Universally Unique Identifiers (UUIDs) are used extensively. Files  utilize a three-part naming system, consisting of the number of seconds  since the UNIX epoch, the size of the file in bytes, and the file’s  version 4 UUID. An example looks like this:  `1535760000.9457.8ba70831-d189-4aaa-b6e6-5cca0823b205`. Directories also  utilize UUIDs instead of alphanumeric names.
+Universally Unique Identifiers (UUIDs) are used extensively. Files utilize a three-part naming system, consisting of the number of seconds since the UNIX epoch, the size of the file in bytes, and the file’s  version 4 UUID. An example looks like this: `1535760000.9457.8ba70831-d189-4aaa-b6e6-5cca0823b205`. Directories also  utilize UUIDs instead of alphanumeric names.
 
-Server-side paths are represented in a unique way: the start of the path  is always a single slash (`/`) followed by directory elements. Each  directory element is separated by a space. Because filesystem entries  follow a very specific format, accounting for whitespace and special  characters in paths is not necessary. An example path looks like this:  `/ 0cfb91e8-256b-420b-b37d-db28004120f5 aa7347c1-a837-460f-8cf0-698d4411758a ac7971bf-fe44-400c-8605-eb499b9274ad`. Server-side paths are always absolute–relative references using `.` and  `..` are not supported; any path using them MUST be rejected. Lastly,  path references are always relative to the root folder of a workspace;  no access outside of the workspace directory hierarchy is permitted for  any client.
+Server-side paths are represented in a unique way: the start of the path is always a single slash (`/`) followed by directory elements. Each directory element is separated by a space. Because filesystem entries  follow a very specific format, accounting for whitespace and special  characters in paths is not necessary. An example path looks like this: `/ 0cfb91e8-256b-420b-b37d-db28004120f5 aa7347c1-a837-460f-8cf0-698d4411758a ac7971bf-fe44-400c-8605-eb499b9274ad`. Server-side paths are always absolute–relative references -- using `.` and `..` are not supported, and any path using them MUST be rejected. Path references are always relative to the root folder of a workspace; no access outside of the workspace directory hierarchy is permitted for any client.
 
-Although there is a standard filesystem layout for Anselus workspace  data, the server is not responsible for creating any directories; it is  all handled by the client. Clients are expected to maintain a mapping of  the real name of a directory in the workspace to the UUID used for its  name on the server side. In this manner, a malicious actor associated  with the service provider is able to obtain very little useful  information about any of the files stored on the system.
+Although there is a standard filesystem layout for Anselus workspace  data, the server is not responsible for creating any directories; it is all handled by the client. Clients are expected to maintain a mapping of the real name of a directory in the workspace to the UUID used for its name on the server side. A malicious actor with server access is able to obtain very little useful information about any of the files stored on the system.
 
 == Command Reference
 
