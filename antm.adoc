@@ -161,9 +161,9 @@ This tag marks enclosed text as preformatted code. Such text MUST be rendered wi
 *Syntax*
 
  [document language="en-us" color="#ffffff" image="tile.jpg" repeat="yes"]
- +.+ +
- +.+ +
- +.+ +
+ .
+ .
+ .
  [/document]
 
 *Parameters*
@@ -190,7 +190,7 @@ This tag is used to enclose all text in the document. Any text preceding the ope
 
 *Syntax*
 
- `[header color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/header]`
+ [header color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/header]
 
 *Parameters*
 
@@ -566,7 +566,7 @@ pass:[<table>
 <tr><td>YellowGreen</td><td>#9ACD32</td><td style="background:#9ACD32"></td></tr>
 </table>]
 
-== anchor:standrard-fonts[]Standard Fonts
+== anchor:standard-fonts[]Standard Fonts
 
 As part of the pursuit of good design, some attention to typography is important. Although users may have preferences, having some standardized available typefaces for the platform would be prudent. These fonts MUST be available and are recommended, but not required, be the default fonts for client software.
 
@@ -579,4 +579,4 @@ These font families have wide Unicode coverage and readability, enabling easy co
 
 == anchor:final-notes[]Final Notes
 
-BBCode was born out of a need for safety and security for user-submitted forum posts combined with a desire for expressiveness. Conversion to other formats is expected. However, *UNDER NO CIRCUMSTANCES* should any programming language text be permitted to execute. *Ever.* Any code in the body of a document should be treated like text. For example, in converting AnTM to HTML, the first change to be made should be substituting `&lt;` and `&gt;` for < and > in order to prevent any HTML tags, particularly *&lt;script&gt;* tags, from being executed or rendered downstream. This is not to say that syntax highlighting is forbidden; any text contents outside of the AnTM tags are expected to be displayed, not executed or rendered. 
+BBCode was born out of a need for safety and security for user-submitted forum posts combined with a desire for expressiveness. Conversion to other formats is expected. However, *UNDER NO CIRCUMSTANCES* should any programming language text be permitted to execute. *Ever.* Any code in the body of a document should be treated like text. For example, in converting AnTM to HTML, the first change to be made should be substituting `+&lt;+` and `+&gt;+` for < and > in order to prevent any HTML tags, particularly `<script>` tags, from being executed or rendered downstream. This is not to say that syntax highlighting is forbidden--any text contents outside of the AnTM tags are expected to be displayed, not executed or rendered. 
