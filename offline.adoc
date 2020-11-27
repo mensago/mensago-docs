@@ -6,53 +6,64 @@ v1.0, 2020-10-22
 
 The effort to minimize trust in infrastructure might imply that underlying transport mechanisms don’t matter. Nothing could be further from the truth. The Anselus transport protocols have been designed to maximize privacy and prevent bad behavior. However, sometimes it is beneficial to completely avoid standard server transport.
 
+Although there are already other formats and utilities which can encrypt files, this method greatly simplifies the processes of key management while retaining security. For example, transporting 7-zip archives also requires communicating the password. Using PGP requires exchange of keys. This format is designed to be used in conjunction with the Anselus platform. Thus, encrypting a file for offline use by a specific person could be just a matter of having that person in your address book and running a command like `ejd_encrypt 'bob/example.com' secretfile.ejd file1.txt file2.jpg` or a few clicks in a graphical application.
+
 == Offline Data Format
 
 An offline file is even more minimalistic than a standard Anselus storage file. It is intended to convey as little information about the file except for the requirements to decrypt it. Only the key which matches the `KeyHash` field will be able to decrypt the associated payload. The hash is generated from the Base85-encoded public key used to encrypt the payload. Files using this format are expected to use the `.ejd` (**E**ncrypted **J**SON **D**ocument) file extension.
-
 
 [source,json]
 ----
 {
 	"Item": {
-		"ClientItemVersion" : "1.0",
-		"KeyHash" : "BLAKE2B-256:uWpi?&AVVKIo&m;O2r=i4tKT|KJ!o~fI0|@l};li"
+		"Version" : "1.0",
+		"Nonce" : "SSuAUS|C-#Fk08%iIX=v|E!P+Yl%~?",
+		"KeyHash" : "BLAKE2B-256:uWpi?&AVVKIo&m;O2r=i4tKT|KJ!o~fI0|@l};li",
+		"Key": "XSALSA20:ihbCfWuF8`7x}bk7vBjJel?p52RB8ALs3MNy)CSw"
 	},
-	"Payload" : "XSALSA20:p!!IiyNgX$CYU+3Hqqb}9wng#^S^-k({8$Ou~NMjT?o6-ARS}uOcGZE1~>_2pLWQt={W1(?L)v&kT*;img18NVf|blhL*_lo-)Th@gQ`vkGy<4MS+M*`A5fI!=U+J;!l1(uhtuR_F>4);OpvDmSITh+|pDcN&i)61Y^n+SLO25gZ>4g&Au3adOrg}+kO%c#E@Db%jpN0rh}$e9Bk;7"
+	"Payload" : "p!!IiyNgX$CYU+3Hqqb}9wng#^S^-k({8$Ou~NMjT?o6-ARS}uOcGZE1~>_2pLWQt={W1(?L)v&kT*;img18NVf|blhL*_lo-)Th@gQ`vkGy<4MS+M*`A5fI!=U+J;!l1(uhtuR_F>4);OpvDmSITh+|pDcN&i)61Y^n+SLO25gZ>4g&Au3adOrg}+kO%c#E@Db%jpN0rh}$e9Bk;7"
 }
 ----
 
-The payload of an EJD file is also JSON structured text. Multiple files may be attached. Binary data is expected to be Base85-encoded. A sample payload is listed below:
+Version:: The API version of the data file. Until the platform reaches official 1.0 release status, this is set to `1.0`.
+
+Nonce:: The one-use-only number used to assist with decrypting the payload
+
+KeyHash:: Hash of the public key used to encode the secret key in the `Key` field. Note that this hash is of the Base85-encoded key, its algorithm prefix, and the colon separator, so if an Curve25519 key is `12345678`, the hash is of the string `+CURVE25519:F)}kWH8wXm+`.
+
+Key:: The randomly-generated secret key used to encrypt the payload. The raw binary key has been encrypted using the public key which corresponds to the hash kept in the `KeyHash` field. This encrypted result was Base85-encoded and prefixed with the algorithm used to encrypt the payload. This secret key can only be decrypted by the private key which corresponds to said public key.
+
+Payload:: This field contains the actual data intended for transport. It is encrypted by the secret key stored in the `Key` field and the result is Base85 encoded. The unencrypted contents of the payload field are also JSON structured text. Multiple files may be attached. Binary data is expected to be Base85-encoded. A sample unencrypted payload is listed below:
 
 [source,json]
 ----
 [
 	{
+		"Type" : "file",
 		"Name" : "foobar.png",
-		"Mimetype" : "image/png",
 		"Data" : "iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"
 	},
 	{
+		"Type" : "file",
 		"Name" : "somehaiku.txt",
-		"Mimetype" : "text/plain",
 		"Data" : "Seek on high bare trails\nsky-reflecting violets\nmountain-top jewels\n"
 	}
 ]
 ----
 
-The payload is expected to be minified before encryption to minimize 
+The payload is expected to be minified before encryption to minimize overhead.
 
 == Offline Message Format
 
-Because it can contain any kind of data, an EJD file can be used to transport Anselus messages. A variation of the regular format is used for these messages, however. The only real difference is the lack of a `To`, `CC`, or `BCC` field and a different `Type` field value. This is because the user is responsible for transport and delivery of the offline message. Multiple messages may be sent using this format. Each message is its own dictionary of data fields.
+Because it can contain any kind of data, an EJD file can be used to transport Anselus messages. A variation of the regular format is used for these messages, however. The only real difference is the lack of a `To`, `CC`, or `BCC` field and a different `Type` field value. The delivery-related fields are omitted because the user is responsible for transport and delivery of the offline message. Multiple messages may be sent using this format. Each message is its own dictionary of data fields in the same way that a file transported this way has its own set of fields.
 
-To add message integrity and identity, a signature is associated with the message data. The signature may be generated with the user's Contact Request Signing Key or Primary Signing Key. The `KeyHash` field contains a hash of the Base85-encoded verification key corresponding to the signing key used. The message signature is generated from a minified version of the JSON code which includes the outside brackets. Below is an example of an EJD payload carrying an offline message.
+To add message integrity and identity, a signature is associated with the message data. The signature may be generated with the user's Contact Request Signing Key or Primary Signing Key. The `KeyHash` field contains a hash of the Base85-encoded verification key corresponding to the signing key used. Below is an example of an EJD payload carrying an offline message.
 
 [source,json]
 ----
 [
 	{
-		"Mimetype" : "text/x-anselus",
+		"Type" : "message",
 		"Signature" : "ED25519:vp6R*W==)9>Us`MA!pz>7yyT&2{I&;`8hQmP<I2uJqu*<OA`O}!a^*e!W5dkVJ%_~V>KQpl;wN+#kXe)",
 		"KeyHash" : "BLAKE2B-256:CB3sZx-ADhgo*4R=r@ec?o%mn2Tki6K&;dtH3N3?_Kn{kUcCM(1QUp7v9VaEFYv+gU`e3cMVli4k)`7l",
 		"Message" :	{
@@ -74,3 +85,8 @@ To add message integrity and identity, a signature is associated with the messag
 ]
 ----
 
+The message signature is generated from the contents of the `Message` field minified JSON code, including the outside brackets. Using the above example, the hash would be generated from the following text:
+
+....
+{"Version":"1.0","From":"3cb11ab3-5482-4154-8ca1-dfa1cc79371c/example.com","Date":"20201022 120000","ThreadID":"2280c1f2-d9c0-440c-a182-967b16ba428a","Subject":"Sample Offline Message","Body":"The body of an offline message could very well be empty","Attachments":[{"Name":"foobar.png","Type":"image/png","Data":"iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"}]}
+....
