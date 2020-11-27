@@ -74,7 +74,8 @@ For any command listed below, `400 BAD REQUEST` is returned by the  server if a 
 *COPY* +
 _Copies an item from the selected folder to another on the server_ +
 Parameters: file name, destination path +
-Returns: 200 OK new_file_name +  Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 409 QUOTA INSUFFICIENT, 404 NOT FOUND +
+Returns: 200 OK new_file_name +
+Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 409 QUOTA INSUFFICIENT, 404 NOT FOUND +
 Example:
 
 ....
@@ -156,7 +157,8 @@ The client downloads data from a file on the server. The client first makes the 
 _Checks for the existence of a file or folder on the server_ +
 Parameters: path +
 Returns: 200 OK +
-Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 404 NOT FOUND Example:
+Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 404 NOT FOUND +
+Example:
 
 ....
 C: EXISTS 1577232538.4096.a263fd0c-4de6-4644-9423-796bbe44eb50  
@@ -175,9 +177,11 @@ The client requests a list of updates since the requested time. Time is submitte
 
 Updates begin with `104 UPDATE` followed by the update type and one or more tokens which depend on which type is used. There are only three types of updates: CREATE, DELETE, and MOVE.
 
-`104 UPDATE CREATE / 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1` +
-`104 UPDATE MOVE  / 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / ec795b28-ea77-4b5d-b860-6d484222feb1` +
-`104 UPDATE DELETE / ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1`
+....
+104 UPDATE CREATE / 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1
+104 UPDATE MOVE  / 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / ec795b28-ea77-4b5d-b860-6d484222feb1
+104 UPDATE DELETE / ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1
+....
 
 `Create` and `Delete` updates list the full path of the new item and is received even if the item is not part of the selected folder. `Move` updates provide the full path of the item prior to the move and then the new folder to which it was moved.
 
@@ -185,7 +189,8 @@ Updates begin with `104 UPDATE` followed by the update type and one or more toke
 _Gets list of items in selected folder_ +
 Parameters: time (optional) +
 Returns: 200 OK line count, entries +
-Possible Errors: 401 UNAUTHORIZED Example:
+Possible Errors: 401 UNAUTHORIZED +
+Example:
 
 ....
 C: SELECT 8ba660ab-ca5f-44fb-931a-e20da8c6442c
@@ -202,7 +207,8 @@ Obtains a list of the entries in the current folder. This command will return en
 _Initiates authentication_ +
 Parameters: login type, workspace ID +
 Returns: 100 CONTINUE +
-Possible Errors: 404 NOT FOUND, 405 TERMINATED Example:
+Possible Errors: 404 NOT FOUND, 405 TERMINATED +
+Example:
 
 ....
 C: LOGIN PLAIN b853a601-96f9-4e9e-9165-37f20cc35097/example.com
@@ -236,8 +242,7 @@ Create a workspace directory. The directory path is a standard Anselus server-si
 _Moves an item from the selected path to another on the server_ +
 Parameters: source file, destination path +
 Returns: 200 OK +
-Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 404 NOT FOUND, 408
-RESOURCE EXISTS +
+Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 404 NOT FOUND, 408 RESOURCE EXISTS +
 Example:
 
 ....
@@ -296,8 +301,7 @@ This command registers an account with a preprovisioned registration code. The r
 
 *REGISTER* +
 _Creates a new workspace_ +
-Parameters: WID of workspace owner, password hash, device ID, prefixed
-device public key +
+Parameters: WID of workspace owner, password hash, device ID, prefixed device public key +
 Returns: +
 Public mode: 201 REGISTERED +
 Network mode: 201 REGISTERED +
@@ -341,8 +345,8 @@ This command works exactly like UPLOAD except that it also takes a destination a
 *SERVERID* +
 _Enables a server to identify itself prior to delivering items_ +
 Parameters: fully-qualified domain name +
-Returns: 200 OK (Encrypted one-time password) Possible Errors: 308
-DELIVERY DELAY NOT REACHED
+Returns: 200 OK (Encrypted one-time password) +
+Possible Errors: 308 DELIVERY DELAY NOT REACHED
 
 Servers who intend to deliver items must initiated a session with this command. The receiving server performs a DNS request for the TXT record containing the server’s base64-encoded public key. If the receiving server is unable to obtain this record, it returns `306 KEY REQUEST FAILURE`. If the request succeeds but the server’s FQDN is not part of the record, `403 FORBIDDEN` is returned. Otherwise, the receiving server generates a one-time random password, encrypts it, and returns 200 OK with the base85-encoded encrypted password. Should the sending server exceed the delivery failure rate configured on the receiver, the receiving server will send `308 DELIVERY DELAY NOT REACHED` in response to this command until the cooldown period has passed.
 
