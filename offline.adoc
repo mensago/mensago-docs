@@ -8,6 +8,30 @@ The effort to minimize trust in infrastructure might imply that underlying trans
 
 Although there are already other formats and utilities which can encrypt files, this method greatly simplifies the processes of key management while retaining security. For example, transporting 7-zip archives also requires communicating the password. Using PGP requires exchange of keys. This format is designed to be used in conjunction with the Anselus platform. Thus, encrypting a file for offline use by a specific person could be just a matter of having that person in your address book and running a command like `ejd_encrypt 'bob/example.com' secretfile.ejd file1.txt file2.jpg` or a few clicks in a graphical application.
 
+== Conventions
+
+Software using this design document may be independent of the Anselus platform, but it is expected that such software will utilize conventions from the platform.
+
+* Base85 encoding described in RFC1924[https://tools.ietf.org/html/rfc1924] is used to ensure user data is JSON-compliant.
+* Cryptographic hashes and keys use the Encoded String format.
+* Hashes of cryptographic keys are generated on the Encoded String of a key, not just the binary data of the key itself.
+
+Encoded Strings are a string format consisting of prefix, a colon for a separator, and base85-encoded binary data. The prefix consists of 1 to 15 capital ASCII letters or dashes. No other characters are permitted. The prefix is used to indicate the algorithm used for hash or key. As of this writing, the standard prefixes are `CURVE25519`, `ED25519`, `XSALSA20`, `BLAKE2B-256`, and `SHA2-256`.
+
+== JSON Key Storage Format
+
+Not all environments will have an Anselus profile available. In these environments, encryption keys may be stored in individual JSON Key files. The files are standard JSON using a schema which matches the following example:
+
+[source,json]
+----
+{
+	"PublicKey": "CURVE25519:{+{hFKn?1;VDA1CxlYzQVKzVXbd#k@X@2$3@m9PS",
+	"PrivateKey": "CURVE25519:eT3h0s;Z)t8%D~hiT1i|E&zy4f8;bxwK&M%i(*UH"
+}
+----
+
+The `PublicKey` field is required. While the `PrivateKey` field is optional, the key itself is necessary for decrypting EJD files. Keys stored in this manner have the extensions `.jkey`. Only one keypair may be stored per file. The user is responsible for handling the keyfile itself with the proper care.
+
 == Offline Data Format
 
 An offline file is even more minimalistic than a standard Anselus storage file. It is intended to convey as little information about the file except for the requirements to decrypt it. Only the key which matches the `KeyHash` field will be able to decrypt the associated payload. The hash is generated from the Base85-encoded public key used to encrypt the payload. Files using this format are expected to use the `.ejd` (**E**ncrypted **J**SON **D**ocument) file extension.
@@ -17,7 +41,6 @@ An offline file is even more minimalistic than a standard Anselus storage file. 
 {
 	"Item": {
 		"Version" : "1.0",
-		"Nonce" : "SSuAUS|C-#Fk08%iIX=v|E!P+Yl%~?",
 		"KeyHash" : "BLAKE2B-256:uWpi?&AVVKIo&m;O2r=i4tKT|KJ!o~fI0|@l};li",
 		"Key": "XSALSA20:ihbCfWuF8`7x}bk7vBjJel?p52RB8ALs3MNy)CSw"
 	},
@@ -26,8 +49,6 @@ An offline file is even more minimalistic than a standard Anselus storage file. 
 ----
 
 Version:: The API version of the data file. Until the platform reaches official 1.0 release status, this is set to `1.0`.
-
-Nonce:: The one-use-only number used to assist with decrypting the payload
 
 KeyHash:: Hash of the public key used to encode the secret key in the `Key` field. Note that this hash is of the Base85-encoded key, its algorithm prefix, and the colon separator, so if an Curve25519 key is `12345678`, the hash is of the string `+CURVE25519:F)}kWH8wXm+`.
 
@@ -46,7 +67,7 @@ Payload:: This field contains the actual data intended for transport. It is encr
 	{
 		"Type" : "file",
 		"Name" : "somehaiku.txt",
-		"Data" : "Seek on high bare trails\nsky-reflecting violets\nmountain-top jewels\n"
+		"Data" : "Q)OjqAa8CUXlZ9?AYx&1Wgv8NVQFl03R7!&EplaMY-M9~X>MmAc4=>HWpr~2O>cE>bYW?3Ep%^iAZlfIWo&Z_3JL"
 	}
 ]
 ----
@@ -55,38 +76,43 @@ The payload is expected to be minified before encryption to minimize overhead.
 
 == Offline Message Format
 
-Because it can contain any kind of data, an EJD file can be used to transport Anselus messages. A variation of the regular format is used for these messages, however. The only real difference is the lack of a `To`, `CC`, or `BCC` field and a different `Type` field value. The delivery-related fields are omitted because the user is responsible for transport and delivery of the offline message. Multiple messages may be sent using this format. Each message is its own dictionary of data fields in the same way that a file transported this way has its own set of fields.
-
-To add message integrity and identity, a signature is associated with the message data. The signature may be generated with the user's Contact Request Signing Key or Primary Signing Key. The `KeyHash` field contains a hash of the Base85-encoded verification key corresponding to the signing key used. Below is an example of an EJD payload carrying an offline message.
+EJD files can be used to transport Anselus messages, as well. When messages are packaged for transport, the fields are slightly different. 
 
 [source,json]
 ----
 [
 	{
 		"Type" : "message",
+		"Name" : "0001.offmsg",
 		"Signature" : "ED25519:vp6R*W==)9>Us`MA!pz>7yyT&2{I&;`8hQmP<I2uJqu*<OA`O}!a^*e!W5dkVJ%_~V>KQpl;wN+#kXe)",
-		"KeyHash" : "BLAKE2B-256:CB3sZx-ADhgo*4R=r@ec?o%mn2Tki6K&;dtH3N3?_Kn{kUcCM(1QUp7v9VaEFYv+gU`e3cMVli4k)`7l",
-		"Message" :	{
-			"Version" : "1.0",
-			"From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/example.com",
-			"Date" : "20201022 120000",
-			"ThreadID" : "2280c1f2-d9c0-440c-a182-967b16ba428a",
-			"Subject" : "Sample Offline Message",
-			"Body" : "The body of an offline message could very well be empty",
-			"Attachments" : [
-				{
-					"Name" : "foobar.png",
-					"Type" : "image/png",
-					"Data" : "iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"
-				}
-			]
-		}
+		"KeyHash" : "BLAKE2B-256:2nqpKh+O^`|K!Jh&3dF}<F#}4KL{J9VkLJ?Rjd~$W;ctd=0h@&A4!z}Q9}3z#8>@Z@_sVclp|i|PekyI",
+		"Data" : "dm>h4a&u{KZX!A&F)lD7EFwm7Z*3wvA~R!RF)?9cGc7eVI5I6XF*P(TIAdWkEo5e4F=JylIWspgV=rZRVQp}1WiDfHZ6YipL}7GgB03^6FfuSPFfuYAF)}bPFfbx4B2;K{WnpAVL?SvOGBP+YV=-njEo3=kFfBARFk>xYF*q_UIW{+9F*aghG%`40A}k_Pbz*8|V{{@qB2!^)aBO8DPiAIpX>Mg8O=WX)VP|C`EFwa0WO*VwB2;K)AYyN1c_43QAYpDGZ)Rp}X>Mg8ZDn(FVP|C^V{dhAWFU5Ba(N(kWo&F9Vr3v@ZE$pXA}k_7baY{3Xl-R~baNs)TYDl-VQpn1IwEFoZ(?C`E^uyVA}k_Qd2nSSIwEOpVP|D8aBgQJEFwf<bYUVoB56WQdr>q;N-%gZFfcGgPHTQlWiT)>FhMXdFfc(fZbwc<Fh(^ccX=aDGfFXGZ9p?pFmohMGI}OJD`<IET5vZhWkGpTGFd-Idr@{Od}S*{H+(ilR98$kJ7p_sFhWf}I5kl|V{lkuMKVe-H!5*&O*T$EBxWWeeO-M"
 	}
 ]
 ----
+The entry type is `message` instead of `file` and also includes `Signature` and `KeyHash` fields, described below. The value of the `Name` field is a suggestion for the extraction utility and exists primarily for differentiating one message from another. Extraction utilities MAY ignore the `Name` field, but any messages saved to disk SHOULD utilize the `.offmsg` extension. The `Data` field for offline messages contains the base85-encoded JSON code for the message.
 
-The message signature is generated from the contents of the `Message` field minified JSON code, including the outside brackets. Using the above example, the hash would be generated from the following text:
+The signature may be generated with the user's Contact Request Signing Key or Primary Signing Key, and the signature itself is based on a minified version of the message's JSON data so that whitespace is not a factor. The `KeyHash` field contains a hash of the Base85-encoded verification key corresponding to the signing key used. 
 
-....
-{"Version":"1.0","From":"3cb11ab3-5482-4154-8ca1-dfa1cc79371c/example.com","Date":"20201022 120000","ThreadID":"2280c1f2-d9c0-440c-a182-967b16ba428a","Subject":"Sample Offline Message","Body":"The body of an offline message could very well be empty","Attachments":[{"Name":"foobar.png","Type":"image/png","Data":"iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"}]}
-....
+A slight variation of the standard JSON schema is used for offline messages. Offline messages lack the `To`, `CC`, and `BCC` field and a different `Type` field value. The delivery-related fields are omitted because the user is responsible for transport and delivery of the offline message. Multiple messages may be sent using this format. Each message is its own dictionary of data fields in the same way that a file transported this way has its own set of fields. An example of a sample offline message is shown below:
+
+
+[source,json]
+----
+{
+	"Version" : "1.0",
+	"From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/example.com",
+	"Date" : "20201022 120000",
+	"ThreadID" : "2280c1f2-d9c0-440c-a182-967b16ba428a",
+	"Subject" : "Sample Offline Message",
+	"Body" : "The body of an offline message could very well be empty",
+	"Attachments" : [
+		{
+			"Name" : "foobar.png",
+			"Type" : "image/png",
+			"Data" : "iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"
+		}
+	]
+}
+----
+
