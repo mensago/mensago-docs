@@ -147,7 +147,7 @@ Contact-Abuse:: OPTIONAL. The Contact-Abuse field contains a numeric address for
 
 Contact-Support:: OPTIONAL. The Contact-Support fields contains a numeric address for requesting organizational support. It is intended for use ONLY by users from the organization itself, and support requests sent to this address. If omitted, support requests are sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for support requests. Provided that the server is configured correctly and the support address is valid, an administrator MAY opt to drop support requests sent to Contact-Admin to ensure clients follow support protocols. Note that support requests have a specific format defined in the link:/spec/messaging[Messaging specification].
 
-Language:: Comma-separated list of https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes[ISO 639-1] language codes which indicated languages supported when contacting the organization.
+Language:: Comma-separated list of https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes[ISO 639-1] language codes which indicated languages supported when contacting the organization. Up to 10 languages may be specified.
 
 Primary-Verification-Key:: The primary signing key for the organization.
 
