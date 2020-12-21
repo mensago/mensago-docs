@@ -416,6 +416,7 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 101 Pending
 ** 102 Item
 ** 103 Update
+** 104 Transfer
 * 2xx: Success Codes
 ** 200 OK
 ** 201 Registered
