@@ -1,6 +1,6 @@
 = Anselus Keycard Services
 Jon Yoder <jsyoder@mailfence.com>
-v1.0, 2020-06-03
+v1.0.1, 2020-06-03
 
 *Status:* Draft in progress +
 *Abstract:* Keycard Service Architecture
@@ -30,11 +30,11 @@ Revocation]
 
 == Description
 
-Keycards are a type of digital certificates created for the purposes of cryptographic verification and identification of senders and recipients. They are coupled with a DNS-like resolver service so that human-readable identification information can be used to easily locate the less-friendly cryptographic information.
+Keycards are a type of digital certificate created to provide cryptographically verifiable online identity. A DNS-like resolver service is used to translate human-readable identification information into the less-friendly cryptographic information.
 
 == Keycard Service Architecture
 
-Anselus keycard services are designed to be a loosely coupled federation, containing interaction between directories, resolvers, and issuers. An organization server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard, and a cache resolver for its users. Users are the issuers of their own keycards, but their cards are also signed by their organization, and keycards for all users in the organization are linked together in a blockchain that is shared in its entirety with any resolver who requests it. Keycards are issued only for organizations and users, each providing slightly different types of information.
+Anselus identity services are designed to be a loosely-coupled federation, encompassing interaction between directories, resolvers, and issuers. An organization server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard, and a cache resolver for its users. Users issue their own keycards, but their cards are also signed by their organization. Keycards for all users in the organization are linked together in a blockchain that is available in its entirety to any resolver that requests it. Keycards are issued only for organizations and users, each providing slightly different types of identity information.
 
 An overview of the resolution process as part of a contact request is as follows:
 
@@ -47,17 +47,17 @@ Alice’s organization and returns Alice’s keycard to Bob’s client.
 . Once verified, Bob’s client is ready to create and send Bob’s contact request. It creates the message, signs it with the signing counterpart to Bob’s contact request verification key, encrypts it with Alice’s
 contact request encryption key, and submits it to his organization’s server for delivery.
 
-Although referred to as a keycard, it contains multiple entries, from the user’s initial, or *root*, entry on down to the user’s current one. Because an entry is not very large – a few hundred bytes – a full recursive resolution of a keycard does not require much space.
+A keycard contains multiple entries, from the user’s initial, or *root*, entry on down to the user’s current one. Because an entry is not very large – a few hundred bytes – a full recursive resolution of a keycard does not require much space.
 
-The service architecture for keycards consists of keycard servers and resolvers. Resolvers work similar to DNS resolvers, caching lookups and making requests to authoritative servers for information when needed. Keycard servers store and authoritatively publish keycards for users belonging to the organization.
+The service architecture for keycards consists of keycard servers and resolvers. Resolvers are similar to DNS resolvers, caching lookups and making requests to authoritative servers for information when needed. Keycard servers store and authoritatively publish keycards for users belonging to their organization.
 
 == Keycard Database Structure
 
-The keycard database is a hybrid blockchain, allowing anyone to download and view its contents, but permitting only authorized users to make any changes. The chain begins with the organization’s root keycard entry and each successive database transaction is cryptographically linked to the one before it via cryptographic hashes. There are only two possible operation types: append and revoke; entries can be added to a keycard, and the entire keycard is revoked when its owning workspace is deleted. No other changes to a keycard are possible. A user makes the final signature to an entry before it is added to the database, preventing malicious changes to the database by a compromised server. It is possible for anyone at any time to download the entire database; doing so for large organizations can take quite some time, as the database can easily reach tens of gigabytes, and servers throttle the database downloads to guard against denial-of-service attacks.
+The keycard database is a hybrid blockchain, allowing anyone to download and view its contents, but permitting only authorized users to make any changes. The chain begins with the organization’s root keycard entry and each successive database transaction is linked to the one before it via a cryptographic hash. There are only three possible operation types: append, revoke, and close: entries can be added to a keycard, an entry can be revoked and replaced, and the entire keycard is closed when its owning workspace is deleted. No other changes to a keycard are possible. A user makes the final signature to an entry before it is added to the database, preventing malicious changes to the database by a compromised server. Anyone may at any time download the entire database, although this is not common in day-to-day operations. The database for a large organization can easily reach tens of gigabytes in size, and servers throttle such large bulk data transfers to guard against denial-of-service attacks, so this is an operation which can take some time to perform.
 
 == Anselus Address Fingerprints
 
-As an additional protection against server-based attacks on user data, an Anselus address can also be  formatted to include part of the root entry fingerprint. When listed, the address can be separated by a colon from its fingerprint, or the fingerprint can be listed on a separate line. The length of the fingerprint MUST be a minimum of 6 characters, but more may be used. Spaces MAY be used to group characters for better readability IF doing so does not create any parsing problems. Here are some formatting examples:
+As an additional protection against server-based attacks on user data, an Anselus address can also be formatted to include part of the root entry fingerprint. When listed, the address can be separated by a colon from its fingerprint, or the fingerprint can be listed on a separate line. The length of the fingerprint MUST be a minimum of 6 characters, but more may be used. Spaces MAY be used to group characters for better readability IF doing so does not create any parsing problems. Here are some formatting examples:
 
 ....
 csimons/example.com:V=VdvK
@@ -75,7 +75,7 @@ Use of the fingerprint is not a requirement, but it is highly encouraged for the
 
 == The Resolution Process
 
-A keycard is required for any contact to be made between two users on the Anselus platform. It contains cryptographically verifiable contact and encryption key information. The process is detailed below:
+Obtaining and verifying a recipient's keycard is required before any contact can be made between two users on the Anselus platform. The process is detailed below:
 
 [arabic]
 . User A, a member of Organization A, begins creating a signed contact request for User B, who belongs to Organization B.
@@ -90,7 +90,7 @@ to Organization A’s server for delivery.
 
 == DNS Management Records
 
-It is unfortunate that so many security-oriented systems are forced to depend on a system such as DNS, enabler of a number of different kinds of exploits. Nevertheless, it is difficult to replace. DNS records are used by keycard resolvers to obtain basic configuration information and as a way to validate organization keycards.
+It is unfortunate that so many security-oriented systems are forced to depend on an insecure system like DNS. Nevertheless, it is difficult to replace. DNS records are used by keycard resolvers to obtain basic configuration information and as a way to validate organization keycards.
 
 Securing a domain’s resource records with DNSSEC cannot be recommended enough. When DNSSEC signatures are present, TLS signatures can be provided in DNS and used to validate the domain’s TLS certificate. In such situations, a certificate signed by a recognized third-party certificate authority (CA) is not required. In light of CA compromises in recent years, this is a notable benefit. Without the presence of DNSSEC, resolvers MUST require the TLS certificate of an Anselus server to be signed by a recognized third party CA.
 
@@ -117,15 +117,15 @@ Proper key management includes occasional replacement to guard against compromis
 
 Revocation processes TBD
 
-== Field Definitions
+== Field Definitions and Formatting
 
-A keycard entry consists of a series of 1-line key-value pairs. Most of a keycard’s fields are relatively self-explanatory. Fields are expected to be listed on a keycard in the order below, but with the exception of signature fields, cryptographic hash fields, and the Type field, readers MUST NOT consider a keycard invalid because of a different ordering of fields so long as the the fields themselves meet all other requirements. Each field is terminated by a carriage return-newline sequence (`\r\n`). All fields MUST be trimmed of leading and trailing whitespace except for the line ending. Field data has a maximum length of 6144 bytes to accommodate 4096-bit RSA keys. Keycard fields are required unless indicated otherwise.
+A keycard entry consists of a series of 1-line key-value pairs. Most of a keycard’s fields are relatively self-explanatory. Fields are expected to be listed on a keycard in the order below, but with the exception of signature fields, cryptographic hash fields, and the Type field, readers MUST NOT consider a keycard invalid because of a different ordering of fields so long as the the fields themselves meet all other requirements. Each field is terminated by a carriage return-newline sequence (`\r\n`). All fields MUST be trimmed of leading and trailing whitespace except for the line ending. Field data has a maximum length of 6144 bytes in case it is ever necessary to accommodate 4096-bit RSA keys. Keycard fields are required unless indicated otherwise.
 
-Fields which contain encryption keys, verification keys, and entry hashes follow a particular subformat. First, the keys themselves utilize Base85 encoding like the rest of the platform, but the keys are prepended by the name of the algorithm in all capital letters, and the prefix is separated from the key by a colon. The prefix has a maximum length of 16 characters, not including the colon, and MUST contain only capital letters, numbers, or dashes. An example looks like this: `Contact-Request-Verification-Key:ED25519:q~NVs$%Z82g7ZfniK3@!N+FrzcYJnawDdyYa!}@W`. Currently the only supported algorithms are `ED25519` for signing, and `CURVE25519` for encryption. More hash algorithms are supported: `BLAKE3-256` is preferred for its speed, followed by `BLAKE2`, `SHA-256`, and `SHA3-256`. This subformat exists to enable future expansion.
+Fields which contain encryption keys, verification keys, and entry hashes follow a particular subformat called EncodedString. It was designed to enable future algorithm changes. First, the field contains a prefix describing the algorithm used. This prefix has a maximum length of 16 characters, not including the colon, and MUST contain only capital letters, numbers, or dashes. The prefix is followed by a colon and then the Base85-encoded key or hash. An example looks like this: `Contact-Request-Verification-Key:ED25519:q~NVs$%Z82g7ZfniK3@!N+FrzcYJnawDdyYa!}@W`. Currently the only supported algorithms are `ED25519` for signing, and `CURVE25519` for encryption. RSA is not supported to prevent database bloat, but the platform has been architected to permit them should the need arise. More hash algorithms are supported: `BLAKE2B-256` is preferred for its speed without hardware acceleration, followed by `SHA-256`, and `SHA3-256`.
 
 === Organizational Keycards
 
-Keycards which represent an organization contain both cryptographic information and some publicly-available contact information about the organization. Because of the extra effort required to update keycards when combined with DNSSEC, organizational keycards are intended to have lifespans of 1-3 years. Organizational keycards are self-signed using the organization’s primary signing key. A secondary key MAY be included with an organization’s keycard for continuity when the primary signing key has been replaced. When organizational keycard entries are updated, a new primary signing key MUST be created and the previous primary key SHOULD be included as the secondary signing key unless the previous primary has been revoked.
+Keycards which represent an organization contain both cryptographic information and some publicly-available contact information about the organization. Because of the extra effort required to update keycards when combined with DNSSEC, organizational keycards are intended to have lifespans of 1-3 years. Organizational keycards are self-signed using the organization’s primary signing key. When organizational keycard entries are updated, a new primary signing key MUST be created and the previous primary key SHOULD be included as the secondary signing key unless the previous primary key has been revoked.
 
 *Purposes*
 
@@ -139,31 +139,31 @@ Keycards which represent an organization contain both cryptographic information 
 
 Index:: The index of the entry in the organization’s keycard. The index for the first entry in a keycard is always 1. Each successive entry increments this value. Its purpose to easily order all entries in the keycard.
 
-Name:: The name of the organization represented by the keycard. If this field exists, it must meet the following criteria: (1) contain at least 1 and no more than 64 Unicode codepoints, and (2) must contain at least 1 printable character.
+Name:: The name of the organization represented by the keycard, which MUST contain at least 1 and no more than 64 Unicode codepoints and MUST contain at least 1 printable character.
 
-Contact-Admin:: the workspace address for the party responsible for administrating the Anselus services for the organization. Example: `6321fb6e-c68c-4279-a1f4-68f05a2bb9b0/example.com`. Support requests and abuse reports are sent to this address if the `Contact-Support` and `Contact-Abuse` fields are not populated.
+Contact-Admin:: the numeric address for the party responsible for administrating the Anselus services for the organization. Example: `6321fb6e-c68c-4279-a1f4-68f05a2bb9b0/example.com`. Support requests and abuse reports are sent to this address if the `Contact-Support` and `Contact-Abuse` fields are not populated.
 
-Contact-Abuse:: OPTIONAL. The Contact-Abuse field contains a numeric address for reporting abuse to the service administrator. If omitted, abuse reporting is sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for abuse reporting. Provided that the server is configured correctly and the abuse address is valid, an administrator MAY opt to drop abuse messages sent to Contact-Admin to ensure clients follow support protocols. Note that abuse reports have a specific format defined in the link:/spec/messaging[Messaging specification].
+Contact-Abuse:: OPTIONAL. The Contact-Abuse field contains a numeric address for reporting abuse to the service administrator. If omitted, abuse reporting is sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for abuse reporting. Provided that the server is configured correctly and the abuse address is valid, an administrator MAY opt to drop abuse messages sent to Contact-Admin or autoreply with a bounce message to ensure clients follow support protocols. Note that abuse reports have a specific format defined in the Anselus messaging design document.
 
-Contact-Support:: OPTIONAL. The Contact-Support fields contains a numeric address for requesting organizational support. It is intended for use ONLY by users from the organization itself, and support requests sent to this address. If omitted, support requests are sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for support requests. Provided that the server is configured correctly and the support address is valid, an administrator MAY opt to drop support requests sent to Contact-Admin to ensure clients follow support protocols. Note that support requests have a specific format defined in the link:/spec/messaging[Messaging specification].
+Contact-Support:: OPTIONAL. The Contact-Support fields contains a numeric address for requesting organizational support. It is intended for use ONLY by users from the organization itself, and support requests sent to this address. If omitted, support requests are sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for support requests. Provided that the server is configured correctly and the support address is valid, an administrator MAY opt to drop support requests sent to Contact-Admin to ensure clients follow support protocols. Note that support requests have a specific format defined in the Anselus messaging design document.
 
-Language:: Comma-separated list of https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes[ISO 639-1] language codes which indicated languages supported when contacting the organization. Up to 10 languages may be specified.
+Language:: Comma-separated list of https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes[ISO 639-1] language codes which indicated languages supported when contacting the organization. Up to 10 languages may be specified. Example: `en,fr,de`.
 
-Primary-Verification-Key:: The primary signing key for the organization.
+Primary-Verification-Key:: The primary signing key for the organization in EncodedString format.
 
-Secondary-Verification-Key:: The secondary signing key for the organization. When keys are rotated, often this key is the organization’s previous `Primary-Verification-Key`.
+Secondary-Verification-Key:: The secondary signing key for the organization in EncodedString format. When keys are rotated, often this key is the organization’s previous `Primary-Verification-Key`.
 
-Encryption-Key:: The public encryption key for the organization.
+Encryption-Key:: The public encryption key for the organization in EncodedString format.
 
-Time-To-Live:: Number of days in which the keycard may remain in a resolver cache. Recommended value is 14. After this period of time, a resolver MUST check to ensure that the keycard has not changed.
+Time-To-Live:: Number of days in which the keycard may remain in a resolver cache. Recommended value is 14, but MUST NOT be more than 30 or less than 1. After this period of time, a resolver MUST check to ensure that the keycard has not changed.
 
-Expires:: The date and time after which this keycard is considered to be expired. Because keycards themselves are not associated with any costs, ensuring an organization ALWAYS has a valid keycard is paramount to the security of its users. Keycard resolvers and clients MUST refuse to deliver messages to domains with expired keycards.
+Expires:: The date after which this keycard is considered to be expired. Because keycards themselves are not associated with any costs, ensuring an organization ALWAYS has a valid keycard is paramount to the security of its users. Keycard resolvers and clients MUST refuse to deliver messages to domains with expired keycards.
 
-Custody-Signature:: The base85-encoded chain-of-custody signature. This field does not exist in an organization’s first keycard entry. It is required to follow the last informational field if it exists. The signature includes all previous fields and is signed with private half of the `Primary-Verification-Key` field from the previous entry.
+Custody-Signature:: The Base85-encoded chain-of-custody signature in EncodedString format. This field does not exist in an organization’s first keycard entry. It MUST follow the last informational field of the entry if it exists. The signature includes all previous fields and is signed with private half of the `Primary-Verification-Key` field from the previous entry.
 
-Previous-Hash:: The `Hash` field of the previous entry in the keycard database, which is probably not the previous entry of the organization’s keycard. The root entry of an organization’s keycard database will not have this field, but for all others it is required.
+Previous-Hash:: The `Hash` field of the previous entry in the keycard database, which is probably not the previous entry of the organization’s keycard. Because it is the first entry in the entire keycard database, an organization’s root keycard entry will not have this field, but for all others it is required.
 
-Hash:: The hash of all fields listed above. This field is used for identification of the keycard entry in the organization’s database. Supported hash types are `BLAKE3-256`, `BLAKE2`, `SHA-256`, and `SHA3-256` in order of preference from greatest to least.
+Hash:: The hash of all fields listed above. This field is used for identification of the keycard entry in the organization’s database. Supported hash types are `BLAKE3-256`, `BLAKE2B-256`, `SHA-256`, and `SHA3-256` in order of preference from greatest to least.
 
 Organization-Signature:: Signature of the keycard using the private half of the key in the organization’s `Primary-Verification-Key` field. This field is the final field of the entry.
 
@@ -173,36 +173,35 @@ Unlike organizational keycards, individual keycards are designed specifically fo
 
 Index:: The index of the entry in the user’s keycard. The index for the first entry in a keycard is always 1. Each successive entry increments this value. Its purpose to easily order all entries in the keycard.
 
-Name:: The name of the person represented by the keycard. This field is optional. If this field exists, it must meet the following criteria: (1) contain at least 1 and no more than 64 Unicode codepoints, and (2) must contain at least 1 printable character.
+Name:: OPTIONAL. The name of the person represented by the keycard. If this field exists, it must meet the following criteria: (1) contain at least 1 and no more than 64 Unicode codepoints, and (2) must contain at least 1 printable character.
 
-Workspace-ID:: a version 4 universally-unique identifier (UUID) which is used to identify the workspace. This number is fixed for the lifetime of the workspace. It also may not be reused once a workspace has been
-deleted.
+Workspace-ID:: a version 4 Universally-Unique Identifier (UUID) which is used to identify the workspace. This number is fixed for the lifetime of the workspace. It also MUST not be reused once a workspace has been deleted.
 
-User-ID:: a human-friendly name for the workspace. Its relationship to the `Workspace-ID` field is similar to that of a DNS name to an IP address. This value may change at any time as per the desire of the workspace user, but it does require the creation of a new keycard entry to do so. It is to be used for human identification of a workspace, such as display in a client application. Any UTF-8 printable character except the forward slash (`/`), the backslash (`\`), and the double quotation mark (`"`). Whitespace characters (tab, space, non-breaking space, etc.) are NOT permitted. The user ID may have up to 64 Unicode code points, although for the sake of ease of use, it recommended to be much shorter than the maximum.
+User-ID:: a human-friendly name for the workspace. Its relationship to the `Workspace-ID` field is similar to that of a DNS name to an IP address. The workspace user MAY change this at any time, but a new keycard entry MUST be created to do so. It is to be used for human identification of a workspace, such as display in a client application. Any UTF-8 printable character except the forward slash (`/`), the backslash (`\`), and the double quotation mark (`"`) MAY be used in this field. Whitespace characters (tab, space, non-breaking space, etc.) are NOT permitted. The user ID may have up to 64 Unicode code points, although for the sake of ease of use, it recommended to be much shorter than the maximum. Only one workspace at an organization may have a given name at any time, although the workspace to which said name corresponds may change, and this being one reason why supplying the fingerprint with a person's Anselus address is helpful--no mistaken identities.
 
-Domain:: The domain to which the workspace belongs, such as `example.com`.
+Domain:: The domain to which the workspace belongs, such as `example.com`. This is not required to match the Domain field of the organization.
 
-Contact-Request-Encryption-Key:: the public half of a keypair which is used to encrypt contact requests.
+Contact-Request-Encryption-Key:: the public half of a key pair in EncodedString format which is used to encrypt contact requests. 
 
-Contact-Request-Verification-Key:: the Base85-encoded key for verifying the signature on a contact request.
+Contact-Request-Verification-Key:: the public half of a signing key pair in EncodedString format for verifying the signature on a contact request.
 
-Public-Encryption-Key:: a public key which is reserved for future use. Possible uses could be for authentication, PGP, or another purpose. Although reserved, this field is required.
+Public-Encryption-Key:: a public key in EncodedString format for third party use. Possible uses could be for website authentication or PGP. Although reserved, this field is required.
 
-Alternate-Encryption-Key:: another public key reserved for future use. This field is optional.
+Alternate-Encryption-Key:: another public key in EncodedString format for third party use. This field is optional.
 
-Time-To-Live:: Number of days in which the keycard may remain in a resolver cache. Recommended value is 7. After this period of time, a resolver MUST check to ensure that the keycard has not changed.
+Time-To-Live:: Number of days in which the keycard may remain in a resolver cache. Recommended value is 7, but it MUST NOT be less than 1 or greater than 30. After this period of time, a resolver MUST check to ensure that the keycard has not changed.
 
-Expires:: The date and time after which this keycard is considered to be expired. Keycard resolvers and clients MUST refuse to deliver messages to users with expired keycards.
+Expires:: The date after which this keycard is considered to be expired. Keycard resolvers and clients MUST refuse to deliver messages to users with expired keycards.
 
-Custody-Signature:: The Base85-encoded chain-of-custody signature. This field does not exist in a user’s first keycard. It MUST be the first field following the standard informational fields and MUST be the first of the three signatures on a user keycard if it exists. It contains the signature for all previous fields and is signed with the private half of the `Contact-Request-Verification-Key` of the previous keycard entry.
+Custody-Signature:: The chain-of-custody signature in EncodedString format. This field does not exist in a user’s first keycard entry. It MUST be the first field following the standard informational fields and MUST be the first of the three signatures on a user keycard if it exists. It contains the signature for all previous fields and is signed with the private half of the `Contact-Request-Verification-Key` of the previous keycard entry.
 
-Organization-Signature:: The Base85-encoded signature of all fields listed above, including the `Custody-Signature` field if it exists. It is signed using the private component of one of the organization’s public signing keys, preferably the primary one.
+Organization-Signature:: The signature of all fields listed above in EncodedString format, including the `Custody-Signature` field if it exists. It is signed using the private component of one of the organization’s public signing keys, preferably the primary one.
 
-Previous-Hash:: The `Hash` field of the previous entry in the keycard database.
+Previous-Hash:: The `Hash` field of the previous entry in the keycard database, which is not necessarily the user's previous keycard entry.
 
-Hash:: The hash of all fields listed above. This field is used for identification of the keycard entry in the organization’s database. Supported hash types are `BLAKE3-256`, `BLAKE2`, `SHA-256`, and `SHA3-256` in order of preference from greatest to least.
+Hash:: The hash of all fields listed above. This field is used for identification of the keycard entry in the organization’s database. Supported hash types are `BLAKE2B-256`, `SHA-256`, and `SHA3-256` in order of preference from greatest to least.
 
-User-Signature:: The Base85-encoded signature of all previous fields. This signature is the final field in the entry.
+User-Signature:: The signature of all previous fields in EncodedString format. This signature is the final field in the entry.
 
 == Protocol Commands
 
@@ -224,7 +223,7 @@ Begins the process to submit a keycard entry to the organization’s database.
 . The client signs the entry as the `User-Signature` field and then uploads the result to the server using the same header and footer as the first time.
 . Once uploaded, the server validates the `Hash` and `User-Signature` fields, and, assuming that all is well, adds it to the keycard database and returns `200 OK`.
 
-This extensive process is designed to prevent either side from doing anything improper, such as server-side man-in-the-middle attacks, uploading invalid data, or other tricks. When added, it is safe to assume that the data is mutually validated and that the data itself is trustworthy even if neither party is trusted by the other. Each line in the entry MUST be terminated by a carriage return-line feed (`\r\n`) sequence to ensure that the signatures remain valid. The client is expected to generate a hash for the entry using the same algorithm as the previous entry.
+This extensive process is designed to prevent either side from doing anything improper, such as server-side man-in-the-middle attacks, uploading invalid data, or other tricks. When added, it is safe to assume that the data is mutually validated and that the data itself is trustworthy even if neither party is trusted by the other. Each line in the entry MUST be terminated by a carriage return-line feed (`\r\n`) sequence to ensure that the signatures remain valid. 
 
 *GETENTRIES* +
 _Requests updates made to the keycard database_ +
