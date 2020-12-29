@@ -179,7 +179,7 @@ Workspace-ID:: a version 4 Universally-Unique Identifier (UUID) which is used to
 
 User-ID:: a human-friendly name for the workspace. Its relationship to the `Workspace-ID` field is similar to that of a DNS name to an IP address. The workspace user MAY change this at any time, but a new keycard entry MUST be created to do so. It is to be used for human identification of a workspace, such as display in a client application. Any UTF-8 printable character except the forward slash (`/`), the backslash (`\`), and the double quotation mark (`"`) MAY be used in this field. Whitespace characters (tab, space, non-breaking space, etc.) are NOT permitted. The user ID may have up to 64 Unicode code points, although for the sake of ease of use, it recommended to be much shorter than the maximum. Only one workspace at an organization may have a given name at any time, although the workspace to which said name corresponds may change, and this being one reason why supplying the fingerprint with a person's Anselus address is helpful--no mistaken identities.
 
-Domain:: The domain to which the workspace belongs, such as `example.com`. This is not required to match the Domain field of the organization.
+Domain:: The domain to which the workspace belongs, such as `example.com`. This is not required to match the Domain field of the organization. The maximum length for this field is 255 characters.
 
 Contact-Request-Encryption-Key:: the public half of a key pair in EncodedString format which is used to encrypt contact requests. 
 
