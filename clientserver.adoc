@@ -374,7 +374,7 @@ C: SETADDR CorbinSmith@example.com
 S: 200 OK
 ....
 
-The user’s full address is sent to the server. It may not contain whitespace. If the address submitted is not valid, `400 BAD REQUEST` is returned. If the address submitted belongs to another workspace, `408 RESOURCE EXISTS` is returned.
+The user’s full address is sent to the server. It may not contain whitespace, double-quotes (`"`), backslashes (`\`), or a forward slash (`/`) which is not used to separate the User ID from the domain. If the address submitted is not valid, `400 BAD REQUEST` is returned. The User ID MUST NOT be longer than 64 Unicode codepoints and the domain MUST NOT be longer than 253 ASCII characters. If the address submitted belongs to another workspace, `408 RESOURCE EXISTS` is returned.
 
 *SETPASSWORD* +
 _Updates the password for the workspace_ +
