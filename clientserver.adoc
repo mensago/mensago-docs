@@ -357,25 +357,6 @@ Returns: 403 FORBIDDEN, 200 OK
 
 A server which intends to deliver items MUST send this command after receiving a 200 OK response from a SERVERID command. The sending server must take the encoded encrypted password, decrypt it, and send this command with the decrypted password. If the decrypted matches the one sent by the receiving server, `200 OK` is returned and the sending server may follow with DELIVER, QUIT, or RESUME commands. After this type of authentication, ONLY the commands DELIVER, QUIT, or RESUME may be sent–others MUST receive a `401 UNAUTHORIZED`.
 
-*SETADDR* +
-_Sets the address for the workspace_ +
-Parameters: Anselus address +
-Returns: 200 OK, 408 RESOURCE EXISTS, 400 BAD REQUEST +
-Examples:
-
-....
-C: SETADDR "Corbin Smith@example.com"
-S: 400 BAD REQUEST
-
-C: SETADDR csmith@example.com
-S: 408 RESOURCE EXISTS
-
-C: SETADDR CorbinSmith@example.com  
-S: 200 OK
-....
-
-The user’s full address is sent to the server. It may not contain whitespace, double-quotes (`"`), backslashes (`\`), or a forward slash (`/`) which is not used to separate the User ID from the domain. If the address submitted is not valid, `400 BAD REQUEST` is returned. The User ID MUST NOT be longer than 64 Unicode codepoints and the domain MUST NOT be longer than 253 ASCII characters. If the address submitted belongs to another workspace, `408 RESOURCE EXISTS` is returned.
-
 *SETPASSWORD* +
 _Updates the password for the workspace_ +
 Parameters: oldhash newhash +
