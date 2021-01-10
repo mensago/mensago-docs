@@ -205,17 +205,17 @@ Obtains a list of the entries in the current folder. This command will return en
 
 *LOGIN* +
 _Initiates authentication_ +
-Parameters: login type, workspace ID +
-Returns: 100 CONTINUE +
+Parameters: login type, workspace ID, server challenge +
+Returns: 100 CONTINUE server response +
 Possible Errors: 404 NOT FOUND, 405 TERMINATED +
 Example:
 
 ....
-C: LOGIN PLAIN b853a601-96f9-4e9e-9165-37f20cc35097/example.com
-S: 100 CONTINUE
+C: LOGIN PLAIN b853a601-96f9-4e9e-9165-37f20cc35097/example.com RWDBWmvq?P-c8s&{X>_`1q$mX!>t^pHAv3ITa9yX`lp+H9qPpHyY0oLJvMeEcMi}%LL!-CD{qe;90H1q{zz;!l;|flZo{D9H+zuzO@1b5es~ba
+S: 100 CONTINUE 6zj|Gd+zX>H&wod2GrZwDHYO*2(m0vv)@Y~f&IkL
 ....
 
-Initiates authentication. Currently the only type of authentication is PLAIN, which is a multistep username/password/device challenge-response login. If the workspace ID doesn’t exist, `404 NOT FOUND` is returned. If multiple failures are made and reaches the server’s failure limit, `405 TERMINATED` is sent and the connection is closed. If the workspace is pending moderator approval, 101 PENDING is returned. Success is indicated by `100 CONTINUE`, at which point the authentication continues to the PASSWORD command step.
+Initiates authentication. Currently the only type of authentication is PLAIN, which is a multistep username/password/device challenge-response login. In this phase of the login process, the client creates a 32-byte challenge which is then Base85-encoded, encrypted with the organization's encryption key, and then Base85-encoded a second time. The organization's encryption key is obtained from the `Encryption-Key` field of the organization's keycard. The server is expected to decrypt and return the Base85-encoded challenge in its response to the client's login request. This response is required ONLY IF the server's response is `100 CONTINUE`. If the workspace ID doesn’t exist, `404 NOT FOUND` is returned. If multiple failures are made and reaches the server’s failure limit, `405 TERMINATED` is sent and the connection is closed. If the workspace is pending moderator approval, 101 PENDING is returned. Success is indicated by `100 CONTINUE`, at which point the authentication continues to the PASSWORD command step.
 
 *LOGOUT* +
 _Logs out of session_ Parameters: none +
