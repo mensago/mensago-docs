@@ -409,7 +409,7 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 303 Server unavailable
 ** 304 Registration closed
 ** 305 Interrupted
-** 306 Key request failure
+** 306 Key failure
 ** 307 Delivery failure limit exceeded
 ** 308 Delivery delay not reached
 ** 309 Encryption type not supported
