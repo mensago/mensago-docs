@@ -34,7 +34,7 @@ Keycards are a type of digital certificate created to provide cryptographically 
 
 == Keycard Service Architecture
 
-Anselus identity services are designed to be a loosely-coupled federation, encompassing interaction between directories, resolvers, and issuers. An organization server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard, and a cache resolver for its users. Users issue their own keycards, but their cards are also signed by their organization. Keycards for all users in the organization are linked together in a blockchain that is available in its entirety to any resolver that requests it. Keycards are issued only for organizations and users, each providing slightly different types of identity information.
+Anselus identity services are designed to be a loosely-coupled federation, encompassing interaction between directories, resolvers, and issuers. An organization server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard, and a cache resolver for its users. Users issue their own keycards, but their cards are also signed by their organization. Keycards for all users in the organization are linked together in a tree-shaped blockchain which prevents unauthorized changes to the keycard entries. Keycards are issued only for organizations and users, each providing slightly different types of identity information.
 
 An overview of the resolution process as part of a contact request is as follows:
 
@@ -222,13 +222,6 @@ Begins the process to submit a keycard entry to the organization’s database.
 . Once uploaded, the server validates the `Hash` and `User-Signature` fields, and, assuming that all is well, adds it to the keycard database and returns `200 OK`.
 
 This extensive process is designed to prevent either side from doing anything improper, such as server-side man-in-the-middle attacks, uploading invalid data, or other tricks. When added, it is safe to assume that the data is mutually validated and that the data itself is trustworthy even if neither party is trusted by the other. Each line in the entry MUST be terminated by a carriage return-line feed (`\r\n`) sequence to ensure that the signatures remain valid. In the case of a user entry, the Domain field MUST NOT be changed. Any change to the Domain field will result in a `401 UNAUTHORIZED` response.
-
-*GETENTRIES* +
-_Requests updates made to the keycard database_ +
-Parameters: (start_fingerprint) +
-Returns: 102 ITEM item_index item_count
-
-`GETENTRIES` requests updates made to a server’s keycard database. A client is not required to be authenticated to issue this command. The client may specify a hash of the last entry it has. If no fingerprint is specified, the client is requesting the entire database. Each keycard entry is transmitted as a `102 ITEM` line, then a `----- BEGIN USER KEYCARD -----` line, the actual entry data, and finally followed by the line `----- END USER KEYCARD -----`. Both are markers of the entry data without being part of the entries themselves. The `ITEM` line returned consists of the return value, the string `ITEM`, the 1-based index of the keycard, the total count of items to be returned, and the fingerprint for the item. As a precaution, for every 10 entries transmitted, the server will wait for the client to transmit a `100 CONTINUE` before transmitting the next 10 entries. Failure to do so will result in the server idling until the connection times out.
 
 *ISCURRENT* +
 _Verifies that an entry is the current one_ +
