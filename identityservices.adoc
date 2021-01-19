@@ -1,9 +1,9 @@
-= Anselus Keycard Services
+= Anselus Identity Services
 Jon Yoder <jsyoder@mailfence.com>
 v1.0.1, 2020-06-03
 
 *Status:* Draft in progress +
-*Abstract:* Keycard Service Architecture
+*Abstract:* Identity Service Architecture
 
 == TODO
 
@@ -30,22 +30,21 @@ Revocation]
 
 == Description
 
-Keycards are a type of digital certificate created to provide cryptographically verifiable online identity. A DNS-like resolver service is used to translate human-readable identification information into the less-friendly cryptographic information.
+Verifiable identity is the foundation of the Anselus platform. A person or organization's identity is tied to a set of cryptographic keys, and this information is stored in digital certificates called keycards. An organization's server maintains the keycards for all of its users in a blockchain-like database and provides lookup services to that information. 
 
 == Keycard Service Architecture
 
-Anselus identity services are designed to be a loosely-coupled federation, encompassing interaction between directories, resolvers, and issuers. An organization server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard, and a cache resolver for its users. Users issue their own keycards, but their cards are also signed by their organization. Keycards for all users in the organization are linked together in a tree-shaped blockchain which prevents unauthorized changes to the keycard entries. Keycards are issued only for organizations and users, each providing slightly different types of identity information.
+Anselus identity services are designed to be a loosely-coupled federation, encompassing interaction between directories, resolvers, and issuers. An organization's server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard. Users issue their own keycards, but their cards are also signed by their organization. Keycards for all users in the organization are linked together in a tree-shaped blockchain which prevents unauthorized changes to the keycard entries. Keycards are issued only for organizations and users, each providing slightly different types of identity information.
 
 An overview of the resolution process as part of a contact request is as follows:
 
 [arabic]
 . Alice gives Bob her Anselus address.
 . Bob creates a contact request in his client and clicks Send.
-. Bob’s client requests from his organization’s server Alice’s keycard and that of her organization. If the server is missing the latest index for her keycard, it downloads updates to the entire keycard database for
-Alice’s organization and returns Alice’s keycard to Bob’s client.
-. Bob’s client verifies the user signature on Alice’s keycard and the signature on her organization’s keycard.
-. Once verified, Bob’s client is ready to create and send Bob’s contact request. It creates the message, signs it with the signing counterpart to Bob’s contact request verification key, encrypts it with Alice’s
-contact request encryption key, and submits it to his organization’s server for delivery.
+. Bob's client first obtains information from the DNS record for Alice's organization, which includes the organization's current signing and encryption keys.
+. Bob’s client requests from the server for Alice's organization both her keycard and that of her organization.
+. Bob's client verifies the signatures in the organization's keycard, then the signatures in Alice's keycard, and then verifies her keycard's anchor point.
+. Once verified, Bob’s client is ready to create and send Bob’s contact request. It creates the message, signs it with Bob's contact request signing key, encrypts it with Alice’s contact request encryption key, and submits it to his organization’s server for delivery.
 
 A keycard contains multiple entries, from the user’s initial, or *root*, entry on down to the user’s current one. Because an entry is not very large – a few hundred bytes – a full recursive resolution of a keycard does not require much space.
 
@@ -53,7 +52,11 @@ The service architecture for keycards consists of keycard servers and resolvers.
 
 == Keycard Database Structure
 
-The keycard database is a hybrid blockchain, allowing anyone to download and view its contents, but permitting only authorized users to make any changes. The chain begins with the organization’s root keycard entry and each successive database transaction is linked to the one before it via a cryptographic hash. There are only three possible operation types: append, revoke, and close: entries can be added to a keycard, an entry can be revoked and replaced, and the entire keycard is closed when its owning workspace is deleted. No other changes to a keycard are possible. A user makes the final signature to an entry before it is added to the database, preventing malicious changes to the database by a compromised server. Anyone may at any time download the entire database, although this is not common in day-to-day operations. The database for a large organization can easily reach tens of gigabytes in size, and servers throttle such large bulk data transfers to guard against denial-of-service attacks, so this is an operation which can take some time to perform.
+The keycard database is a tree-shaped hybrid blockchain, hereafter called a chain tree. Anyone can to download and view the contents of an individual user, but only authorized users can make changes. In this way, no consensus mechanisms are required. User information is protected in bulk because only requests for individual keycards can be made.
+
+ The chain begins with the organization’s root keycard entry and each successive database transaction is linked to the one before it via a cryptographic hash. There are only two possible operation types: append and close: entries can be added to a keycard, and the entire keycard is closed when its owning workspace is deleted. No other changes to a keycard are possible. By adding a new entry to a user's keycard, he or she is revoking the keys in the previous entry. At that point, all old keys are valid only for verifying the signature chain. 
+ 
+ Several mechanisms are in place to ensure that each keycard is verifiable. When a user submits an new entry to their keycard, the organization verifies the information in the entry, generates a signature of the data, and returns the signature to the client. The client then verifies signature using the information on the client's side to ensure that the organization did not change the entry before signing it. It then creates a hash of the organization's current entry, appends it to the user's entry, creates a hash of the entry with this new information, and then signs the entire thing with their contact request signing key. The signed entry is submitted to the server, which verifies all of the information and signatures and adds it to the database. Thus, both the server and client do not trust each other and each confirms that the other is not doing anything malicious.
 
 == Anselus Address Fingerprints
 
