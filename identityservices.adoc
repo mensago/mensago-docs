@@ -5,10 +5,6 @@ v1.0.1, 2020-06-03
 *Status:* Draft in progress +
 *Abstract:* Identity Service Architecture
 
-== TODO
-
-* Complete Lifecycle
-
 == Sections
 
 * link:#anselus-keycard-services[Anselus Keycard Services]
@@ -54,9 +50,10 @@ The service architecture for keycards consists of keycard servers and resolvers.
 
 The keycard database is a tree-shaped hybrid blockchain, hereafter called a chain tree. Anyone can to download and view the contents of an individual user, but only authorized users can make changes. In this way, no consensus mechanisms are required. User information is protected in bulk because only requests for individual keycards can be made.
 
- The chain begins with the organization’s root keycard entry and each successive database transaction is linked to the one before it via a cryptographic hash. There are only two possible operation types: append and close: entries can be added to a keycard, and the entire keycard is closed when its owning workspace is deleted. No other changes to a keycard are possible. By adding a new entry to a user's keycard, he or she is revoking the keys in the previous entry. At that point, all old keys are valid only for verifying the signature chain. 
+
+The chain begins with the organization’s root keycard entry and each successive database transaction is linked to the one before it via a cryptographic hash. There are only two possible operation types: append and close: entries can be added to a keycard, and the entire keycard is closed when its owning workspace is deleted. No other changes to a keycard are possible. By adding a new entry to a user's keycard, he or she is revoking the keys in the previous entry. At that point, all old keys are valid only for verifying the signature chain.
  
- Several mechanisms are in place to ensure that each keycard is verifiably correct. When a user submits a new entry to their keycard, the organization verifies the information in the entry, generates a signature of the data, and returns the signature to the client. The client then verifies signature using the information on the client's side to ensure that the organization did not change the entry before signing it. It then appends hash of the previous entry, creates a hash of the new entry with this new information, and then signs the entire thing with their contact request signing key. For the user's root keycard entry, the hash of the organization's current keycard entry is used. The signed entry is submitted to the server, which verifies all of the information and signatures and adds it to the database. Thus, both the server and client do not trust each other and each confirms that the other is not doing anything malicious or problematic.
+Several mechanisms are in place to ensure that each keycard is verifiably correct. When a user submits a new entry to their keycard, the organization verifies the information in the entry, generates a signature of the data, and returns the signature to the client. The client then verifies signature using the information on the client's side to ensure that the organization did not change the entry before signing it. It then appends hash of the previous entry, creates a hash of the new entry with this new information, and then signs the entire thing with their contact request signing key. For the user's root keycard entry, the hash of the organization's current keycard entry is used. The signed entry is submitted to the server, which verifies all of the information and signatures and adds it to the database. Thus, both the server and client do not trust each other and each confirms that the other is not doing anything malicious or problematic.
 
 == Anselus Address Fingerprints
 
@@ -141,9 +138,9 @@ Name:: The name of the organization represented by the keycard, which must meet 
 
 Contact-Admin:: the numeric address for the party responsible for administrating the Anselus services for the organization. Example: `6321fb6e-c68c-4279-a1f4-68f05a2bb9b0/example.com`. Support requests and abuse reports are sent to this address if the `Contact-Support` and `Contact-Abuse` fields are not populated.
 
-Contact-Abuse:: OPTIONAL. The Contact-Abuse field contains a numeric address for reporting abuse to the service administrator. If omitted, abuse reporting is sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for abuse reporting. Provided that the server is configured correctly and the abuse address is valid, an administrator MAY opt to drop abuse messages sent to Contact-Admin or autoreply with a bounce message to ensure clients follow support protocols. Note that abuse reports have a specific format defined in the Anselus messaging design document.
+Contact-Abuse:: OPTIONAL. The Contact-Abuse field contains a numeric address for reporting abuse to the service administrator. If omitted, abuse reporting is sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for abuse reporting. Provided that the server is configured correctly and the abuse address is valid, an administrator MAY opt to drop abuse messages sent to `Contact-Admin` or autoreply with a bounce message to ensure clients follow support protocols. Note that abuse reports have a specific format defined in the Anselus messaging design document.
 
-Contact-Support:: OPTIONAL. The Contact-Support fields contains a numeric address for requesting organizational support. It is intended for use ONLY by users from the organization itself, and support requests sent to this address. If omitted, support requests are sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for support requests. Provided that the server is configured correctly and the support address is valid, an administrator MAY opt to drop support requests sent to Contact-Admin to ensure clients follow support protocols. Note that support requests have a specific format defined in the Anselus messaging design document.
+Contact-Support:: OPTIONAL. The Contact-Support fields contains a numeric address for requesting organizational support. It is intended for use ONLY by users from the organization itself, and support requests sent to this address. If omitted, support requests are sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for support requests. Provided that the server is configured correctly and the support address is valid, an administrator MAY opt to drop support requests sent to `Contact-Admin` to ensure clients follow support protocols. Note that support requests have a specific format defined in the Anselus messaging design document.
 
 Language:: Comma-separated list of https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes[ISO 639-1] language codes which indicated languages supported when contacting the organization. Up to 10 languages may be specified. Example: `en,fr,de`.
 
@@ -223,21 +220,21 @@ This extensive process is designed to prevent either side from doing anything im
 
 *ISCURRENT* +
 _Verifies that an entry is the current one_ +
-Parameters: domain_or_workspace_address index +
+Parameters: domain or workspace address, index +
 Returns: 200 OK response
 
 This command verifies that the fingerprint supplied is the current one for the domain or workspace specified. On success, the response is either `YES` or `NO`. The client is not required to be authenticated for this command.
 
 *ORGCARD* +
 _Requests an organization keycard_ +
-Parameters: start_index (end_index) +
+Parameters: start index, (end index) +
 Returns: 104 TRANSFER, 102 ITEM item_index item_count, 404 NOT FOUND
 
 Requests part or all of an organization’s keycard, given the starting index and possibly an end index. The client is not required to be authenticated for this command. If the ending index is omitted, all cards from the specified entry through the organization’s current keycard are returned. If the starting index is set to 0 or a negative number, only the organization’s most recent entry is returned. Each keycard entry is transmitted as a `102 ITEM` line, then a `----- BEGIN ORG ENTRY -----` line, the actual entry data, and finally followed by the line `----- END ORG ENTRY -----`. Both are markers of the entry data without being part of the entries themselves. The `ITEM` line returned consists of the return value, the string `ITEM`, the 1-based index of the keycard, the total count of items to be returned, and the fingerprint for the item. `104 TRANSFER number` is sent to the client prior to transmission. The client is expected to acknowledge this transfer setup with the number of bytes it is ready to receive, which will normally be the same number as that was sent by the server. `404 NOT FOUND` is returned if `end_index` is less than `start_index` or the server cannot find any entries for the organization, which means a bad day for the server administrator.
 
 *USERCARD* +
 _Retrieve user keycard_ +
-Parameters: owner start_index (end_index) +
+Parameters: owner, start index, (end_index) +
 Returns: 102 ITEM item_index item_count
 
 Requests part or all of a user’s keycard, given a workspace address, the starting index, and possibly an optional end index. The owner parameter can either be an Anselus address or a workspace ID. The client is not required to be authenticated for this command. If the ending index is omitted, all entries starting with the specified entry through the user’s current keycard are returned. If the starting index is set to 0 or a negative number, only the user’s most recent entry is returned. Each keycard entry is transmitted as a `102 ITEM` line, then a `----- BEGIN USER ENTRY -----` line, the actual entry data, and finally followed by the line `----- END USER ENTRY -----`. Both are markers of the entry data without being part of the entries themselves. The `ITEM` line returned consists of the return value, the string `ITEM`, the 1-based index of the keycard, the total count of items to be returned, and the fingerprint for the item.
