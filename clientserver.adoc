@@ -117,26 +117,6 @@ A server may issue this command ONLY after receiving a `200 OK` from a SERVERPWD
 
 404 errors are logged by servers receiving delivered items to ensure good behavior and prevent spam. Should the number of permitted delivery failures of this type exceed the limit configured on the server, `307 DELIVERY FAILURE LIMIT EXCEEDED` is returned and the connection is closed. By default, this threshold is recommended to be 500, but it can be configured to be more or less permissive. The offending server is not banned, but a configurable cooldown period must pass before delivery may be attempted. The default cooldown period is 60 minutes. If the offending server attempts to deliver before the cooldown has expired, it will receive a `308 DELIVERY DELAY NOT REACHED` response to the SERVERID command. Server implementors MAY want to log the sending workspace whenever a 404 error is received and ensure that a few misbehaving workspaces do not cause a delivery delay for the entire server to a particular domain.
 
-*DEVICE* +
-_Finishes PLAIN authentication_ +
-Parameters: device_ID public_key +
-Returns: 100 CONTINUE challenge, 200 OK +
-Possible Errors: 101 PENDING, 401 UNAUTHORIZED, 403 FORBIDDEN +
-Example:
-
-....
-C: DEVICE d313c834-b8e9-4622-a208-40b6c03ddd2e CURVE25519:Da1`e?<a%1?x7etG?C#a^ndPgG^fc1wO_4O>Mzj>  
-S: 100 CONTINUE aWgbIIXPx+Yil!WVRK|`3I  
-C: DEVICE d313c834-b8e9-4622-a208-40b6c03ddd2e CURVE25519:Da1`e?<a%1?x7etG?C#a^ndPgG^fc1wO_4O>Mzj> q34999fmkk3kasdl  
-S: 200 OK  
-....
-
-The `DEVICE` command is the final step in the PLAIN authentication process. The client submits the device’s unique ID and device’s base85-encoded public key with prefix. Devices are responsible for generating their own IDs.
-
-If a device’s key is not found, `101 PENDING` is returned if device checking is enabled and approval is pending. While approval is pending, this command MAY be reissued to check approval status. Checks MUST NOT be performed more than once every 10 seconds. While approval is pending, `101 PENDING` will still be returned. If device approval is denied, `403 FORBIDDEN` is returned.
-
-If the device is approved or is already in the server’s device list, `100 CONTINUE` is returned along with a challenge encrypted with the device’s public key. The device MUST respond with the same command along with the decrypted challenge. The challenge itself is merely a 32-bit string of base85-encoded bytes. If the device does not respond with the correct string, `401 UNAUTHORIZED` is returned and the login process is ended. Assuming that the correct challenge is sent, `200 OK` is returned and the PLAIN authentication process is successful.
-
 *DOWNLOAD* +
 _Download an item from the selected folder_ +
 Parameters: filename, optional offset +
@@ -203,27 +183,6 @@ S: 102 ITEM 2
 
 Obtains a list of the entries in the current folder. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the times at or after the timestamp are returned. If omitted, all items in the current folder are returned. The server’s response consists of `102 ITEM` followed by the number of items to be returned. Each item is then returned, one item per line. If there are no items in the current directory to be returned, `102 ITEM 0` is the only response from the server.
 
-*LOGIN* +
-_Initiates authentication_ +
-Parameters: login type, workspace ID, server challenge +
-Returns: 100 CONTINUE server response +
-Possible Errors: 404 NOT FOUND, 405 TERMINATED +
-Example:
-
-....
-C: LOGIN PLAIN b853a601-96f9-4e9e-9165-37f20cc35097/example.com RWDBWmvq?P-c8s&{X>_`1q$mX!>t^pHAv3ITa9yX`lp+H9qPpHyY0oLJvMeEcMi}%LL!-CD{qe;90H1q{zz;!l;|flZo{D9H+zuzO@1b5es~ba
-S: 100 CONTINUE 6zj|Gd+zX>H&wod2GrZwDHYO*2(m0vv)@Y~f&IkL
-....
-
-Initiates authentication. Currently the only type of authentication is PLAIN, which is a multistep username/password/device challenge-response login. In this phase of the login process, the client creates a 32-byte challenge which is then Base85-encoded, encrypted with the organization's encryption key, and then Base85-encoded a second time. The organization's encryption key is obtained from the `Encryption-Key` field of the organization's keycard. The server is expected to decrypt and return the Base85-encoded challenge in its response to the client's login request. This response is required ONLY IF the server's response is `100 CONTINUE`. If the workspace ID doesn’t exist, `404 NOT FOUND` is returned. If multiple failures are made and reaches the server’s failure limit, `405 TERMINATED` is sent and the connection is closed. If the workspace is pending moderator approval, 101 PENDING is returned. Success is indicated by `100 CONTINUE`, at which point the authentication continues to the PASSWORD command step.
-
-*LOGOUT* +
-_Logs out of session_ Parameters: none +
-Returns: 200 OK +
-Possible Errors: None
-
-Returns the session to an unauthenticated state. This does not close the connection.
-
 *MKDIR* +
 _Creates a new folder_ +
 Parameters: folder path +
@@ -251,76 +210,6 @@ MOVE 1577232538.29485.7c1d6aa5-cc79-474f-ac05-201147e80e53 / f736e26e-59ee-4c21-
 
 Moves an item. The item is expected to be in the current directory. The destination path is expected to be a standard Anselus server-side path to a folder. `404 NOT FOUND` is returned if the item does not exist. `404 RESOURCE EXISTS` is returned if an entry in the destination already exists with that name.
 
-*PASSWORD* +
-_Submits password for authentication_ +
-Parameters: hash of user’s password +
-Returns: 100 CONTINUE +
-Possible Errors: 402 AUTHENTICATION FAILURE, 405 TERMINATED
-
-Continues PLAIN authentication. MUST be sent only if client receives 100 CONTINUE from a LOGIN command. If the hashes don’t match, `402 AUTHENTICATION FAILURE` is returned and the session state returns to its original, unauthenticated state–after any PASSWORD failure, a successful LOGIN MUST be sent to be permitted to send another PASSWORD command. If the password failure max for the server is reached, `405 TERMINATED` is sent and the connection is closed. After the successful response, the PLAIN login process continues to the DEVICE phase.
-
-*PREREG* +
-_Provisions a new workspace_ +
-Parameters: Workspace ID (optional), User ID (optional), Domain (optional) +
-Returns: +
-200 OK workspace_id registration_code opt_user_id +
-Possible Errors: 408 RESOURCE EXISTS +
-Example:
-
-....
-C: PREREG  
-S: 200 OK 78fac9f7-f352-433a-a2f2-480fa4f2506d ConsolingFreeingTipperUnissuedWaggleUproot  
-
-C: PREREG csmith  
-S: 200 OK 7d4b9e50-b924-4323-9c74-d15a15b64b43 OmitSwoonedSpriteRevengeSmasherRelatable csmith  
-....
-
-Requests the creation of a new workspace. Unlike `REGISTER`, this command is intended to be issued by the administrator from an authenticated state. This command may be used with any of the registration modes, although it is of limited utility for servers configured for public or network registration. The administrator may specify the desired workspace ID and/or the desired user ID. If the workspace is to have a domain different from the default, it MUST be specified here -- neither the administrator nor the user have any control to set the domain for a workspace outside of this command. It returns a workspace ID, a registration code, and if a user ID was supplied, the user ID originally requested. The workspace ID (or user ID) is given to the user along with the preregistration code. The code is not a password–only a means of authenticating a user for registration without the administrator ever knowing the user’s password.
-
-*QUIT* +
-_Request closing the connection_ +
-Parameters: none +
-Returns: none
-
-Requests the server close the connection. The server does not return anything; instead the server closes the connection.
-
-*REGCODE* +
-_Logs in with preregistration information_ +
-Parameters: registration name, password hash, device ID, prefixed device
-public key +
-Returns: 201 REGISTERED +
-Possible Errors: 401 UNAUTHORIZED +
-Example:
-
-....
-C: REGCODE csmith OmitSwoonedSpriteRevengeSmasherRelatable 0cf4bd1c-08fe-49ff-9f19-359bc9e7af94 CURVE25519:)?!*s*y&)^?ie}qcsh~q*%AIKeZ<0`Wp66eJK(DV  
-S: 201 REGISTERED  
-....
-
-This command registers an account with a preprovisioned registration code. The registration name can either be the workspace ID provided to the administrator by the `PREREG` command or by the optional user ID passed to it. The user provides either one along with the one-time-use registration code to the client application, which submits said information along with device identity info. Assuming that all the information matches, the server provisions the workspace the same way as with `REGISTER`. The registration code itself is a free-form string which may contain up to 128 UTF-8 non-whitespace code points. `401 UNAUTHORIZED` is returned if the registration combination is invalid. This command handles preregistration failures similar to `LOGIN` failures: if the login failure limit is reached, `405 TERMINATED` is returned and the connection is closed.
-
-*REGISTER* +
-_Creates a new workspace_ +
-Parameters: WID of workspace owner, password hash, device ID, prefixed device public key +
-Returns: +
-Public mode: 201 REGISTERED +
-Network mode: 201 REGISTERED +
-Moderated mode: 101 PENDING +
-Private mode: 304 REGISTRATION CLOSED +
-Example:
-
-....
-C: REGISTER b9de5af4-a592-4210-b4db-843725fe0759 $argon2id$v=19$m=65536,t=2,p=1$WbKj86UxOAeSom71nKrAlw$uemRFB5eZ0D4TI13Mj6O7KRWsd2eXMjtWINbDao4cgM 244df58c-6eca-4384-af44-491d9084e1f0 CURVE25519:+?1C<<8Y9AV6pDPD@sgkiu(Qd2JIXjOF+Q&)S3-t
-S: 201 REGISTERED
-
-C: REGISTER b9de5af4-a592-4210-b4db-843725fe0759 $argon2id$v=19$m=65536,t=2,p=1$WbKj86UxOAeSom71nKrAlw$uemRFB5eZ0D4TI13Mj6O7KRWsd2eXMjtWINbDao4cgM 244df58c-6eca-4384-af44-491d9084e1f0 CURVE25519:+?1C<<8Y9AV6pDPD@sgkiu(Qd2JIXjOF+Q&)S3-t
-S: 101 PENDING
-....
-
-Requests the creation of a new workspace. This command MAY be sent from unauthenticated or authenticated states. For public and network registration modes, success is returned unless a problem has been encountered. If network registration is used and the client is outside the permitted subnet, `304 REGISTRATION CLOSED` is returned. This response is also given if a registration request is made to a server with private registration. A successful request for moderated registration returns `101 PENDING`, indicating that the user must wait for the administrator to approve the request before login is possible, but the device is tentatively given a device ID. For servers utilizing private registration, this command is not used. Instead, an administrator uses the PREREG command while logged into the server locally to register accounts on users’ behalf.
-
-Concerning the command parameters, the first is the requested workspace ID. In the unlikely event that the workspace ID already exists on the server, `408 RESOURCE EXISTS` is returned. In such an event, it is permissible – and even expected – that the client will generate a new workspace ID and resubmit. The device ID is simply another UUID. Finally, the device public key is a base85-encoded public encryption key with the algorithm used as a prefix.
-
 *RESUME* +
 _Finishes an upload_ +
 Parameters: direction, filename, byte offset, hash value +
@@ -341,37 +230,6 @@ Parameters: size in bytes, hash value, destination +
 Returns: As per UPLOAD
 
 This command works exactly like UPLOAD except that it also takes a destination as a parameter. The destination is expected to be a numeric Anselus address, consisting of the workspace ID of the destination, a forward slash, and the destination domain. The message is enqueued for delivery after the item upload is complete.
-
-*SERVERID* +
-_Enables a server to identify itself prior to delivering items_ +
-Parameters: fully-qualified domain name +
-Returns: 200 OK (Encrypted one-time password) +
-Possible Errors: 308 DELIVERY DELAY NOT REACHED
-
-Servers who intend to deliver items must initiated a session with this command. The receiving server performs a DNS request for the TXT record containing the server’s base64-encoded public key. If the receiving server is unable to obtain this record, it returns `306 KEY REQUEST FAILURE`. If the request succeeds but the server’s FQDN is not part of the record, `403 FORBIDDEN` is returned. Otherwise, the receiving server generates a one-time random password, encrypts it, and returns 200 OK with the base85-encoded encrypted password. Should the sending server exceed the delivery failure rate configured on the receiver, the receiving server will send `308 DELIVERY DELAY NOT REACHED` in response to this command until the cooldown period has passed.
-
-*SERVERPWD* +
-_Enables a server to log in for item delivery_ +
-Parameters: (one-time password) +
-Returns: 403 FORBIDDEN, 200 OK
-
-A server which intends to deliver items MUST send this command after receiving a 200 OK response from a SERVERID command. The sending server must take the encoded encrypted password, decrypt it, and send this command with the decrypted password. If the decrypted matches the one sent by the receiving server, `200 OK` is returned and the sending server may follow with DELIVER, QUIT, or RESUME commands. After this type of authentication, ONLY the commands DELIVER, QUIT, or RESUME may be sent–others MUST receive a `401 UNAUTHORIZED`.
-
-*SETPASSWORD* +
-_Updates the password for the workspace_ +
-Parameters: oldhash newhash +
-Returns: 200 OK, 401 UNAUTHORIZED, 402 AUTHENTICATION FAILURE
-
-A client will send this command when the user wishes to update their password. It requires the hash of both the old and new passwords in order to process the request. This command may be sent ONLY during an authenticated session. A `401 UNAUTHORIZED` MUST be sent otherwise. If the old hash does not match the current password’s hash, a `402 AUTHENTICATION FAILURE` response is sent and no password change is made.
-
-*UNREGISTER* +
-_Deletes a workspace_ +
-Parameters: hash of user’s password, session ID +
-Returns: +
-Public mode: 201 UNREGISTERED device_session_ID +
-Moderated mode: 101 PENDING +
-Network mode: 201 UNREGISTERED device_session_ID +
-Private mode: 101 PENDING
 
 *UPLOAD* +
 _Upload an item to the temp folder_ +
