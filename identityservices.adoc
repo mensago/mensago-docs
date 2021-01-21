@@ -1,6 +1,6 @@
 = Anselus Identity Services
 Jon Yoder <jsyoder@mailfence.com>
-v1.0.1, 2020-06-03
+v1.0.2, 2021-01-20
 
 *Status:* Draft in progress +
 *Abstract:* Identity Service Architecture
@@ -9,7 +9,6 @@ v1.0.1, 2020-06-03
 
 * link:#anselus-keycard-services[Anselus Keycard Services]
 ** link:#changelog[Changelog]
-** link:#todo[TODO]
 ** link:#sections[Sections]
 ** link:#description[Description]
 ** link:#keycard-service-architecture[Keycard Service Architecture]
@@ -198,7 +197,65 @@ Hash:: The hash of all fields listed above. This field is used for identificatio
 
 User-Signature:: The signature of all previous fields in CryptoString format. This signature is the final field in the entry.
 
+== Session Authentication
+
+Currently there is only one type of authentication supported, PLAIN, which is a multstep process that confirms the identity of both parties. The process is outlined below:
+
+. The client application connects and submits a workspace ID and encrypted server challenge
+. The server confirms the workspace ID is valid and returns the decrypted challenge
+. The client submits the user's hashed password.
+. The server hashes the user's hashed password, compares the result to the stored value, and returns success if they match
+. The client submits the device's unique UUID and device encryption key.
+. The server checks for the existence of the device.
+. If the device does not already exist, the server initiates multifactor authentication to permit the device (process described below)
+. If the device is found, the server returns with a challenge encrypted with the device's encryption key
+. The device responds with the decrypted challenge, the server confirms a match, and the session is authenticated.
+
+Challenges in this process are multilayered. First, a 32-byte string of random bytes is generated. This random series of bytes is then Base85-encoded. The encoded challenge is then encrypted and then Base85-encoded a second time. This 50-byte challenge is sent to the other party. The other party decodes the challenge, decrypts it, and returns the original challenge in Base85-encoded format. This process is JSON-friendly and string comparisons are much easier -- and possibly faster -- than comparing two byte arrays in some programming languages.
+
+User passwords are expected to be hashed using the Argon2id password hashing algorithm before being submitted to the server, and the server will hash the user's hashed password, providing additional protection from bruteforce attacks if the server should ever be compromised.
+
+Device Checking is a lightweight form of multifactor authentication that also assists with key synchronization among multiple devices on a workspace. When a new device attempts to log into a workspace when Device Checking is enabled, the server queues a Device Alert system message (see below) in the workspace. Devices who find the message show an alert to the user which asks if the user is logging in on another device and requests approval or denial of the device. If the device is approved, the user's client software packages the user's keys into a JSON structure, encrypts it with an ephemeral symmetric key tied to a PIN, Base85-encodes it, attaches the package to the response, sends the response to the server, and displays the PIN to the user. The server responds to the new device with the encrypted key package, and the client on the new device requests the PIN from the user so that it can decrypt the key package. The server also adds the new device's key and ID to the list of approved devices for the workspace. This extra set of steps ensures that a user remains secure while minimizing the amount of annoyance that traditional multifactor authentication imposes.
+
+=== Device Alerts
+
+When a new device is added to an Anselus workspace, an alert is sent to the user's other devices. A sample payload for the initial device alert is shown below.
+
+[source,json]
+----
+{
+    "Type" : "sysmessage",
+    "SubType" : "DevAlert.1",
+    "Version" : "1.0",
+    "From" : "example.com",
+    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/example.com" ],
+    "Date" : "20190905 155323",
+    "Attachments" : [
+        {
+            "Device-Name" : "my laptop",
+            "Device-IP" : "172.20.5.10",
+			"Device-Description" : "Acme Supertop 17\""
+        }
+    ]
+}
+----
+
+All fields are required except for `Device-Name` and `Device-Description`. The `From` field is the domain for the organization, which may or may not be the same as that of the recipient. The payload is encrypted using the recipient's contact request encryption key. Like all system messages, it is signed by the organization's primary signing key.
+
+TODO: Finish
+
+== Registration
+
+TODO
+
 == Protocol Commands
+
+Client-Server messages use JSON with three fields required for all messages.
+
+* *Code* : an integer status code. See the Client-Server API documentation for a list of codes.
+* *Status* : the message corresponding to the status code. Also in the Client-Server API documentation.
+* *Data* : a dictionary containing attached data, which is used for call parameters and return values. All parameters and return values are strings.
+
 
 *ADDENTRY* +
 _Adds a keycard entry to the database_ +
@@ -218,23 +275,128 @@ Begins the process for submitting a keycard entry to the organization’s databa
 
 This extensive process is designed to prevent either side from doing anything improper, such as server-side man-in-the-middle attacks, uploading invalid data, or other tricks. When added, it is safe to assume that the data is mutually validated and that the data itself is trustworthy even if neither party is trusted by the other. Each line in the entry MUST be terminated by a carriage return-line feed (`\r\n`) sequence to ensure that the signatures remain valid. In the case of a user entry, the Domain field MUST NOT be changed. Any change to the Domain field will result in a `401 UNAUTHORIZED` response.
 
+*DEVICE* +
+_Finishes PLAIN authentication_ +
+Parameters: Device-ID, Device-Key, optional: Device-Name. optional: Device-Description +
+Returns: 100 CONTINUE, Challenge, 200 OK +
+Possible Errors: 101 PENDING, 401 UNAUTHORIZED, 403 FORBIDDEN +
+
+The DEVICE command is the final step in the PLAIN authentication process. The client submits the device’s unique ID and CryptoString-formatted encryption key. Devices are responsible for generating their own IDs if they have not been added to the workspace.
+
+If a device’s ID and key are not found, `101 PENDING` is returned if device checking is enabled and approval is pending. While approval is pending, this command MAY be reissued to check approval status. Checks MUST NOT be performed more than once every 10 seconds. While approval is pending, `101 PENDING` will still be returned. If device approval is denied, `403 FORBIDDEN` is returned.
+
+If the device is approved or is already in the server’s device list, `100 CONTINUE` is returned along with a device challenge, which is a 32-bit random string that is then Base85 encoded, encrypted with the device's encryption key, and then Base85-encoded a second time. The device MUST respond with the same command along with the Base85-encoded decrypted challenge. If the device does not respond with the correct string, `401 UNAUTHORIZED` is returned, the login process is ended, and the session returns to the baseline unauthenticated state. Assuming that the correct challenge is sent, `200 OK` is returned and the PLAIN authentication process is successful and complete.
+
+The `Device-Name` and `Device-Description` two optional fields are used for first-time logins of devices. If a user's client software has not logged into a workspace before, it can also submit information in these two fields to be included in the device alert and displayed to the user. `Device-Name` should either contain a phrase supplied by the user prior to login or the hostname of the device. `Device-Description` should be the make and model of the device.
+
 *ISCURRENT* +
 _Verifies that an entry is the current one_ +
-Parameters: domain or workspace address, index +
-Returns: 200 OK response
+Parameters: Domain or Workspace-ID, Index +
+Returns: 200 OK, Is-Current
 
 This command verifies that the fingerprint supplied is the current one for the domain or workspace specified. On success, the response is either `YES` or `NO`. The client is not required to be authenticated for this command.
 
-*ORGCARD* +
-_Requests an organization keycard_ +
-Parameters: start index, (end index) +
-Returns: 104 TRANSFER, 102 ITEM item_index item_count, 404 NOT FOUND
+*LOGIN* +
+_Initiates authentication_ +
+Parameters: Login-Type, Workspace-ID, Challenge +
+Returns: 100 CONTINUE server response +
+Possible Errors: 404 NOT FOUND, 405 TERMINATED +
 
-Requests part or all of an organization’s keycard, given the starting index and possibly an end index. The client is not required to be authenticated for this command. If the ending index is omitted, all cards from the specified entry through the organization’s current keycard are returned. If the starting index is set to 0 or a negative number, only the organization’s most recent entry is returned. Each keycard entry is transmitted as a `102 ITEM` line, then a `----- BEGIN ORG ENTRY -----` line, the actual entry data, and finally followed by the line `----- END ORG ENTRY -----`. Both are markers of the entry data without being part of the entries themselves. The `ITEM` line returned consists of the return value, the string `ITEM`, the 1-based index of the keycard, the total count of items to be returned, and the fingerprint for the item. `104 TRANSFER number` is sent to the client prior to transmission. The client is expected to acknowledge this transfer setup with the number of bytes it is ready to receive, which will normally be the same number as that was sent by the server. `404 NOT FOUND` is returned if `end_index` is less than `start_index` or the server cannot find any entries for the organization, which means a bad day for the server administrator.
+Starts the authentication process. Currently, the only type of authentication is PLAIN, which is a multistep username/password/device challenge-response login. In this phase of the login process, the client creates a random 32-byte challenge which is Base85-encoded, encrypted with the organization's encryption key, and then Base85-encoded a second time. The organization's encryption key is obtained from the `Encryption-Key` field of the organization's keycard. Assuming that the specified workspace is found, the server is expected to decrypt and return the Base85-encoded challenge in its response to the client's login request. The decrypted challenge is required to be returned only if the status code is `100 CONTINUE`. If the workspace ID doesn’t exist, `404 NOT FOUND` is returned. If multiple failures are made and reaches the server’s failure limit, `405 TERMINATED` is sent and the connection is closed. If the workspace is pending moderator approval, `101 PENDING` is returned. Success is indicated by `100 CONTINUE`, at which point the PLAIN authentication process advances to the PASSWORD command step.
+
+*LOGOUT* +
+_Logs out of session_ Parameters: none +
+Returns: 200 OK +
+Possible Errors: None
+
+Returns the session to an unauthenticated state. This does not close the connection. `200 OK` is returned regardless of whether the session is currently authenticated or not.
+
+*ORGCARD* +
+_Requests the organization keycard_ +
+Parameters: Start-Index, optional: End-Index +
+Returns: 104 TRANSFER, Item-Count, Total-Size +
+
+Requests part or all of the organization’s keycard, given the starting index and possibly an end index. The client is not required to be authenticated for this command. If the ending index is omitted, all cards from the specified entry through the organization’s current keycard are returned. If the starting index is set to 0 or a negative number, only the organization’s most recent entry is returned.
+
+Once the command is submitted, the server responds with the number of entries and the total byte size of the transfer. The server is expected to respond with an empty TRANSFER command to confirm the transfer. Once confirmed, the server transmits the all of the requested entries. Each keycard entry has a `----- BEGIN ORG ENTRY -----` header line and a `----- END ORG ENTRY -----` footer line. Both are markers of the entry data without being part of the entries themselves. `400 BAD REQUEST` is returned if `end_index` is less than `start_index`. `404 NOT FOUND` is returned if the server cannot find any entries for the organization, which means a bad day for the server administrator.
+
+*PASSWORD* +
+_Submits password for authentication_ +
+Parameters: Password-Hash +
+Returns: 100 CONTINUE +
+Possible Errors: 402 AUTHENTICATION FAILURE, 405 TERMINATED
+
+Continues PLAIN authentication. MUST be sent only if client receives `100 CONTINUE` from a LOGIN command. If the hashes don’t match, `402 AUTHENTICATION FAILURE` is returned and the session state returns to its original, unauthenticated state–after any PASSWORD failure, a successful `LOGIN` MUST be sent to be permitted to send another `PASSWORD` command. If the password failure max for the server is reached, `405 TERMINATED` is sent and the connection is closed. After the successful response, the PLAIN login process advances to the DEVICE phase.
+
+*PREREG* +
+_Provisions a new workspace_ +
+Parameters: Workspace ID (optional), User ID (optional), Domain (optional) +
+Returns: 200 OK, Workspace-ID, Reg-Code, Domain, User-ID +
+Possible Errors: 408 RESOURCE EXISTS +
+
+Requests the creation of a new workspace. Unlike REGISTER, this command is intended to be issued by the administrator from an authenticated state. This command may be used with any of the registration modes, although it is of limited utility for servers configured for public or network registration. The administrator may specify the desired workspace ID and/or the desired user ID. If the workspace is to have a domain different from the default, it MUST be specified here -- neither the administrator nor the user have any control to set the domain for a workspace outside of this command. It returns a workspace ID, a registration code, and if a user ID was supplied, the user ID originally requested. The administrator gives the workspace ID (or user ID) and preregistration code to the user. The code is not a password; it is only a means of authenticating a user for registration without the administrator ever knowing the user’s password.
+
+*QUIT* +
+_Request closing the connection_ +
+Parameters: none +
+Returns: none
+
+Requests the server close the connection. The server does not return anything; instead the server closes the connection.
+
+*REGCODE* +
+_Logs in with preregistration information_ +
+Parameters: Workspace-ID or User-ID, Reg-Code, Password-Hash, Device-ID, Device-Key, optional: Domain
+public key +
+Returns: 201 REGISTERED +
+Possible Errors: 401 UNAUTHORIZED +
+
+This command registers an account with a preprovisioned registration code. The user provides either the Workspace-ID or the User-ID set at pregistration along with the one-time-use registration code to the client application, which submits said information along with device identity info. If the domain for the workspace is different from that of the organization's server -- a common occurrence for service providers -- it is also required. Assuming that all the information matches, the server provisions the workspace the same way as with `REGISTER`. The registration code itself is a passphrase up to 128 UTF-8 code points in length. `401 UNAUTHORIZED` is returned if the registration combination is invalid. This command handles preregistration failures similar to LOGIN failures: if the login failure limit is reached, `405 TERMINATED` is returned and the connection is closed.
+
+*REGISTER* +
+_Creates a new workspace_ +
+Parameters: Workspace-ID, Password-Hash, Device-ID, Device-Key, optional: User-ID +
+Returns: +
+Public mode: 201 REGISTERED +
+Network mode: 201 REGISTERED +
+Moderated mode: 101 PENDING +
+Private mode: 304 REGISTRATION CLOSED +
+
+Requests the creation of a new workspace. This command MAY be sent from unauthenticated or authenticated states. For public and network registration modes, success is returned unless a problem has been encountered. If network registration is used and the client is outside the permitted subnet(s), `304 REGISTRATION CLOSED` is returned. This response is also given if a registration request is made to a server with private registration. A successful request for moderated registration returns `101 PENDING`, indicating that the user must wait for the administrator to approve the request before login is possible, but the device is tentatively given a device ID. For servers utilizing private registration, this command is not used. Instead, an administrator uses the PREREG command while logged into the server locally to register accounts on users’ behalf.
+
+`Workspace-ID` contains a client-generated UUID. In the event that the `Workspace-ID` or `User-ID` already exists on the server, `408 RESOURCE EXISTS` is returned with an attached `Field` value containing the name of the parameter with the existing resource ('User-ID' or 'Workspace-ID'). In such an event, it is permissible – and even expected – that the client will generate a new workspace ID and resubmit. `Device-ID` is simply another UUID generated by the client and is unique to the workspace. The `Device-Key` is the device's encryption key in CryptoString format. Each device is expected to have a unique encryption key.
+
+*SERVERID* +
+_Enables a server to identify itself prior to delivering items_ +
+Parameters: Domain +
+Returns: 100 CONTINUE, Challenge, 200 OK +
+Possible Errors: 308 DELIVERY DELAY NOT REACHED
+
+Servers who intend to deliver items must initiate a session with this command. The receiving server obtains from the sending server's DNS management record the organization's encryption key. If the receiving server is unable to obtain this record, it returns `306 KEY REQUEST FAILURE`. If the request succeeds but the server’s FQDN is not part of the record, `403 FORBIDDEN` is returned. Otherwise, the receiving server generates a 32-byte random challenge, Base85 encodes it, encrypts it with the sending server's key, Base85 encodes it again, and returns `200 OK` with the challenge attached. The sending server must send a second SERVERID command with the Base85-encoded decrypted challenge. Once submitted, `200 OK` is returned, the sending server is authenticated, and it may begin submitting messages for delivery. Should the sending server exceed the delivery failure rate configured on the receiver, the receiving server will send `308 DELIVERY DELAY NOT REACHED` in response to this command until the cooldown period has passed.
+
+*SETPASSWORD* +
+_Updates the password for the workspace_ +
+Parameters: Password-Hash NewPassword-Hash +
+Returns: 200 OK, 402 AUTHENTICATION FAILURE
+
+A client will send this command when the user wishes to update their password. It requires the hash of both the old and new passwords in order to process the request. If the old hash does not match the current password’s hash, a `402 AUTHENTICATION FAILURE` response is sent and no password change is made.
+
+*UNREGISTER* +
+_Deactivates a workspace_ +
+Parameters: Password-Hash +
+Returns: +
+Public mode: 202 UNREGISTERED +
+Moderated mode: 101 PENDING +
+Network mode: 202 UNREGISTERED +
+Private mode: 101 PENDING
+
+Permanently deactivates a workspace. When a client sends this command, the server validates the password hash in the same way as the PASSWORD command. Assuming there is a match, the server continues. For servers configured for network or public registration, the server deletes all files in the workspace and removes all information about the workspace EXCEPT for the workspace ID, domain (if applicable), and associated user ID. These are retained so that those pieces of information cannot be reused. Once complete, `202 UNREGISTERED` is returned. For servers configured for moderated or private registration, an unregistration request is submitted to the administrator for approval. Once approved by the administrator, 
 
 *USERCARD* +
 _Retrieve user keycard_ +
-Parameters: owner, start index, (end_index) +
-Returns: 102 ITEM item_index item_count
+Parameters: Owner, Start-Index, optional: End-Index +
+Returns: 104 TRANSFER, Item-Count, Total-Size +
 
-Requests part or all of a user’s keycard, given a workspace address, the starting index, and possibly an optional end index. The owner parameter can either be an Anselus address or a workspace ID. The client is not required to be authenticated for this command. If the ending index is omitted, all entries starting with the specified entry through the user’s current keycard are returned. If the starting index is set to 0 or a negative number, only the user’s most recent entry is returned. Each keycard entry is transmitted as a `102 ITEM` line, then a `----- BEGIN USER ENTRY -----` line, the actual entry data, and finally followed by the line `----- END USER ENTRY -----`. Both are markers of the entry data without being part of the entries themselves. The `ITEM` line returned consists of the return value, the string `ITEM`, the 1-based index of the keycard, the total count of items to be returned, and the fingerprint for the item.
+Requests part or all of a user’s keycard, given an address, the starting index, and possibly an optional end index. The `Owner` parameter can either be an Anselus address, a workspace address, or a workspace ID. The client is not required to be authenticated for this command. If the ending index is omitted, all entries starting with the specified entry through the user’s current keycard are returned.
+
+Once the command is submitted, the server responds with the number of entries and the total byte size of the transfer. The server is expected to respond with an empty TRANSFER command to confirm the transfer. Once confirmed, the server transmits the all of the requested entries. Each keycard entry has a `----- BEGIN USER ENTRY -----` header line and a `----- END USER ENTRY -----` footer line. Both are markers of the entry data without being part of the entries themselves. `400 BAD REQUEST` is returned if `end_index` is less than `start_index`. `404 NOT FOUND` is returned if the server cannot find the specified address or if there are no entries for the specified address.
+
