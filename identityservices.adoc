@@ -235,7 +235,8 @@ When a new device is added to an Anselus workspace, an alert is sent to the user
             "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
             "Device-Name" : "my laptop",
             "Device-IP" : "172.20.5.10",
-			"Device-Description" : "Acme Supertop 17\""
+			"Device-Description" : "Acme Supertop 17\"",
+            "Device-Key" : "CURVE25519:7CRSc1J&VFreXZUX{dI-;W+%tS0ivN_g{j?^w4fm"
         }
     ]
 }
@@ -257,15 +258,32 @@ All fields are required except for `Device-Name` and `Device-Description`. The `
             "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
             "Status" : "approved",
             "KeyPackage" : "<encoded data omitted from sample>",
-            "Key" : "AES-PBE256:L!HLrJW5|H4!0($r=j)SlFd{&NHEoV$ks?`gcLUw"
+            "Key" : "CURVE25519:2^p(aU^P%mQN;QtA+iO>kso}ux%s1)2zKq(n>d~)r}bfVsNd=OxTNWD2o)Y6"
         }
     ]
 }
 ----
 
-This payload is an example of one of the few messages that are sent directly to the organization using just the domain.
+This payload is an example of one of the few messages that are sent directly to the organization using just the domain. The message is encrypted with the organization's encryption key. The `KeyPackage` field contains the user's complete set of crypto keys and is heavily protected: the JSON data is first encrypted with password-based encryption using 256-bit AES-GCM using a randomly-generated 12-character password and then encrypted again using the encryption key supplied by the new device before being Base85-encoded for transport. Once received by the server, the server responds with `200 OK` with the necessary data attached. The success response is listed below.
 
-TODO: Finish
+[source,json]
+----
+{
+    "Code" : 200,
+    "Status" : "OK",
+    "Attachments" : [
+        {
+            "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
+            "Status" : "approved",
+            "KeyPackage" : "<encoded data omitted from sample>",
+            "Key" : "AES-PBE256:L!HLrJW5|H4!0($r=j)SlFd{&NHEoV$ks?`gcLUw",
+            "Challenge" : "bbW1bZ%;~gV@o$ScT941V>fduCVoz6dnrC?d00<ZP;pdWUPwnx"
+        }
+    ]
+}
+----
+
+Once received by the new device, the user is prompted to enter the password from the other device. The device uses the password to decrypt the `KeyPackage` field, installs the set of keys, returns the decrypted challenge to the server, and login is complete.
 
 == Registration
 
