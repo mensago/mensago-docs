@@ -215,7 +215,7 @@ Challenges in this process are multilayered. First, a 32-byte string of random b
 
 User passwords are expected to be hashed using the Argon2id password hashing algorithm before being submitted to the server, and the server will hash the user's hashed password, providing additional protection from bruteforce attacks if the server should ever be compromised.
 
-Device Checking is a lightweight form of multifactor authentication that also assists with key synchronization among multiple devices on a workspace. When a new device attempts to log into a workspace when Device Checking is enabled, the server queues a Device Alert system message (see below) in the workspace. Devices who find the message show an alert to the user which asks if the user is logging in on another device and requests approval or denial of the device. If the device is approved, the user's client software packages the user's keys into a JSON structure, encrypts it with an ephemeral symmetric key tied to a PIN, Base85-encodes it, attaches the package to the response, sends the response to the server, and displays the PIN to the user. The server responds to the new device with the encrypted key package, and the client on the new device requests the PIN from the user so that it can decrypt the key package. The server also adds the new device's key and ID to the list of approved devices for the workspace. This extra set of steps ensures that a user remains secure while minimizing the amount of annoyance that traditional multifactor authentication imposes.
+Device Checking is a lightweight form of multifactor authentication that also assists with key synchronization among multiple devices on a workspace. When a new device attempts to log into a workspace when Device Checking is enabled, the server queues a Device Alert system message (see below) in the workspace. Devices who find the message show an alert to the user which asks if the user is logging in on another device and requests approval or denial of the device. If the device is approved, the user's client software packages the user's keys into a JSON structure, encrypts it with an ephemeral symmetric key tied to a randomly-generated password, Base85-encodes it, attaches the package to the response, sends the response to the server, and displays the password to the user. The server responds to the new device with the encrypted key package, and the client on the new device requests the PIN from the user so that it can decrypt the key package. The server also adds the new device's key and ID to the list of approved devices for the workspace. This extra set of steps ensures that a user remains secure while minimizing the amount of annoyance that traditional multifactor authentication imposes.
 
 === Device Alerts
 
@@ -232,6 +232,7 @@ When a new device is added to an Anselus workspace, an alert is sent to the user
     "Date" : "20190905 155323",
     "Attachments" : [
         {
+            "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
             "Device-Name" : "my laptop",
             "Device-IP" : "172.20.5.10",
 			"Device-Description" : "Acme Supertop 17\""
@@ -240,7 +241,29 @@ When a new device is added to an Anselus workspace, an alert is sent to the user
 }
 ----
 
-All fields are required except for `Device-Name` and `Device-Description`. The `From` field is the domain for the organization, which may or may not be the same as that of the recipient. The payload is encrypted using the recipient's contact request encryption key. Like all system messages, it is signed by the organization's primary signing key.
+All fields are required except for `Device-Name` and `Device-Description`. The `From` field is the domain for the organization, which may or may not be the same as that of the recipient. The payload is encrypted using the recipient's contact request encryption key. Like all system messages, it is signed by the organization's primary signing key. Below is a sample approval message payload.
+
+[source,json]
+----
+{
+    "Type" : "sysmessage",
+    "SubType" : "DevAlert.2",
+    "Version" : "1.0",
+    "From" : "662679bd-3611-4d5e-a570-52812bdcc6f3/example.com",
+    "To" : [ "example.com" ],
+    "Date" : "20190905 155437",
+    "Attachments" : [
+        {
+            "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
+            "Status" : "approved",
+            "KeyPackage" : "<encoded data omitted from sample>",
+            "Key" : "AES-PBE256:L!HLrJW5|H4!0($r=j)SlFd{&NHEoV$ks?`gcLUw"
+        }
+    ]
+}
+----
+
+This payload is an example of one of the few messages that are sent directly to the organization using just the domain.
 
 TODO: Finish
 
