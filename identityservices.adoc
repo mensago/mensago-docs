@@ -301,12 +301,19 @@ Once registration is complete, the workspace has been created, but one more step
 
 == Paranoid Mode
 
-Paranoid Mode is feature not technically a requireed for Anselus clients to implement, but is encouraged. Simply put, it is a set of security settings for those users who are particularly concerned about their data security. It is designed to quickly configure a user's client for maximum security and privacy. It consists of the following settings:
+Paranoid Mode is feature not technically a required for Anselus clients to implement, but is encouraged. Simply put, it is a set of security settings for those users who are particularly concerned about their data security. It is designed to quickly configure a user's client for maximum security and privacy and should be configured per-profile. It is also recommended that implementors provide some visible way to display to the user that the client is operating in Paranoid Mode. It consists of the following settings:
 
-- Restricting access to only one device, reducing server-side data storage to messages waiting for delivery.
+- Automatically reject all New Device alerts, restricting access to only one device and reducing server-side data storage to just messages waiting for delivery.
 - Preventing the use of a User ID or Name in a keycard
+- Set keycard rotation interval to 1 day
+- Set device key rotation interval to 1 day
+- If the client normally makes local encryption optional, require local encryption for all data
+- Disable local password caching
+- Require minimum 12 character password with complexity
+- Set checking for incoming messages and sending of outgoing messages to Manual
+- A warning is shown when sending a contact request to an address without a fingerprint
 
-TODO: Finish Paranoid Mode
+Although this sounds extreme, in practice, it does not impose significant extra effort. Upon startup, the client asks for password upon startup and it has to be reasonably strong. The user clicks a button or uses a keyboard shortcut when they want to check for new messages and send outgoing messages. The user's contacts are given a workspace address instead of an alphanumeric Anselus address, and only one computer is used for said address. A tradeoff of using Paranoid Mode is that all information for that profile is stored only on that computer; the user would be wise to set up some sort of backup solution to prevent data loss.
 
 == Protocol Commands
 
