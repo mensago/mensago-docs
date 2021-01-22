@@ -285,9 +285,28 @@ This payload is an example of one of the few messages that are sent directly to 
 
 Once received by the new device, the user is prompted to enter the password from the other device. The device uses the password to decrypt the `KeyPackage` field, installs the set of keys, returns the decrypted challenge to the server, and login is complete.
 
-== Registration
+== Registration and Workspace Setup
 
-TODO
+Registration is the process of creating a workspace account on a server. There are four types of registration modes which adjust the level of control the administrator has over the process. The four modes are private, moderated, network, and public.
+
+Private registration, which is the default, grants the administrator the greatest control. In private mode, all registration must be performed by the administrator. Preregistration gives the administrator the option of choosing the specific workspace ID for the account, the user ID, and/or the domain. The domain, in fact, can only be set this way for an account if it is different from that of the server. When the administrator preregisters an account, a registration code is created. The administrator gives the workspace ID, the user ID -- if there is one --, and the registration code. The user then uses the preregistration process in the client software to set a password and finish the registration process. In this mode, the user can request closure of the workspace, but it must be approved by the administrator for it to take effect.
+
+Moderated registration gives users the ability to create an account, but with administrator approval. The user may specify the workspace ID and/or the user ID, but nothing else. Once the registration request is made by the user, the administrator approves it, and only then is the workspace created. Like private mode, workspace closure requires administrator approval.
+
+Public registration is generally not recommended except in special cases. This mode allows anyone to create or delete an account just by asking for it.
+
+Network registration is similar to public registration, but it confines the ability to register and unregister an account to a specific subnet. This option is great for self-hosted servers on home networks and small businesses with just a few employees, as anyone on the local network can easily set up a workspace and use it without any IT intervention.
+
+Once registration is complete, the workspace has been created, but one more step is required to make the new workspace usable: uploading the user's root keycard entry and folder sync setup. Clients should follow a successful REGISTER or PREREG command with ADDENTRY and MKDIR commands to create on the server to create folders needed for data synchronization.
+
+== Paranoid Mode
+
+Paranoid Mode is feature not technically a requireed for Anselus clients to implement, but is encouraged. Simply put, it is a set of security settings for those users who are particularly concerned about their data security. It is designed to quickly configure a user's client for maximum security and privacy. It consists of the following settings:
+
+- Restricting access to only one device, reducing server-side data storage to messages waiting for delivery.
+- Preventing the use of a User ID or Name in a keycard
+
+TODO: Finish Paranoid Mode
 
 == Protocol Commands
 
