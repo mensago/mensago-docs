@@ -339,7 +339,7 @@ _Gracefully cancels out of a multistep command_
 | Returns | * 200 OK
 |===
 
-This command is used to reset the session to a sane state if the client wishes to cancel a multistep command, such as ADDENTRY.
+This command is used to reset the session to a sane state if the client wishes to cancel a multistep command, such as ADDENTRY. It can also reset the session state to the basic, unauthenticated state (similar to LOGOUT) if used during the multistep PLAIN login process.
 
 === DEVICE
 
