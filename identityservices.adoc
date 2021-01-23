@@ -577,15 +577,18 @@ _Deactivates a workspace_
 
 [cols="1,3a"]
 |===
-| Parameters | * Password-Hash
+| Parameters
+| * Password-Hash
+| * Workspace-ID _(admin only)_
 | Returns
 | * Public mode: 202 UNREGISTERED
 * Moderated mode: 101 PENDING
 * Network mode: 202 UNREGISTERED
 * Private mode: 101 PENDING
+| Possible Errors | * 401 UNAUTHORIZED
 |===
 
-Permanently deactivates a workspace. When a client sends this command, the server validates the password hash in the same way as the PASSWORD command. Assuming there is a match, the server continues. For servers configured for network or public registration, the server deletes all files in the workspace and removes all information about the workspace EXCEPT for the workspace ID, domain (if applicable), and associated user ID. These are retained so that those pieces of information cannot be reused. Once complete, `202 UNREGISTERED` is returned. For servers configured for moderated or private registration, an unregistration request is submitted to the administrator for approval. Once approved by the administrator, 
+Permanently deactivates a workspace. When a client sends this command, the server validates the password hash in the same way as the PASSWORD command. Assuming there is a match, the server continues. For servers configured for network or public registration, the server deletes all files in the workspace and removes all information about the workspace EXCEPT for the workspace ID, domain (if applicable), and associated user ID. These are retained so that those pieces of information cannot be reused. Once complete, `202 UNREGISTERED` is returned. For servers configured for moderated or private registration, an unregistration request is submitted to the administrator for approval. Once approved by the administrator, the workspace is deleted.
 
 === USERCARD
 
