@@ -330,6 +330,17 @@ Begins the process for submitting a keycard entry to the organization’s databa
 
 This extensive process is designed to prevent either side from doing anything improper, such as server-side man-in-the-middle attacks, uploading invalid data, or other tricks. When added, it is safe to assume that the data is mutually validated and that the data itself is trustworthy even if neither party is trusted by the other. Each line in the entry MUST be terminated by a carriage return-line feed (`\r\n`) sequence to ensure that the signatures remain valid. In the case of a user entry, the Domain field MUST NOT be changed. Any change to the Domain field will result in a `401 UNAUTHORIZED` response.
 
+=== CANCEL
+
+_Gracefully cancels out of a multistep command_
+[cols="1,3a"]
+|===
+| Parameters | None
+| Returns | * 200 OK
+|===
+
+This command is used to reset the session to a sane state if the client wishes to cancel a multistep command, such as ADDENTRY.
+
 === DEVICE
 
 _Finishes PLAIN authentication_
