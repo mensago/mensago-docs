@@ -531,8 +531,11 @@ _Creates a new workspace_
 
 | Returns
 | * Public mode: 201 REGISTERED
+** Domain
 * Network mode: 201 REGISTERED
+** Domain
 * Moderated mode: 101 PENDING
+** Domain
 * Private mode: 304 REGISTRATION CLOSED
 |===
 
