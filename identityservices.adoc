@@ -341,6 +341,21 @@ _Gracefully cancels out of a multistep command_
 
 This command is used to reset the session to a sane state if the client wishes to cancel a multistep command, such as ADDENTRY. It can also reset the session state to the basic, unauthenticated state (similar to LOGOUT) if used during the multistep PLAIN login process. Unlike LOGOUT, it does not return the session to an unauthenticated state if issued while fully authenticated; it merely resets the session to a ready state for the next command.
 
+=== DEVKEY
+
+_Updates an existing device's encryption key_
+[cols="1,3a"]
+|===
+| Parameters | * New-Key
+| Returns | * 100 CONTINUE
+** Challenge
+* 200 OK
+| Possible Errors | * 306 KEY FAILURE
+|===
+
+This command is for rotating the encryption key used to uniquely identify a device to the server for a workspace. The key is expected to be submitted in CryptoKey format. Once received, the server undergoes the same challenge-response procedure for authenticating the device as the DEVICE command. Once the device has submitted the decrypted challenge to the server and it matches, the server replaces the old key with the new and returns 200 OK.
+
+
 === DEVICE
 
 _Finishes PLAIN authentication_
