@@ -286,3 +286,4 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 411 Bad Keycard Data
 ** 412 Noncompliant Keycard Data
 ** 413 Invalid Signature
+** 414 Limit Reached
