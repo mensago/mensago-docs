@@ -386,6 +386,26 @@ If the device is approved or is already in the server’s device list, `100 CONT
 
 The `Device-Name` and `Device-Description` two optional fields are used for first-time logins of devices. If a user's client software has not logged into a workspace before, it can also submit information in these two fields to be included in the device alert and displayed to the user. `Device-Name` should either contain a phrase supplied by the user prior to login or the hostname of the device. `Device-Description` should be the make and model of the device.
 
+=== GETWID
+
+_Resolves an Anselus address to a workspace ID_
+
+[cols="1,3a"]
+|===
+| Parameters
+| * User-ID
+* Domain _(optional)_
+
+| Returns 
+| * 200 OK
+* 404 NOT FOUND
+* 414 LIMIT REACHED
+* 405 TERMINATED
+|===
+
+The GETWID command looks up the specified user ID and returns the associated workspace ID. If a domain is not specified, the organization's domain is used. `404 NOT FOUND` is returned if the user ID does not exist. `414 LIMIT REACHED` is returned if the client has exceeded the configurable server lookup limit, which defaults to 100 in 60 seconds. This limit exists to protect the privacy of the users. Similar to the LOGIN command, if the client submits too many requests which result in a `404 NOT FOUND`, the server will terminate the connection and impose a short cooldown period for the offending IP address. The default settings for this 50 failed lookups in the span of 5 minutes, which results in a cooldown of 30 minutes. This command does not require an authenticated session.
+
+
 === ISCURRENT
 
 _Verifies that an entry is the current one_
