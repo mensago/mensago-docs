@@ -413,15 +413,15 @@ _Verifies that an entry is the current one_
 [cols="1,3a"]
 |===
 | Parameters
-| * Domain or Workspace-ID
-* Index
+| * Index
+* Workspace-ID _(optional)_
 
 | Returns 
 | * 200 OK
 ** Is-Current
 |===
 
-This command verifies that the fingerprint supplied is the current one for the domain or workspace specified. On success, the response is either `YES` or `NO`. The client is not required to be authenticated for this command.
+This command verifies that the supplied index is the current one for the workspace specified or the organization. If the Workspace-ID parameter is omitted, the lookup is performed for the organization. On success, the response is either `YES` or `NO`. The client is not required to be authenticated for this command.
 
 === LOGIN
 
