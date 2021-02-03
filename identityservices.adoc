@@ -609,6 +609,22 @@ _Updates the password for the workspace_
 
 A client will send this command when the user wishes to update their password. It requires the hash of both the old and new passwords in order to process the request. If the old hash does not match the current password’s hash, a `402 AUTHENTICATION FAILURE` response is sent and no password change is made.
 
+=== SETWORKSTATUS
+
+_Sets the status of a workspace_
+
+[cols="1,3a"]
+|===
+| Parameters
+| * Workspace-ID
+* Status
+| Returns | * 200 OK
+| Possible Errors | * 403 FORBIDDEN
+* 404 NOT FOUND
+|===
+
+This command requires administrator privileges. It is used to change the activity status of a workspace. A workspace pending approval, such as when the server is running in moderated registration mode, can be approved with this command. It can also be used to disable a workspace without deleting it. `403 FORBIDDEN` is returned if this command is issued from a workspace without administrator permissions.
+
 === UNREGISTER
 
 _Deactivates a workspace_
