@@ -349,11 +349,12 @@ _Updates an existing device's encryption key_
 | Parameters | * New-Key
 | Returns | * 100 CONTINUE
 ** Challenge
+** New-Challenge
 * 200 OK
 | Possible Errors | * 306 KEY FAILURE
 |===
 
-This command is for rotating the encryption key used to uniquely identify a device to the server for a workspace. The key is expected to be submitted in CryptoKey format. Once received, the server undergoes the same challenge-response procedure for authenticating the device as the DEVICE command. Once the device has submitted the decrypted challenge to the server and it matches, the server replaces the old key with the new and returns 200 OK.
+This command is for rotating the encryption key used to uniquely identify a device to the server for a workspace. The key is expected to be submitted in CryptoKey format. Once received, the server undergoes the same challenge-response procedure for authenticating the device as the DEVICE command, but for both the old key on file and the new key. The device is expected to return the decrypted challenges in the fields Response and New-Reponse. If both decrypted challenges match, the server replaces the old key with the new and returns 200 OK.
 
 
 === DEVICE
