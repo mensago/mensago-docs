@@ -346,7 +346,8 @@ This command is used to reset the session to a sane state if the client wishes t
 _Updates an existing device's encryption key_
 [cols="1,3a"]
 |===
-| Parameters | * New-Key
+| Parameters | * Device-ID
+* New-Key
 | Returns | * 100 CONTINUE
 ** Challenge
 ** New-Challenge
