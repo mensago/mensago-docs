@@ -625,7 +625,7 @@ _Sets the status of a workspace_
 * 404 NOT FOUND
 |===
 
-This command requires administrator privileges. It is used to change the activity status of a workspace. A workspace pending approval, such as when the server is running in moderated registration mode, can be approved with this command. It can also be used to disable a workspace without deleting it. `403 FORBIDDEN` is returned if this command is issued from a workspace without administrator permissions.
+This command requires administrator privileges. It is used to change the activity status of a workspace. A workspace pending approval, such as when the server is running in moderated registration mode, can be approved with this command. It can also be used to disable a workspace without deleting it. `403 FORBIDDEN` is returned if this command is issued from a workspace without administrator permissions. The only valid status codes are 'active', 'approved', and 'disabled'.
 
 === UNREGISTER
 
