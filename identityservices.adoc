@@ -612,7 +612,7 @@ _Updates the password for the workspace_
 
 A client will send this command when the user wishes to update their password. It requires the hash of both the old and new passwords in order to process the request. If the old hash does not match the current password’s hash, a `402 AUTHENTICATION FAILURE` response is sent and no password change is made.
 
-=== SETWORKSTATUS
+=== SETSTATUS
 
 _Sets the status of a workspace_
 
