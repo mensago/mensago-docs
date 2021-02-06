@@ -347,6 +347,7 @@ _Updates an existing device's encryption key_
 [cols="1,3a"]
 |===
 | Parameters | * Device-ID
+* Old-Key
 * New-Key
 | Returns | * 100 CONTINUE
 ** Challenge
