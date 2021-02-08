@@ -13,10 +13,10 @@ Although there are already other formats and utilities which can encrypt files, 
 Software using this design document may be independent of the Anselus platform, but it is expected that such software will utilize conventions from the platform.
 
 * Base85 encoding described in RFC1924[https://tools.ietf.org/html/rfc1924] is used to ensure user data is JSON-compliant.
-* Cryptographic hashes and keys use the Encoded String format.
+* Cryptographic hashes and keys use the Cryptostring format.
 * Hashes of cryptographic keys are generated on the Encoded String of a key, not just the binary data of the key itself.
 
-Encoded Strings are a string format consisting of prefix, a colon for a separator, and base85-encoded binary data. The prefix consists of 1 to 15 capital ASCII letters or dashes. No other characters are permitted. The prefix is used to indicate the algorithm used for hash or key. As of this writing, the standard prefixes are `CURVE25519`, `ED25519`, `XSALSA20`, `BLAKE2B-256`, and `SHA2-256`.
+Cryptostrings are a string format consisting of prefix, a colon for a separator, and Base85-encoded binary data. The prefix consists of 1 to 15 capital ASCII letters or dashes. No other characters are permitted. The prefix is used to indicate the algorithm used for hash or key. As of this writing, the standard prefixes are `CURVE25519`, `ED25519`, `XSALSA20`, `BLAKE2B-256`, and `SHA2-256`.
 
 == JSON Key Storage Format
 
