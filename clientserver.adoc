@@ -133,17 +133,18 @@ S: (file data transferred)
 
 The client downloads data from a file on the server. The client first makes the request, which includes name of the file in the current folder. Assuming that all goes well, the server returns `100 CONTINUE` along with the size of the file in bytes. The client acknowledges readiness for the transfer by sending `100 CONTINUE`. The server then transmits the data. If an offset is supplied by the client, the server is expected to begin transmission starting at the specified offset in order to resume a previously-interrupted transmission.
 
-*EXISTS* +
-_Checks for the existence of a file or folder on the server_ +
-Parameters: path +
-Returns: 200 OK +
-Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 404 NOT FOUND +
-Example:
+=== EXISTS
 
-....
-C: EXISTS 1577232538.4096.a263fd0c-4de6-4644-9423-796bbe44eb50  
-S: 200 OK  
-....
+_Checks for the existence of a file or folder on the server_
+
+[cols="1,3a"]
+|===
+| Parameters | * Path
+| Returns | * 200 OK
+
+| Possible Errors 
+| * 404 NOT FOUND
+|===
 
 Returns `200 OK` if the file or folder exists.
 
@@ -165,35 +166,48 @@ Updates begin with `104 UPDATE` followed by the update type and one or more toke
 
 `Create` and `Delete` updates list the full path of the new item and is received even if the item is not part of the selected folder. `Move` updates provide the full path of the item prior to the move and then the new folder to which it was moved.
 
-*LIST* +
-_Gets list of items in selected folder_ +
-Parameters: time (optional) +
-Returns: 200 OK line count, entries +
-Possible Errors: 401 UNAUTHORIZED +
-Example:
+=== LIST
 
-....
-C: SELECT 8ba660ab-ca5f-44fb-931a-e20da8c6442c
-S: 200 OK
-C: LIST 1594329418
-S: 102 ITEM 2
-1594333333.26631.52df2ce2-4aae-49e0-a4dc-9e74ec225a6d
-1594337219.39986984.f194415a-9fc0-44a0-867e-19ef6e6245cc
-....
+_Gets list of items in selected folder_
 
-Obtains a list of the entries in the current folder. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the times at or after the timestamp are returned. If omitted, all items in the current folder are returned. The server’s response consists of `102 ITEM` followed by the number of items to be returned. Each item is then returned, one item per line. If there are no items in the current directory to be returned, `102 ITEM 0` is the only response from the server.
+[cols="1,3a"]
+|===
+| Parameters | * _optional:_ Time
+| Returns | * 200 OK
+** Files
+| Possible Errors 
+| * 404 NOT FOUND
+|===
 
-*MKDIR* +
-_Creates a new folder_ +
-Parameters: folder path +
-Returns: 200 OK +
-Possible Errors: 401 UNAUTHORIZED, 403 FORBIDDEN, 408 RESOURCE EXISTS +
-Example:
+Obtains a list of the entries in the current folder. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the files created at or after the timestamp are returned. If omitted or set to zero, all items in the current folder are returned. The server's response, if 200 OK, will also contain the Files field which is a list containing the names of the files.
 
-....
-C: MKDIR / e36556f2-07d0-4e98-b3db-043b1ff94292 58cca317-eae3-49b0-8ce3-1dd83eda9a9d
-S: 200 OK
-....
+=== LISTDIRS
+
+_Gets list of subdirectories of the selected folder_
+
+[cols="1,3a"]
+|===
+| Parameters | _None_
+| Returns | * 200 OK
+** Directories
+| Possible Errors 
+| * 404 NOT FOUND
+|===
+
+Returns a list of the subdirectories of the currently-selected folder.
+
+=== MKDIR
+
+_Creates a new folder_
+
+[cols="1,3a"]
+|===
+| Parameters | * Path
+| Returns | * 200 OK
+
+| Possible Errors 
+| * 408 RESOURCE EXISTS
+|===
 
 Create a workspace directory. The directory path is a standard Anselus server-side path which indicates the path to be created relative to the root of the workspace. The command works similarly to the UNIX command `mkdir -p`, which creates folders and parent folders as needed to ensure that the entire path exists. If the leaf already exists, `408 RESOURCE EXISTS` is returned.
 
@@ -216,6 +230,23 @@ Parameters: direction, filename, byte offset, hash value +
 Returns: as per UPLOAD
 
 This command continues a previous upload. If the previous remnant was somehow removed, 404 NOT FOUND is returned. Otherwise, this command operates as per UPLOAD.
+
+=== RMDIR
+
+_Deletes a folder_
+
+[cols="1,3a"]
+|===
+| Parameters | * Path
+* _optional:_ Recursive
+| Returns | * 200 OK
+
+| Possible Errors 
+| * 404 NOT FOUND
+* 408 RESOURCE EXISTS
+|===
+
+Deletes a workspace directory. The directory path is a standard Anselus server-side path which indicates the path to be created relative to the root of the workspace. If the Recursive flag is set to true, the command recursively deletes the directory and all of its contents. If the Recursive flag is set to false, a non-empty directory will cause a 408 RESOURCE EXISTS error.
 
 *SELECT* +
 _Sets the current path for the session_ +
