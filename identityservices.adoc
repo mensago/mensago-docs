@@ -401,6 +401,7 @@ _Resolves an Anselus address to a workspace ID_
 
 | Returns 
 | * 200 OK
+** Workspace-ID
 * 404 NOT FOUND
 * 414 LIMIT REACHED
 * 405 TERMINATED
