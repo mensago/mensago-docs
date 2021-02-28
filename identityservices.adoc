@@ -281,7 +281,7 @@ Public registration is generally not recommended except in special cases. This m
 
 Network registration is similar to public registration, but it confines the ability to register and unregister an account to a specific subnet. This option is great for self-hosted servers on home networks and small businesses with just a few employees, as anyone on the local network can easily set up a workspace and use it without any IT intervention.
 
-Once registration is complete, the workspace has been created, but one more step is required to make the new workspace usable: uploading the user's root keycard entry and folder sync setup. Clients should follow a successful REGISTER or PREREG command with ADDENTRY and MKDIR commands to create on the server to create folders needed for data synchronization.
+Once registration is complete, the workspace has been created, but one more step is required to make the new workspace usable: uploading the user's root keycard entry and directory sync setup. Clients should follow a successful REGISTER or PREREG command with ADDENTRY and MKDIR commands to create on the server to create directorys needed for data synchronization.
 
 == Paranoid Mode
 
