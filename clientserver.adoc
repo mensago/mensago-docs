@@ -200,7 +200,7 @@ _Gets list of items in selected directory_
 | * 404 NOT FOUND
 |===
 
-Obtains a list of the entries in the current directory. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the files created at or after the timestamp are returned. If omitted or set to zero, all items in the current directory are returned. The server's response, if 200 OK, will also contain the Files field which is a list containing the names of the files.
+Obtains a list of the entries in the current directory. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the files created at or after the timestamp are returned. If omitted or set to zero, all items in the current directory are returned. The server's response, if 200 OK, will also contain the Files field which is a string containing the comma-separated list of file names.
 
 === LISTDIRS
 
@@ -215,7 +215,7 @@ _Gets list of subdirectories of the selected directory_
 | * 404 NOT FOUND
 |===
 
-Returns a list of the subdirectories of the currently-selected directory.
+Returns a list of the subdirectories of the currently-selected directory. The Directories field will be a string containing a comma-separated list of the directories.
 
 === MKDIR
 
@@ -238,7 +238,7 @@ _Moves an item from the selected path to another on the server_
 
 [cols="1,3a"]
 |===
-| Parameters | * FileName
+| Parameters | * SourceFile
 * DestDir
 | Returns | * 200 OK
 | Possible Errors 
