@@ -241,14 +241,15 @@ All fields are required except for `Device-Name` and `Device-Description`. The `
         {
             "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
             "Status" : "approved",
-            "KeyPackage" : "<encoded data omitted from sample>",
+            "KeyPackageKey" : "/ settings a7c20afd350f846ae97e9c82b82ee10c0.1",
+            "KeyPackage" : "/ settings fc9c29e03c9fe24e99f285e93df5206dc.1",
             "Key" : "CURVE25519:2^p(aU^P%mQN;QtA+iO>kso}ux%s1)2zKq(n>d~)r}bfVsNd=OxTNWD2o)Y6"
         }
     ]
 }
 ----
 
-This payload is an example of one of the few messages that are sent directly to the organization using just the domain. The message is encrypted with the organization's encryption key. The `KeyPackage` field contains the user's complete set of crypto keys and is heavily protected: the JSON data is first encrypted with password-based encryption using 256-bit AES-GCM using a randomly-generated 12-character password and then encrypted again using the encryption key supplied by the new device before being Base85-encoded for transport. Once received by the server, the server responds with `200 OK` with the necessary data attached. The success response is listed below.
+This payload is an example of one of the few messages that are sent directly to the organization using just the domain. The message is encrypted with the organization's encryption key. The `KeyPackage` field contains the path to the encrypted file containing the user's complete set of crypto keys. The key which is used to encrypt this key package is encrypted with the device's encryption key and stored in the file listed in the `KeyPackageKey` field. The package key, in addition to being protected by the device's encryption key, is also encrypted using 256-bit AES-GCM with a randomly-generated 12-character password. Once received by the server, the server responds with `200 OK` with the necessary data attached. The success response is listed below.
 
 [source,json]
 ----
@@ -259,15 +260,15 @@ This payload is an example of one of the few messages that are sent directly to 
         {
             "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
             "Status" : "approved",
-            "KeyPackage" : "<encoded data omitted from sample>",
-            "Key" : "AES-PBE256:L!HLrJW5|H4!0($r=j)SlFd{&NHEoV$ks?`gcLUw",
+            "KeyPackageKey" : "/ settings a7c20afd350f846ae97e9c82b82ee10c0.1",
+            "KeyPackage" : "/ settings fc9c29e03c9fe24e99f285e93df5206dc.1",
             "Challenge" : "bbW1bZ%;~gV@o$ScT941V>fduCVoz6dnrC?d00<ZP;pdWUPwnx"
         }
     ]
 }
 ----
 
-Once received by the new device, the user is prompted to enter the password from the other device. The device uses the password to decrypt the `KeyPackage` field, installs the set of keys, returns the decrypted challenge to the server, and login is complete.
+Once received by the new device, the user is prompted to enter the password from the other device. The device uses the password to decrypt the file listed in the `KeyPackageKey` field, decrypts the file listed in `KeyPackage`, deletes the file, installs the set of keys, returns the decrypted challenge to the server, and login is complete.
 
 == Registration and Workspace Setup
 
