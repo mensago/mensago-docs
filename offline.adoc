@@ -1,16 +1,16 @@
-= Anselus Offline Messaging and File Transport
+= Mensago Offline Messaging and File Transport
 Jon Yoder <jsyoder@mailfence.com>
 v1.1, 2020-12-06
 
 == Introduction
 
-The effort to minimize trust in infrastructure might imply that underlying transport mechanisms don’t matter. Nothing could be further from the truth. The Anselus transport protocols have been designed to maximize privacy and prevent bad behavior. However, sometimes it is beneficial to completely avoid standard server transport.
+The effort to minimize trust in infrastructure might imply that underlying transport mechanisms don’t matter. Nothing could be further from the truth. The Mensago transport protocols have been designed to maximize privacy and prevent bad behavior. However, sometimes it is beneficial to completely avoid standard server transport.
 
-Although there are already other formats and utilities which can encrypt files, this method greatly simplifies the processes of key management while retaining security. For example, transporting 7-zip archives also requires communicating the password. Using PGP requires exchange of keys. This format is designed to be used in conjunction with the Anselus platform. Thus, encrypting a file for offline use by a specific person could be just a matter of having that person in your address book and running a command like `ejd_encrypt 'bob/example.com' secretfile.ejd file1.txt file2.jpg` or a few clicks in a graphical application.
+Although there are already other formats and utilities which can encrypt files, this method greatly simplifies the processes of key management while retaining security. For example, transporting 7-zip archives also requires communicating the password. Using PGP requires exchange of keys. This format is designed to be used in conjunction with the Mensago platform. Thus, encrypting a file for offline use by a specific person could be just a matter of having that person in your address book and running a command like `ejd_encrypt 'bob/example.com' secretfile.ejd file1.txt file2.jpg` or a few clicks in a graphical application.
 
 == Conventions
 
-Software using this design document may be independent of the Anselus platform, but it is expected that such software will utilize conventions from the platform.
+Software using this design document may be independent of the Mensago platform, but it is expected that such software will utilize conventions from the platform.
 
 * Base85 encoding described in RFC1924[https://tools.ietf.org/html/rfc1924] is used to ensure user data is JSON-compliant.
 * Cryptographic hashes and keys use the Cryptostring format.
@@ -20,7 +20,7 @@ Cryptostrings are a string format consisting of prefix, a colon for a separator,
 
 == JSON Key Storage Format
 
-Not all environments will have an Anselus profile available. In these environments, encryption keys may be stored in individual JSON Key files. The files are standard JSON using a schema which matches the following example:
+Not all environments will have a Mensago profile available. In these environments, encryption keys may be stored in individual JSON Key files. The files are standard JSON using a schema which matches the following example:
 
 [source,json]
 ----
@@ -34,7 +34,7 @@ The `PublicKey` field is required. While the `PrivateKey` field is optional, the
 
 == Offline Data Format
 
-An offline file is even more minimalistic than a standard Anselus storage file. It is intended to convey as little information about the file except for the requirements to decrypt it. Only the key which matches the `KeyHash` field will be able to decrypt the associated payload. The hash is generated from the Base85-encoded public key used to encrypt the payload. Files using this format are expected to use the `.ejd` (**E**ncrypted **J**SON **D**ocument) file extension.
+An offline file is even more minimalistic than a standard Mensago storage file. It is intended to convey as little information about the file except for the requirements to decrypt it. Only the key which matches the `KeyHash` field will be able to decrypt the associated payload. The hash is generated from the Base85-encoded public key used to encrypt the payload. Files using this format are expected to use the `.ejd` (**E**ncrypted **J**SON **D**ocument) file extension.
 
 [source,json]
 ----
@@ -76,7 +76,7 @@ The payload is expected to be minified before encryption to minimize overhead.
 
 == Offline Message Format
 
-EJD files can be used to transport Anselus messages, as well. When messages are packaged for transport, the fields are slightly different. 
+EJD files can be used to transport Mensago messages, as well. When messages are packaged for transport, the fields are slightly different. 
 
 [source,json]
 ----

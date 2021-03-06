@@ -1,17 +1,17 @@
-= Anselus Messaging Specification
+= Mensago Messaging Specification
 Jon Yoder <jsyoder@mailfence.com>
 v1.0, 2019-09-06
 
 *Status:* Draft +
-*Abstract:* Anselus message structure
+*Abstract:* Mensago message structure
 
 == Description
 
-The reason for Anselus’ existence is to replace e-mail with a secure, private, and otherwise better technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are generated to be used for management of communications on the Anselus platform. This specification describes messaging workflows and the payload portion of a client item which is used for messaging. The wrapper information for the client item, i.e. encryption type, recipient address, etc., is described in the link:/spec/clientserver[Anselus Client-Server API] specification.
+The reason for Mensago’ existence is to replace e-mail with a secure, private, and otherwise better technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are generated to be used for management of communications on the Mensago platform. This specification describes messaging workflows and the payload portion of a client item which is used for messaging. The wrapper information for the client item, i.e. encryption type, recipient address, etc., is described in the link:/spec/clientserver[Mensago Client-Server API] specification.
 
 == Encryption Keys
 
-Each Anselus workspace uses multiple encryption keys. Two of the reasons for this are flexibility and security: concerns are better separated and if a key should be compromised, it is easier to update the one key for one component of the system than to update all of them.
+Each Mensago workspace uses multiple encryption keys. Two of the reasons for this are flexibility and security: concerns are better separated and if a key should be compromised, it is easier to update the one key for one component of the system than to update all of them.
 
 *Primary Key* : The account primary key is an asymmetric keypair. This key is used for one-to-one messaging and encrypting other security keys for transport.
 
@@ -43,9 +43,9 @@ a shared workspace have been obtained.
     "Type" : "usermessage",
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
-    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/anselus-example.com" ],
+    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com" ],
     "CC" : [ "dfe1e724-cfa6-4d7a-aa3a-226f87a1a456/contoso.com" ],
-    "BCC" : [ "225e9d7c-c8c3-4959-966e-691941cfc1ac/anselus-example.com" ],
+    "BCC" : [ "225e9d7c-c8c3-4959-966e-691941cfc1ac/mensago-example.com" ],
     "Date" : "20190905 155323",
     "ThreadID" : "2280c1f2-d9c0-440c-a182-967b16ba428a",
     "Subject" : "Sample User Message",
@@ -66,13 +66,13 @@ _Type_ - REQUIRED. This field is required for all payloads. It defines the type 
 
 _Version_ - REQUIRED. The messaging API version.
 
-_From_ - REQUIRED. The numeric Anselus address of the sender.
+_From_ - REQUIRED. The numeric Mensago address of the sender.
 
-_To_ - REQUIRED. The numeric Anselus address of the recipient.
+_To_ - REQUIRED. The numeric Mensago address of the recipient.
 
-_CC_ - OPTIONAL. A list of numeric Anselus addresses of any carbon-copied recipients.
+_CC_ - OPTIONAL. A list of numeric Mensago addresses of any carbon-copied recipients.
 
-_BCC_ - OPTIONAL. A list of numeric Anselus addresses of any blind carbon-copied recipients.
+_BCC_ - OPTIONAL. A list of numeric Mensago addresses of any blind carbon-copied recipients.
 
 _Date_ - REQUIRED. The UTC date and time when the message was sent. The date MUST be sent using https://en.wikipedia.org/wiki/ISO_8601[ISO 8601] basic (compact) format. The time MUST be sent in the format HHMMSS. One space MUST be used to separate the two as in the following example: `YYMMDD HHMMSS`.
 
@@ -108,10 +108,10 @@ administrator, if need be.
     "Subtype" : "abusereport",
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
-    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/anselus-example.com" ],
+    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com" ],
     "Date" : "20190905 155323",
     "ThreadID" : "8e24ab6b-b466-492b-a3b1-4ce736a59563",
-    "Subject" : "df7c310a-b947-4f9d-a66b-600d5fdd7e0c/anselus-example.com",
+    "Subject" : "df7c310a-b947-4f9d-a66b-600d5fdd7e0c/mensago-example.com",
     "Body" : "This user purposely sent me malware which raised my insurance rates by 15%.",
 }
 ----
@@ -128,7 +128,7 @@ message except that the subtype is `supportrequest`. The subject MUST contain a 
     "Subtype" : "supportrequest",
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
-    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/anselus-example.com" ],
+    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com" ],
     "Date" : "20190905 155323",
     "ThreadID" : "8e24ab6b-b466-492b-a3b1-4ce736a59563",
     "Subject" : "I can't find the Any key",
@@ -138,7 +138,7 @@ message except that the subtype is `supportrequest`. The subject MUST contain a 
 
 == Contact Requests
 
-Unlike e-mail, communication with other users on the Anselus platform is on an opt-in basis. A contact request exchange similar to those found on social media must take place before any sort of communication can take place between two entities. The result is a simple, familiar concept which places users in control and provides a means to exchange encryption keys. Filtering and organizing communications is part of the
+Unlike e-mail, communication with other users on the Mensago platform is on an opt-in basis. A contact request exchange similar to those found on social media must take place before any sort of communication can take place between two entities. The result is a simple, familiar concept which places users in control and provides a means to exchange encryption keys. Filtering and organizing communications is part of the
 design of the platform.
 
 The contact request process is as follows:
@@ -177,7 +177,7 @@ Specification] can be found as part the contact request payload. A sample payloa
     "SubType" : "ContactReq.1",
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
-    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/anselus-example.com" ],
+    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com" ],
     "Date" : "20190905 155323",
     "Sensitivity" : "Public",
     "EntityType" : "individual",

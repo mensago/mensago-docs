@@ -3,11 +3,11 @@ Jon Yoder <jsyoder@mailfence.com>
 v1.0, 2020-02-14
 
 *Status:* Draft +
-*Abstract:* Anselus note structure
+*Abstract:* Mensago note structure
 
 == Description
 
-It would be completely silly to leave out notetaking abilities on the Anselus platform, given how trivial it would be to implement and how useful it would be.
+It would be completely silly to leave out notetaking abilities on the Mensago platform, given how trivial it would be to implement and how useful it would be.
 
 == Payload Structure
 
@@ -57,7 +57,7 @@ https://en.wikipedia.org/wiki/ISO_8601[ISO 8601] basic (compact) format. The tim
 .Optional Fields
 - _Tags_ - A list of strings containing UTF-8 user-defined tags.
 
-- _Attachments_ - A list of dictionaries containing attached data using the same format as Anselus messages.
+- _Attachments_ - A list of dictionaries containing attached data using the same format as Mensago messages.
 
 === Note Content
 

@@ -1,26 +1,26 @@
-= Anselus Identity Services
+= Mensago Identity Services
 :author: Jon Yoder
 :email: jsyoder@mailfence.com
 :revdate: 2021-01-20
 :revnumber: 1.0.2
-:description: Structure and description of identity services provided by the Anselus platform
-:keywords: Anselus, identity, cryptography, workspaces
+:description: Structure and description of identity services provided by the Mensago platform
+:keywords: Mensago, identity, cryptography, workspaces
 :toc: preamble
 :source-highlighter: rouge
 :table-stripes: odd
 
 *Status:* Draft in progress +
 
-Verifiable identity is the foundation of the Anselus platform. A person or organization's identity is tied to a set of cryptographic keys, and this information is stored in digital certificates called keycards. An organization's server maintains the keycards for all of its users in a blockchain-like database and provides lookup services to that information. 
+Verifiable identity is the foundation of the Mensago platform. A person or organization's identity is tied to a set of cryptographic keys, and this information is stored in digital certificates called keycards. An organization's server maintains the keycards for all of its users in a blockchain-like database and provides lookup services to that information. 
 
 == Keycard Service Architecture
 
-Anselus identity services are designed to be a loosely-coupled federation, encompassing interaction between directories, resolvers, and issuers. An organization's server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard. Users issue their own keycards, but their cards are also signed by their organization. Keycards for all users in the organization are linked together in a tree-shaped blockchain which prevents unauthorized changes to the keycard entries. Keycards are issued only for organizations and users, each providing slightly different types of identity information.
+Mensago identity services are designed to be a loosely-coupled federation, encompassing interaction between directories, resolvers, and issuers. An organization's server plays several roles: an authoritative directory for its domain, a party in the establishment of user identities, an issuer of its own keycard. Users issue their own keycards, but their cards are also signed by their organization. Keycards for all users in the organization are linked together in a tree-shaped blockchain which prevents unauthorized changes to the keycard entries. Keycards are issued only for organizations and users, each providing slightly different types of identity information.
 
 An overview of the resolution process as part of a contact request is as follows:
 
 [arabic]
-. Alice gives Bob her Anselus address.
+. Alice gives Bob her Mensago address.
 . Bob creates a contact request in his client and clicks Send.
 . Bob's client first obtains information from the DNS record for Alice's organization, which includes the organization's current signing and encryption keys.
 . Bob’s client requests from the server for Alice's organization both her keycard and that of her organization.
@@ -40,9 +40,9 @@ The chain begins with the organization’s root keycard entry and each successiv
  
 Several mechanisms are in place to ensure that each keycard is verifiably correct. When a user submits a new entry to their keycard, the organization verifies the information in the entry, generates a signature of the data, and returns the signature to the client. The client then verifies signature using the information on the client's side to ensure that the organization did not change the entry before signing it. It then appends hash of the previous entry, creates a hash of the new entry with this new information, and then signs the entire thing with their contact request signing key. For the user's root keycard entry, the hash of the organization's current keycard entry is used. The signed entry is submitted to the server, which verifies all of the information and signatures and adds it to the database. Thus, both the server and client do not trust each other and each confirms that the other is not doing anything malicious or problematic.
 
-== Anselus Address Fingerprints
+== Mensago Address Fingerprints
 
-As an additional protection against server-based attacks on user data, an Anselus address can also be formatted to include part of the root entry fingerprint. When listed, the address can be separated by a colon from its fingerprint, or the fingerprint can be listed on a separate line. The length of the fingerprint MUST be a minimum of 5 characters, but more may be used. Spaces MAY be used to group characters for better readability IF doing so does not create any parsing problems. Tabs or other whitespace characters MUST NOT be used. Here are some formatting examples:
+As an additional protection against server-based attacks on user data, a Mensago address can also be formatted to include part of the root entry fingerprint. When listed, the address can be separated by a colon from its fingerprint, or the fingerprint can be listed on a separate line. The length of the fingerprint MUST be a minimum of 5 characters, but more may be used. Spaces MAY be used to group characters for better readability IF doing so does not create any parsing problems. Tabs or other whitespace characters MUST NOT be used. Here are some formatting examples:
 
 ....
 csimons/example.com:V=Vdv
@@ -60,7 +60,7 @@ Use of the fingerprint is not a requirement, but it is highly encouraged for the
 
 == The Resolution Process
 
-Obtaining and verifying a recipient's keycard is required before any contact can be made between two users on the Anselus platform. The process is detailed below:
+Obtaining and verifying a recipient's keycard is required before any contact can be made between two users on the Mensago platform. The process is detailed below:
 
 [arabic]
 . User A, a member of Organization A, begins creating a signed contact request for User B, who belongs to Organization B.
@@ -77,11 +77,11 @@ Obtaining and verifying a recipient's keycard is required before any contact can
 
 It is unfortunate that so many security-oriented systems are forced to depend on an insecure system like DNS. Nevertheless, it has proved difficult to replace. DNS records are used by keycard resolvers to obtain basic configuration information and as a way to validate organization keycards.
 
-Securing a domain’s resource records with DNSSEC cannot be recommended enough. When DNSSEC signatures are present, TLS signatures can be provided in DNS and used to validate the domain’s TLS certificate. In such situations, a certificate signed by a recognized third-party certificate authority (CA) is not required. In light of CA compromises in recent years, this is a notable benefit. Without the presence of DNSSEC, resolvers MUST require the TLS certificate of an Anselus server to be signed by a recognized third party CA.
+Securing a domain’s resource records with DNSSEC cannot be recommended enough. When DNSSEC signatures are present, TLS signatures can be provided in DNS and used to validate the domain’s TLS certificate. In such situations, a certificate signed by a recognized third-party certificate authority (CA) is not required. In light of CA compromises in recent years, this is a notable benefit. Without the presence of DNSSEC, resolvers MUST require the TLS certificate of a Mensago server to be signed by a recognized third party CA.
 
-An Anselus management record utilizes the resource record type `AX`, short for Anselus eXchange. Alternatively, if a TXT record type must be used, the name subdomain prefix `_anselus` MUST be used, e.g. `_anselus.example.com`. When searching for a record, resolvers should begin with the fully-qualified domain name for the service and work their way up the domain hierarchy until a matching resource record is found or the top level of the domain has been reached. For example, if a resolver is attempting to resolve `sub.domain.example.com`, it should first look for an `AX` record for `sub.domain.example.com` or a `TXT` record with the name `_anselus.sub.domain.example.com`. Not finding one, then it should follow the same procedure for `domain.example.com`, and then finally `example.com`. If the hierarchy has been traversed and no management record has been found, the domain is to be assumed to not offer Anselus services.
+An Mensago management record utilizes the resource record type `AX`, short for Mensago eXchange. Alternatively, if a TXT record type must be used, the name subdomain prefix `_mensago` MUST be used, e.g. `_mensago.example.com`. When searching for a record, resolvers should begin with the fully-qualified domain name for the service and work their way up the domain hierarchy until a matching resource record is found or the top level of the domain has been reached. For example, if a resolver is attempting to resolve `sub.domain.example.com`, it should first look for an `AX` record for `sub.domain.example.com` or a `TXT` record with the name `_mensago.sub.domain.example.com`. Not finding one, then it should follow the same procedure for `domain.example.com`, and then finally `example.com`. If the hierarchy has been traversed and no management record has been found, the domain is to be assumed to not offer Mensago services.
 
-When working with DNS TXT records and the maximum length of 255 characters per string, fields MUST NOT be split across strings. A good policy for TXT record fields would be one string per field. Likewise, for maximum compatibility, DNS responses should be no longer than 512 bytes. Given the short length of Anselus DNS record fields, this should not be difficult.
+When working with DNS TXT records and the maximum length of 255 characters per string, fields MUST NOT be split across strings. A good policy for TXT record fields would be one string per field. Likewise, for maximum compatibility, DNS responses should be no longer than 512 bytes. Given the short length of Mensago DNS record fields, this should not be difficult.
 
 === Management Record Fields
 
@@ -93,7 +93,7 @@ sk:: OPTIONAL. This contains the secondary verification key and corresponds to `
 
 Proper key management includes occasional replacement to guard against compromise. Because of their public nature, a user’s contact request keys are recommended to be rotated at least every 90 days. While the general-purpose user encryption keys SHOULD be rotated at the same time, this is not a requirement. Organizational keys require more work to rotate, so their keycard entries have a lifespan of 1 to 3 years. Each device has a unique encryption key; these device keys should be rotated every 30 days. A user will have other keys, such as signing and encryption keys for each contact. These should be rotated, as well, but frequency is specific to the particular task (address books, calendars, etc.).
 
-Key revocation is not a difficult process for Anselus applications. Keys found in keycards, particularly those on user keycards, are designed to be easily rotated and intended to be treated as ephemeral. Revoking a key in a user set is merely a matter of updating the keycard. Revoking a key for an organization is just a matter of updating the keycard, not converting the primary signing key to a secondary, and updating the DNS record accordingly.
+Key revocation is not a difficult process for Mensago applications. Keys found in keycards, particularly those on user keycards, are designed to be easily rotated and intended to be treated as ephemeral. Revoking a key in a user set is merely a matter of updating the keycard. Revoking a key for an organization is just a matter of updating the keycard, not converting the primary signing key to a secondary, and updating the DNS record accordingly.
 
 With the extensive use of cryptographic keys, key security is critical. Client software MUST provide encrypted storage of the user's keys. If a user's device is compromised and the keys are stolen, the attacker still cannot pretend to be the victim unless the user's password is also known. Rotating the compromised device's encryption key would be an effective next step to stop the attacker. Even then, if the server detects two different sessions with the same device, an alert can be sent to all of the user's devices to notify all parties that the user's account has been compromised. In the event that an attacker has the user's password and keys and has locked the user out of the account, the best choice at that point is for the server administrator to deactivate the workspace. Although the workspace has been effectively lost in such a situation, the user still retains all data on their devices.
 
@@ -119,11 +119,11 @@ Index:: The index of the entry in the organization’s keycard. The index for th
 
 Name:: The name of the organization represented by the keycard, which must meet the following criteria: (1) contain at least 1 and no more than 64 Unicode codepoints, (2) must contain at least 1 printable character, and (3) like all other fields, not have any leading or trailing whitespace except for the `\r\n` line ending.
 
-Contact-Admin:: the numeric address for the party responsible for administrating the Anselus services for the organization. Example: `6321fb6e-c68c-4279-a1f4-68f05a2bb9b0/example.com`. Support requests and abuse reports are sent to this address if the `Contact-Support` and `Contact-Abuse` fields are not populated.
+Contact-Admin:: the numeric address for the party responsible for administrating the Mensago services for the organization. Example: `6321fb6e-c68c-4279-a1f4-68f05a2bb9b0/example.com`. Support requests and abuse reports are sent to this address if the `Contact-Support` and `Contact-Abuse` fields are not populated.
 
-Contact-Abuse:: OPTIONAL. The Contact-Abuse field contains a numeric address for reporting abuse to the service administrator. If omitted, abuse reporting is sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for abuse reporting. Provided that the server is configured correctly and the abuse address is valid, an administrator MAY opt to drop abuse messages sent to `Contact-Admin` or autoreply with a bounce message to ensure clients follow support protocols. Note that abuse reports have a specific format defined in the Anselus messaging design document.
+Contact-Abuse:: OPTIONAL. The Contact-Abuse field contains a numeric address for reporting abuse to the service administrator. If omitted, abuse reporting is sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for abuse reporting. Provided that the server is configured correctly and the abuse address is valid, an administrator MAY opt to drop abuse messages sent to `Contact-Admin` or autoreply with a bounce message to ensure clients follow support protocols. Note that abuse reports have a specific format defined in the Mensago messaging design document.
 
-Contact-Support:: OPTIONAL. The Contact-Support fields contains a numeric address for requesting organizational support. It is intended for use ONLY by users from the organization itself, and support requests sent to this address. If omitted, support requests are sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for support requests. Provided that the server is configured correctly and the support address is valid, an administrator MAY opt to drop support requests sent to `Contact-Admin` to ensure clients follow support protocols. Note that support requests have a specific format defined in the Anselus messaging design document.
+Contact-Support:: OPTIONAL. The Contact-Support fields contains a numeric address for requesting organizational support. It is intended for use ONLY by users from the organization itself, and support requests sent to this address. If omitted, support requests are sent to the address in the Contact-Admin field. If included and valid, this field MUST be used for support requests. Provided that the server is configured correctly and the support address is valid, an administrator MAY opt to drop support requests sent to `Contact-Admin` to ensure clients follow support protocols. Note that support requests have a specific format defined in the Mensago messaging design document.
 
 Language:: Comma-separated list of https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes[ISO 639-1] language codes which indicated languages supported when contacting the organization. Up to 10 languages may be specified. Example: `en,fr,de`.
 
@@ -155,7 +155,7 @@ Name:: OPTIONAL. The name of the person represented by the keycard. If this fiel
 
 Workspace-ID:: a version 4 Universally-Unique Identifier (UUID) which is used to identify the workspace. This number is fixed for the lifetime of the workspace and is unique to the server. It also MUST not be reused once a workspace has been deleted.
 
-User-ID:: a human-friendly name for the workspace. Its relationship to the `Workspace-ID` field is similar to that of a DNS name to an IP address. The workspace user MAY change this at any time, but a new keycard entry MUST be created to do so. It is to be used for human identification of a workspace, such as display in a client application. Any UTF-8 printable character except the forward slash (`/`), the backslash (`\`), and the double quotation mark (`"`) MAY be used in this field. Whitespace characters (tab, space, non-breaking space, etc.) are NOT permitted. The user ID may have up to 64 Unicode code points, although for the sake of ease of use, it recommended to be much shorter than the maximum. Only one workspace at an organization may have a given name at any time, although the workspace to which said name corresponds may change, and this being one reason why supplying the fingerprint with a person's Anselus address is helpful--no mistaken identities.
+User-ID:: a human-friendly name for the workspace. Its relationship to the `Workspace-ID` field is similar to that of a DNS name to an IP address. The workspace user MAY change this at any time, but a new keycard entry MUST be created to do so. It is to be used for human identification of a workspace, such as display in a client application. Any UTF-8 printable character except the forward slash (`/`), the backslash (`\`), and the double quotation mark (`"`) MAY be used in this field. Whitespace characters (tab, space, non-breaking space, etc.) are NOT permitted. The user ID may have up to 64 Unicode code points, although for the sake of ease of use, it recommended to be much shorter than the maximum. Only one workspace at an organization may have a given name at any time, although the workspace to which said name corresponds may change, and this being one reason why supplying the fingerprint with a person's Mensago address is helpful--no mistaken identities.
 
 Domain:: The domain to which the workspace belongs, such as `example.com`. This is not required to match the Domain field of the organization, but if it is different, the account MUST be preregistered by an administrator with the desired domain. The maximum length for this field is 255 characters.
 
@@ -203,7 +203,7 @@ Device Checking is a lightweight form of multifactor authentication that also as
 
 === Device Alerts
 
-When a new device is added to an Anselus workspace, an alert is sent to the user's other devices. A sample payload for the initial device alert is shown below.
+When a new device is added to a Mensago workspace, an alert is sent to the user's other devices. A sample payload for the initial device alert is shown below.
 
 [source,json]
 ----
@@ -286,7 +286,7 @@ Once registration is complete, the workspace has been created, but one more step
 
 == Paranoid Mode
 
-Paranoid Mode is feature not technically a required for Anselus clients to implement, but is encouraged. Simply put, it is a set of security settings for those users who are particularly concerned about their data security. It is designed to quickly configure a user's client for maximum security and privacy and should be configured per-profile. It is also recommended that implementors provide some visible way to display to the user that the client is operating in Paranoid Mode. It consists of the following settings:
+Paranoid Mode is feature not technically a required for Mensago clients to implement, but is encouraged. Simply put, it is a set of security settings for those users who are particularly concerned about their data security. It is designed to quickly configure a user's client for maximum security and privacy and should be configured per-profile. It is also recommended that implementors provide some visible way to display to the user that the client is operating in Paranoid Mode. It consists of the following settings:
 
 - Automatically reject all New Device alerts, restricting access to only one device and reducing server-side data storage to just messages waiting for delivery.
 - Preventing the use of a User ID or Name in a keycard
@@ -298,7 +298,7 @@ Paranoid Mode is feature not technically a required for Anselus clients to imple
 - Set checking for incoming messages and sending of outgoing messages to Manual
 - A warning is shown when sending a contact request to an address without a fingerprint
 
-Although this sounds extreme, in practice, it does not impose significant extra effort. Upon startup, the client asks for password upon startup and it has to be reasonably strong. The user clicks a button or uses a keyboard shortcut when they want to check for new messages and send outgoing messages. The user's contacts are given a workspace address instead of an alphanumeric Anselus address, and only one computer is used for said address. A tradeoff of using Paranoid Mode is that all information for that profile is stored only on that computer; the user would be wise to set up some sort of backup solution to prevent data loss.
+Although this sounds extreme, in practice, it does not impose significant extra effort. Upon startup, the client asks for password upon startup and it has to be reasonably strong. The user clicks a button or uses a keyboard shortcut when they want to check for new messages and send outgoing messages. The user's contacts are given a workspace address instead of an alphanumeric Mensago address, and only one computer is used for said address. A tradeoff of using Paranoid Mode is that all information for that profile is stored only on that computer; the user would be wise to set up some sort of backup solution to prevent data loss.
 
 == Protocol Commands
 
@@ -392,7 +392,7 @@ The `Device-Name` and `Device-Description` two optional fields are used for firs
 
 === GETWID
 
-_Resolves an Anselus address to a workspace ID_
+_Resolves a Mensago address to a workspace ID_
 
 [cols="1,3a"]
 |===
@@ -702,7 +702,7 @@ _Retrieve user keycard_
 ** Total-Size
 |===
 
-Requests part or all of a user’s keycard, given an address, the starting index, and possibly an optional end index. The `Owner` parameter can either be an Anselus address, a workspace address, or a workspace ID. The client is not required to be authenticated for this command. If the ending index is omitted, all entries starting with the specified entry through the user’s current keycard are returned.
+Requests part or all of a user’s keycard, given an address, the starting index, and possibly an optional end index. The `Owner` parameter can either be a Mensago address, a workspace address, or a workspace ID. The client is not required to be authenticated for this command. If the ending index is omitted, all entries starting with the specified entry through the user’s current keycard are returned.
 
 Once the command is submitted, the server responds with the number of entries and the total byte size of the transfer. The server is expected to respond with an empty TRANSFER command to confirm the transfer. Once confirmed, the server transmits the all of the requested entries. Each keycard entry has a `----- BEGIN USER ENTRY -----` header line and a `----- END USER ENTRY -----` footer line. Both are markers of the entry data without being part of the entries themselves. `400 BAD REQUEST` is returned if `end_index` is less than `start_index`. `404 NOT FOUND` is returned if the server cannot find the specified address or if there are no entries for the specified address.
 

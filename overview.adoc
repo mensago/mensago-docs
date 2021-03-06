@@ -1,8 +1,8 @@
-= Anselus Platform Overview
+= Mensago Platform Overview
 
 == Introduction
 
-Anselus is an online communications platform intended to replace e-mail in its current form and cohesively add groupware features. The mission of Anselus is to provide to people the ability to connect with one another and organize their lives with privacy-respecting digital tools. The principles used to guide the decision-making process for the Anselus platform are as follows:
+Mensago is an online communications platform intended to replace e-mail in its current form and cohesively add groupware features. The mission of Mensago is to provide to people the ability to connect with one another and organize their lives with privacy-respecting digital tools. The principles used to guide the decision-making process for the Mensago platform are as follows:
 
 * Server has near-zero knowledge of user data
 * Compatibility with other standards where possible
@@ -13,7 +13,7 @@ Anselus is an online communications platform intended to replace e-mail in its c
 ** Open source - reference implementation licensed for any purpose
 ** Open federation - anyone can run a server
 
-Functionality that the Anselus platform provides:
+Functionality that the Mensago platform provides:
 
 * Storage and synchronization of encrypted data
 * Message delivery
@@ -27,27 +27,27 @@ workspace ID:: a universally-unique identifier (UUID) which is the public repres
 
 workspace address:: a workspace ID combined with its associated domain and separated by a forward slash, similar to an IP address for a device on a network. Example: `301fa6cf-ce2d-4349-8d5b-4053b1808489/example.com`.
 
-Anselus address:: an optional public-facing name tied to a workspace ID intended for everyday usage, similar to a domain name assigned to an IP address on the Internet. Example: `SeñorJones/example.com`
+Mensago address:: an optional public-facing name tied to a workspace ID intended for everyday usage, similar to a domain name assigned to an IP address on the Internet. Example: `SeñorJones/example.com`
 
-user ID:: the optional human-friendly part of an Anselus address. Example: `SeñorJones` in `SeñorJones/example.com`.
+user ID:: the optional human-friendly part of a Mensago address. Example: `SeñorJones` in `SeñorJones/example.com`.
 
 keycard:: a digital certificate representing a person or organization that contains encryption keys and public information in a cryptographically secure and verifiable form.
 
-client item:: a server-side file containing JSON-structured Anselus data. It consists of a header, an encrypted payload, and some minimal metadata. Each client item represents a corresponding file on the user's device.
+client item:: a server-side file containing JSON-structured Mensago data. It consists of a header, an encrypted payload, and some minimal metadata. Each client item represents a corresponding file on the user's device.
 
 == Architecture
 
 Electronic mail is a federated system in which messages are delivered from one carrier to another until it has been transported from the sender to the recipient. It is unlike instant messaging in that each message is a self-contained unit sent one-way; there is no dialog between sender and recipient involved in the delivery of that one message. This creates its own set of challenges.
 
-Anselus is built such that the server is little more than a file synchronization and message delivery service; most of the real work is handled by client applications. This has many benefits, but the main two are offloading CPU-intensive encryption processes to the client and minimizing the knowledge a server has about client data.
+Mensago is built such that the server is little more than a file synchronization and message delivery service; most of the real work is handled by client applications. This has many benefits, but the main two are offloading CPU-intensive encryption processes to the client and minimizing the knowledge a server has about client data.
 
-One major departure from traditional e-mail is that messages are not just for user communications. Because each message is encrypted, potentially sensitive information can be sent without concern, and Anselus clients send messages intended for others' client software. These system-level messages are used to perform platform-level tasks, such as support requests for the provider or contact information updates.
+One major departure from traditional e-mail is that messages are not just for user communications. Because each message is encrypted, potentially sensitive information can be sent without concern, and Mensago clients send messages intended for others' client software. These system-level messages are used to perform platform-level tasks, such as support requests for the provider or contact information updates.
 
 === Workspaces, Users, and Identity
 
 Workspaces are the central concept of the platform. Similar to mailboxes, they store user data, but the files themselves can be of different types, including tasks, messages, files, and calendar events. Workspaces have one of two types: individual and shared. Identity is linked to individual workspaces and represent a person. Shared workspaces are spaces for collaboration. Instead of providing identity, a permissions system determines what actions members may take and which folders they may access.
 
-Each workspace is tied to an ID and a domain. The ID itself is just a Universally Unique Identifier which exists to differentiate one workspace from another--it has no other significance. It is randomly generated when the workspace is created, never changes, and for security reasons, is never reused. A workspace address is a combination of this ID and its domain, separated by a slash. A slash is used to ensure that both workspace address and the person-friendly Anselus address, described below, are never confused with an e-mail address.
+Each workspace is tied to an ID and a domain. The ID itself is just a Universally Unique Identifier which exists to differentiate one workspace from another--it has no other significance. It is randomly generated when the workspace is created, never changes, and for security reasons, is never reused. A workspace address is a combination of this ID and its domain, separated by a slash. A slash is used to ensure that both workspace address and the person-friendly Mensago address, described below, are never confused with an e-mail address.
 
 A User ID can optionally be associated with a workspace. User IDs are much easier to exchange and are internationalization-friendly. Capitalization matters, and whitespace is restricted. User IDs may be up to 32 UTF-8 code points long. Example: `SeñorJones/example.com` Although many different other characters may be used as part of a User ID, such as emoji, it is not recommended. The User ID's `admin`, `abuse`, and `support` are reserved and may not be used except by administrators.
 
@@ -55,7 +55,7 @@ A folder hierarchy defines locations for different types of data within the work
 
 === Devices
 
-A device is merely an access method to an Anselus server. Each user has a list of associated devices for his/her workspace, each identified by a UUID and its own asymmetric encryption key. Each application may utilize its own device ID. Thus, an Android phone with separate applications for accessing calendar, contacts, messages, notes, and tasks could have 6 different device IDs whereas a desktop PC running an all-in-one client could just have one. For maximum compatibility, there are defined locations for client-side user data.
+A device is merely an access method to a Mensago server. Each user has a list of associated devices for his/her workspace, each identified by a UUID and its own asymmetric encryption key. Each application may utilize its own device ID. Thus, an Android phone with separate applications for accessing calendar, contacts, messages, notes, and tasks could have 6 different device IDs whereas a desktop PC running an all-in-one client could just have one. For maximum compatibility, there are defined locations for client-side user data.
 
 == Section Versioning
 
@@ -67,4 +67,4 @@ API versions take the form of X.Y.Z: X is major version, Y is minor version, Z i
 
 == License
 
-The Anselus specification is distributed under the Creative Commons CC-BY-SA license.
+The Mensago specification is distributed under the Creative Commons CC-BY-SA license.

@@ -1,36 +1,36 @@
-= Anselus Client-Server API
+= Mensago Client-Server API
 Jon Yoder <jsyoder@mailfence.com>
 v1.0, 2019-08-10
 
 *Status:* Draft (incomplete) +
-*Abstract:* Spec for Anselus client-server communications
+*Abstract:* Spec for Mensago client-server communications
 
 == Description
 
-Client-server communications on the Anselus platform take inspiration from a number of other of protocols that have gone before it, including https://tools.ietf.org/html/rfc1939[POP3], http://www.courier-mta.org/cone/smap1.html[SMAP], and https://jmap.io/spec.html[JMAP]. The protocol operates under three guiding principles:
+Client-server communications on the Mensago platform take inspiration from a number of other of protocols that have gone before it, including https://tools.ietf.org/html/rfc1939[POP3], http://www.courier-mta.org/cone/smap1.html[SMAP], and https://jmap.io/spec.html[JMAP]. The protocol operates under three guiding principles:
 
 [arabic]
 . Minimal Metadata: The server must know only the bare minimum amount of information necessary to perform its duties.
 . Guarded Trust: Trust in an entity (user, device, server, etc.) does not imply free rein for that entity. Data is still checked for integrity, steps are taken to prevent abuse, and boundaries are kept to prevent problems from scaling larger. For example, a friend may be unaware that he or she has been compromised and has a device that is attempting to send out spam. Thus, even though the device is given a level of trust, boundaries for behavior are maintained.
-. Safety and Portability: technologies leveraged for the Anselus platform have been chosen for their portability and/or safety so that it is possible to run an Anselus server on NetBSD just as easily as on Windows.
+. Safety and Portability: technologies leveraged for the Mensago platform have been chosen for their portability and/or safety so that it is possible to run a Mensago server on NetBSD just as easily as on Windows.
 . The responsibilities of the server are:
 * To provide a transport mechanism for messages to and from other servers.
 * To provide a synchronization mechanism for a user’s devices.
 * To provide identity services
 
-Communication between Anselus clients and servers is a synchronous text-based protocol which operates on TCP port 2001. The protocol is line-oriented and meant to be easy to parse and validate. Client-server commands focus on authentication, synchronization, and message delivery because client data is encrypted by default.
+Communication between Mensago clients and servers is a synchronous text-based protocol which operates on TCP port 2001. The protocol is line-oriented and meant to be easy to parse and validate. Client-server commands focus on authentication, synchronization, and message delivery because client data is encrypted by default.
 
 == Technology Conventions
 
 Compatibility with POP, IMAP, and SMTP has prompted great heroics in the more than 40 years since e-mail’s invention, but these protocols are the root cause behind the many problems which plague modern e-mail. A fresh start is needed, based on best-of-breed technologies and methods available now.
 
-Like those that came before, Anselus' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted.
+Like those that came before, Mensago' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted.
 
 Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms. Argon2id is utilized for password hashing. SHA2-256, AES-256 and the 2048- and 4096-bit versions of RSA are options for environments which require certified algorithms.
 
 == Client Items
 
-The Anselus server's main role is storage and synchronization of opaque data files called *client items*. These JSON-formatted text files contain an encrypted payload, where the actual message content is stored, and some minimal metadata in its header.
+The Mensago server's main role is storage and synchronization of opaque data files called *client items*. These JSON-formatted text files contain an encrypted payload, where the actual message content is stored, and some minimal metadata in its header.
 
 *TODO:* Message format sample here
 
@@ -47,7 +47,7 @@ REQUIRED. A string containing the real data for the item, encrypted and Base85-e
 
 == Limitations, Maximums, and Timeouts
 
-Maximum line size for the Anselus protocol is measured in bytes, not characters, due to the varying size of UTF-8 code points. Each line in the protocol is expected to be terminated by a carriage return and line feed character pair (CR-LF, `\r\n`). In order to accommodate 4096-bit RSA keys, one line in an client-server message may be up to 8KiB (8192 bytes), including the line terminator. Similar to http://www.courier-mta.org/cone/smap1.html[SMAP], Anselus commands and replies MUST be no more than 16 KiB (16384 bytes) including line ending. This maximum applies only to commands and replies themselves and not to file transfer data.
+Maximum line size for the Mensago protocol is measured in bytes, not characters, due to the varying size of UTF-8 code points. Each line in the protocol is expected to be terminated by a carriage return and line feed character pair (CR-LF, `\r\n`). In order to accommodate 4096-bit RSA keys, one line in an client-server message may be up to 8KiB (8192 bytes), including the line terminator. Similar to http://www.courier-mta.org/cone/smap1.html[SMAP], Mensago commands and replies MUST be no more than 16 KiB (16384 bytes) including line ending. This maximum applies only to commands and replies themselves and not to file transfer data.
 
 Although client items have no theoretical size limit, there are some practical limits placed on user messages. For efficency of transmission and storage, messages SHOULD be no more than 50 MiB. Server administrators MAY impose a hard limit of some size, but it SHOULD be no less than this. Client items not scheduled for delivery MAY be of any size, although server administrators MAY impose a maximum size for client items in general.
 
@@ -65,7 +65,7 @@ Universally Unique Identifiers (UUIDs) are used extensively. Files utilize a thr
 
 Server-side paths are represented in a unique way: the start of the path is always a single slash (`/`) followed by directory elements. Each directory element is separated by a space. Because filesystem entries  follow a very specific format, accounting for whitespace and special  characters in paths is not necessary. An example path looks like this: `/ 0cfb91e8-256b-420b-b37d-db28004120f5 aa7347c1-a837-460f-8cf0-698d4411758a ac7971bf-fe44-400c-8605-eb499b9274ad`. Server-side paths are always absolute–relative references -- using `.` and `..` are not supported, and any path using them MUST be rejected. Path references are always relative to the root directory of a workspace; no access outside of the workspace directory hierarchy is permitted for any client.
 
-Although there is a standard filesystem layout for Anselus workspace  data, the server is not responsible for creating any directories; it is all handled by the client. Clients are expected to maintain a mapping of the real name of a directory in the workspace to the UUID used for its name on the server side. A malicious actor with server access is able to obtain very little useful information about any of the files stored on the system.
+Although there is a standard filesystem layout for Mensago workspace  data, the server is not responsible for creating any directories; it is all handled by the client. Clients are expected to maintain a mapping of the real name of a directory in the workspace to the UUID used for its name on the server side. A malicious actor with server access is able to obtain very little useful information about any of the files stored on the system.
 
 == Settings Sync and Server-Side Storage
 
@@ -75,7 +75,7 @@ Server-side storage for data other than client items should be stored in the `/ 
 
 The name of the settings file is determined by the client software. The file is expected to be encrypted by a key used just for settings storage. The recommended format for maximum privacy is to use the first 32 characters of the Base64-encoded hash of the encryption key followed by a period and a number indicating the version. An example would look like this: `f9c9e42c25002e7148dceea7d687fea89.23`.
 
-The device-checking feature of Anselus Identity Services provides a relatively painless form of multifactor authentication while also providing a way for new devices to receive the keys used by clients. Specific information on this process can be found in the Identity Services design document.
+The device-checking feature of Mensago Identity Services provides a relatively painless form of multifactor authentication while also providing a way for new devices to receive the keys used by clients. Specific information on this process can be found in the Identity Services design document.
 
 == Command Reference
 
@@ -240,7 +240,7 @@ _Creates a new directory_
 | * 408 RESOURCE EXISTS
 |===
 
-Create a workspace directory. The directory path is a standard Anselus server-side path which indicates the path to be created relative to the root of the workspace. The command works similarly to the UNIX command `mkdir -p`, which creates directorys and parent directorys as needed to ensure that the entire path exists. If the leaf already exists, `408 RESOURCE EXISTS` is returned.
+Create a workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. The command works similarly to the UNIX command `mkdir -p`, which creates directorys and parent directorys as needed to ensure that the entire path exists. If the leaf already exists, `408 RESOURCE EXISTS` is returned.
 
 === MOVE
 
@@ -256,7 +256,7 @@ _Moves an item from the selected path to another on the server_
 * 408 RESOURCE EXISTS
 |===
 
-Moves an item. The item is expected to be in the current directory and may be a file or subdirectory. The destination path is expected to be a standard Anselus server-side path to a directory. `404 NOT FOUND` is returned if the item does not exist. `404 RESOURCE EXISTS` is returned if an entry in the destination already exists with that name.
+Moves an item. The item is expected to be in the current directory and may be a file or subdirectory. The destination path is expected to be a standard Mensago server-side path to a directory. `404 NOT FOUND` is returned if the item does not exist. `404 RESOURCE EXISTS` is returned if an entry in the destination already exists with that name.
 
 === RMDIR
 
@@ -273,7 +273,7 @@ _Deletes a directory_
 * 408 RESOURCE EXISTS
 |===
 
-Deletes a workspace directory. The directory path is a standard Anselus server-side path which indicates the path to be created relative to the root of the workspace. If the Recursive flag is set to true, the command recursively deletes the directory and all of its contents. If the Recursive flag is set to false, a non-empty directory will cause a 408 RESOURCE EXISTS error.
+Deletes a workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. If the Recursive flag is set to true, the command recursively deletes the directory and all of its contents. If the Recursive flag is set to false, a non-empty directory will cause a 408 RESOURCE EXISTS error.
 
 === SELECT
 
@@ -287,7 +287,7 @@ _Sets the current directory for the session_
 | * 404 NOT FOUND
 |===
 
-If the path does not exist or the path is not permitted, such as one which is out of the permitted filesystem area, `404 RESOURCE NOT FOUND` is returned. The path is a standard Anselus filesystem path.
+If the path does not exist or the path is not permitted, such as one which is out of the permitted filesystem area, `404 RESOURCE NOT FOUND` is returned. The path is a standard Mensago filesystem path.
 
 === SEND
 

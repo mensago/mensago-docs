@@ -1,4 +1,4 @@
-= Anselus Text Markup (AnTM)
+= Mensago Text Markup (MenTM)
 Jon Yoder <jsyoder@mailfence.com>
 v1.0, 2019-08-08
 
@@ -37,11 +37,11 @@ v1.0, 2019-08-08
 
 == anchor:description[]Description
 
-AnTM, pronounced _AN-tim_ or _an-tee-EM_, is a plaintext-with-markup format for describing rich formatting in a way that is expressive, easy to parse, and easy to implement with a measure of safety and security. It is heavily inspired by https://en.wikipedia.org/wiki/BBCode[BBCode], but introduces changes to make it more consistent and full-featured. It is intended to be the transmission format for all text on the Anselus platform, including messages, notes, and so on.
+MenTM, pronounced _MEN-tim_ or _men-tee-EM_, is a plaintext-with-markup format for describing rich formatting in a way that is expressive, easy to parse, and easy to implement with a measure of safety and security. It is heavily inspired by https://en.wikipedia.org/wiki/BBCode[BBCode], but introduces changes to make it more consistent and full-featured. It is intended to be the transmission format for all text on the Mensago platform, including messages, notes, and so on.
 
-Anselus clients need to provide users the ability to communicate in an expressive manner in the same way that has been established with HTML e-mail. *Supporting HTML as a document format is _strictly_ prohibited.* HTML, unfortunately, presents a number of challenges, including security and historical quirks in its syntax.
+Mensago clients need to provide users the ability to communicate in an expressive manner in the same way that has been established with HTML e-mail. *Supporting HTML as a document format is _strictly_ prohibited.* HTML, unfortunately, presents a number of challenges, including security and historical quirks in its syntax.
 
-The problems which AnTM is intended to solve in replacing HTML for rich formatting are as follows:
+The problems which MenTM is intended to solve in replacing HTML for rich formatting are as follows:
 
 * _Unnecessary Complexity_ - No CSS. Simpler syntax. Easier parsing.
 
@@ -58,7 +58,7 @@ be a component of a messaging client, reducing binary size and code complexity.
 
 === anchor:syntax[]Syntax
 
-AnTM marks text with pairs of tags enclosed in square brackets. Each opening tag MUST have a corresponding closing tag. Each closing tag MUST begin with a forward slash (/) immediately before the text of the
+MenTM marks text with pairs of tags enclosed in square brackets. Each opening tag MUST have a corresponding closing tag. Each closing tag MUST begin with a forward slash (/) immediately before the text of the
 closing tag. White space MAY be found between the square brackets and the enclosed text, but space MUST NOT be found between the slash and the tag text. For example:
 
 *Correct*
@@ -221,7 +221,7 @@ Defines a table header row. Only `cell` tags MUST be placed inside `row` or `hea
 
 *Notes*
 
-Unlike HTML, tag pairs are used with images in AnTM documents, with the enclosed text to be rendered as the image's caption. A number by itself MUST be considered a pixel size and a number ending in a percent symbol MUST be interpreted as a percentage relative to the image's size in pixels.
+Unlike HTML, tag pairs are used with images in MenTM documents, with the enclosed text to be rendered as the image's caption. A number by itself MUST be considered a pixel size and a number ending in a percent symbol MUST be interpreted as a percentage relative to the image's size in pixels.
 
 === anchor:italics[]Italics
 
@@ -412,7 +412,7 @@ Text enclosed by this tag pair is rendered as underlined text.
 
 === anchor:color-reference[]Color Reference
 
-AnTM color references follow Web standards, supporting 140 different color names and associated hextet values.
+MenTM color references follow Web standards, supporting 140 different color names and associated hextet values.
 
 pass:[<table>
 <th>Color Name</th><th>Hex Value</th><th>Color</th>
@@ -579,4 +579,4 @@ These font families have wide Unicode coverage and readability, enabling easy co
 
 == anchor:final-notes[]Final Notes
 
-BBCode was born out of a need for safety and security for user-submitted forum posts combined with a desire for expressiveness. Conversion to other formats is expected. However, *UNDER NO CIRCUMSTANCES* should any programming language text be permitted to execute. *Ever.* Any code in the body of a document should be treated like text. For example, in converting AnTM to HTML, the first change to be made should be substituting `+&lt;+` and `+&gt;+` for < and > in order to prevent any HTML tags, particularly `<script>` tags, from being executed or rendered downstream. This is not to say that syntax highlighting is forbidden--any text contents outside of the AnTM tags are expected to be displayed, not executed or rendered. 
+BBCode was born out of a need for safety and security for user-submitted forum posts combined with a desire for expressiveness. Conversion to other formats is expected. However, *UNDER NO CIRCUMSTANCES* should any programming language text be permitted to execute. *Ever.* Any code in the body of a document should be treated like text. For example, in converting MenTM to HTML, the first change to be made should be substituting `+&lt;+` and `+&gt;+` for < and > in order to prevent any HTML tags, particularly `<script>` tags, from being executed or rendered downstream. This is not to say that syntax highlighting is forbidden--any text contents outside of the MenTM tags are expected to be displayed, not executed or rendered. 

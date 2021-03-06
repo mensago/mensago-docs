@@ -1,9 +1,9 @@
-= Anselus Contact Information and Address Books
+= Mensago Contact Information and Address Books
 Jon Yoder <jsyoder@mailfence.com>
 v1.0, 2019-09-09
 
 *Status:* Draft (incomplete) +
-*Abstract:* Anselus address book information
+*Abstract:* Mensago address book information
 
 == Sections
 
@@ -14,11 +14,11 @@ v1.0, 2019-09-09
 
 == Description
 
-Contact information and address book synchronization are part of the reason that Anselus is a platform and not merely a new e-mail application. Like other bits of information, each contact is contained in an individual file.
+Contact information and address book synchronization are part of the reason that Mensago is a platform and not merely a new e-mail application. Like other bits of information, each contact is contained in an individual file.
 
 == Structure
 
-An Anselus contact file is a link:/spec/serverside/clientserver[Client Item] with a payload specific to storing contact information. The overall payload structure is that of a list of dictionaries containing contact information. Although it is most common to store the information for one contact, there is support for multiple contacts per client item file. Below is listed an example of a profile which utilizes most of the available fields. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that an Anselus workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have an Anselus address, even this field is technically not required.
+An Mensago contact file is a link:/spec/serverside/clientserver[Client Item] with a payload specific to storing contact information. The overall payload structure is that of a list of dictionaries containing contact information. Although it is most common to store the information for one contact, there is support for multiple contacts per client item file. Below is listed an example of a profile which utilizes most of the available fields. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is technically not required.
 
 *Example:*
 
@@ -77,12 +77,12 @@ An Anselus contact file is a link:/spec/serverside/clientserver[Client Item] wit
             "Mobile" : "555-555-9090"
         },
 
-        "Anselus" : {
+        "Mensago" : {
             "Home" : {
                 "UserID" : "cavs4life",
                 "Preferred" : "yes",
                 "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
-                "Domain" : "anselus-example.com",
+                "Domain" : "mensago-example.com",
                 "Keys" : {
                     "Primary" : {
                         "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
@@ -167,13 +167,13 @@ MailingAddresses:: OPTIONAL. This group contains a dictionary of field groups. E
 
 Phone:: OPTIONAL. This field contains a list of key-value pairs containing the name of a phone number, such as "Fax" or "Mobile". Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. An asterisk (’*’) MAY be prefixed to a name to indicate the preferred contact number.
 
-Anselus:: OPTIONAL. This field contains a list of field groups containing the components of the contact’s Anselus addresses. `userid` contains the friendly part of the address. `workspace` contains the UUID numeric identifier used for the entity’s account. `domain` contains the fully-qualified domain. If `userid` is empty, then the client is expected to display the numeric address and domain, separated by a forward slash, e.g. `cavsfan4life/anselus-example.com' or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/anselus-example.com'. `preferred` denotes whether the address is the owner’s preferred address. The `anselus` field group is not required, but if it is present, all of its subfields are required to be present.
+Mensago:: OPTIONAL. This field contains a list of field groups containing the components of the contact’s Mensago addresses. `userid` contains the friendly part of the address. `workspace` contains the UUID numeric identifier used for the entity’s account. `domain` contains the fully-qualified domain. If `userid` is empty, then the client is expected to display the numeric address and domain, separated by a forward slash, e.g. `cavsfan4life/mensago-example.com' or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/mensago-example.com'. `preferred` denotes whether the address is the owner’s preferred address. The `mensago` field group is not required, but if it is present, all of its subfields are required to be present.
 
-Anselus:Keys:: CONDITIONAL. This field group list contains the contact’s Anselus encryption keys. Each key is named by its purpose. These are currently `signing`, `primary`, `social`, or `broadcast`. It is a required part of the `anselus` field group.
+Mensago:Keys:: CONDITIONAL. This field group list contains the contact’s Mensago encryption keys. Each key is named by its purpose. These are currently `signing`, `primary`, `social`, or `broadcast`. It is a required part of the `mensago` field group.
 
-Anselus:Keys:Name:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `anselus` field group.
+Mensago:Keys:Name:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `mensago` field group.
 
-Anselus:Keys:Name:Value:: CONDITIONAL. This field contains the actual encryption key data. For public-key encryption, this is the contact’s public key. It is Base85-encoded and prefixed by the algorithm used. It is a required part of the `anselus` field group.
+Mensago:Keys:Name:Value:: CONDITIONAL. This field contains the actual encryption key data. For public-key encryption, this is the contact’s public key. It is Base85-encoded and prefixed by the algorithm used. It is a required part of the `mensago` field group.
 
 Anniversary:: OPTIONAL. `anniversary` maps to the vCard field `ANNIVERSARY`. This is the date of marriage or equivalent for the entity. Format is YYMMDD.
 
@@ -191,7 +191,7 @@ Website:: OPTIONAL. `website` specifies the URL of a website for the entity and 
 
 Photo:: OPTIONAL.
 
-Photo:Mime:: CONDITIONAL. This field is REQUIRED if the `photo` field group is to be used. It contains the MIME type of the data stored in the `data` field. Anselus clients MUST support `image/png` and `image/jpg` display. They SHOULD also support WEBP, HEIF, and SVG. Support for other formats is optional, but support for animated profile photos is discouraged.
+Photo:Mime:: CONDITIONAL. This field is REQUIRED if the `photo` field group is to be used. It contains the MIME type of the data stored in the `data` field. Mensago clients MUST support `image/png` and `image/jpg` display. They SHOULD also support WEBP, HEIF, and SVG. Support for other formats is optional, but support for animated profile photos is discouraged.
 
 Photo:Data:: CONDITIONAL. This field is REQUIRED if the `photo` field group is to be used. The data in this field MUST be no larger than 500KiB before encoding is applied.
 
@@ -211,7 +211,7 @@ Attachments:Data:: CONDITIONAL. This field is REQUIRED if the `attachments` fiel
 
 Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Personal Information Profiles enable a user to choose easily and quickly which information is shared. Each PIP has an information sensitivity class and a name. The name is chosen by the user and can be something as simple as "Family" or "Private". The information sensitivity class is limited to `public`, `private`, or `secret`.
 
-`public` - Information permitted to be visible by essentially anyone. Name, gender, and Anselus address belong to this class by default.
+`public` - Information permitted to be visible by essentially anyone. Name, gender, and Mensago address belong to this class by default.
 
 `private` - Information that is more carefully controlled. Contact fields not listed above for the `public` profile are private by default.
 
@@ -223,6 +223,6 @@ Profiles can also be customized. For example, a user may have a Public profile w
 
 == Updates and Client-Side Annotations
 
-Anselus contact information is designed from the outset to always be up-to-date and places the responsibility on the information owner to keep it that way. This does, however, present a problem when the contact information is not complete or the user wishes to keep personal notes related to the contact. The solution lies in an information overlay accomplished through the contact’s `source` field. A contact’s client item may contain an additional entry using the same `id` field and the `source` set to `client`. In this secondary entry only the required fields of a contact must be present along with the `id` field. All other information is optional. If a contact’s entry only contains client-owned information and later owner-sourced information is added, the owner-sourced information takes priority and the existing client-owned data is converted into an annotation.
+Mensago contact information is designed from the outset to always be up-to-date and places the responsibility on the information owner to keep it that way. This does, however, present a problem when the contact information is not complete or the user wishes to keep personal notes related to the contact. The solution lies in an information overlay accomplished through the contact’s `source` field. A contact’s client item may contain an additional entry using the same `id` field and the `source` set to `client`. In this secondary entry only the required fields of a contact must be present along with the `id` field. All other information is optional. If a contact’s entry only contains client-owned information and later owner-sourced information is added, the owner-sourced information takes priority and the existing client-owned data is converted into an annotation.
 
 Information updates are sent whenever users update their contact information. These updates only send the changes. Fields which are deleted are sent with empty data.
