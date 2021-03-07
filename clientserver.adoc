@@ -40,7 +40,7 @@ Version::
 REQUIRED. A numeric string set to the client item API version. Until such time after this standard has reached final 1.0 status, this will be set to "1.0".
 
 KeyHash::
-REQUIRED. A hash of the encryption key used. The hash itself is Base85-encoded and is prefixed by the algorithm used, which can be `BLAKE2B-256`, `SHA256`, `SHA512`, `SHA3-256`, or `SHA3-512`. `BLAKE2B-256` is preferred because of its speed apart from hardware acceleration.
+REQUIRED. A hash of the encryption key used. The hash itself is Base85-encoded and is prefixed by the algorithm used, which can be `BLAKE2B-256`, `SHA-256`, `SHA512`, `SHA3-256`, or `SHA3-512`. `BLAKE2B-256` is preferred because of its speed apart from hardware acceleration.
 
 Payload::
 REQUIRED. A string containing the real data for the item, encrypted and Base85-encoded. The unencrypted payload is JSON data, but the schema is context-specific. For speed, a symmetric key is used to encrypt the payload. The algorithm must be `AES256`, `AES128`, or `XSALSA20`. The XSalsa20 cipher uses Poly1305 for message authentication and the AES ciphers use GCM. XSalsa20 is preferred because it is faster overall without depending on hardware acceleration.
