@@ -316,17 +316,24 @@ _Upload an item to the server_
 |===
 | Parameters | * Size
 * Hash
-* _resume only:_ Name
+* Path
+* _resume only:_ TempName
 * _resume only:_ Offset
-| Returns | * 200 OK
+| Returns | * 100 CONTINUE
+** TempName
+* 200 OK
 ** FileName
 | Possible Errors 
 | * 404 NOT FOUND
 * 409 QUOTA INSUFFICIENT
+* 410 HASH MISMATCH
 * 414 LIMIT REACHED
+* 309 ALGORITHM NOT SUPPORTED
 |===
 
-The client uploads data to a file on the server. First is the request for the upload, submitting the size of the upload in bytes, the hash function used, and the hash value computed on the client side. The size is expected to be accurate, as the data is treated as binary and will not be reformatted or otherwise modified. `409 QUOTA INSUFFICIENT` is returned if the workspace does not have sufficient space (or if the filesystem on the server lacks sufficient space). Once upload is complete, the server calculates the hash value of the data received, and if the value matches that sent by the client, `200 OK` is returned. If an error on the server side of the connection is experienced, `305 INTERRUPTED` is returned along with the size of the data received and the command is considered complete at that point. To finish the upload, the UPLOAD command must be sent a second time with the addition of the Name and Offset fields, where Name contains the name of the file initially given by the server and Offset containing the starting point to resume the upload.
+The client uploads data to a file on the server. First is the request for the upload, submitting the size of the upload in bytes, the hash value computed on the client side in CryptoString format, and the location to which the file is to be uploaded. The size is expected to be accurate, as the data is treated as binary and will not be reformatted or otherwise modified. `409 QUOTA INSUFFICIENT` is returned if the workspace does not have sufficient space (or if the filesystem on the server lacks sufficient space). If the client is cleared for upload after all server-side checks are complete, `100 CONTINUE` is returned along with the name of the temporary file used to store the data during upload. Once the upload is complete, the server calculates the hash value of the data received, and if the value matches that sent by the client, `200 OK` is returned along with the name of the file in its requested location. If the hashes do not match, `410 HASH MISMATCH` is returned, the temporary file is deleted, and the client will need to attempt the upload again. 
+
+If the upload is somehow interrupted, the client can request resuming a previous upload. To finish the upload, the UPLOAD command must be sent a second time with all previous fields along with TempName and Offset fields, where TempName contains the name of the file initially given by the server and Offset containing the starting point to resume the upload. The rest of the process continues as normal until the file is uploaded. Note that if the server does not support the requested algorithm for the hash, `309 ALGORITHM NOT SUPPORTED` will be returned.
 
 == Status Codes
 
@@ -352,7 +359,7 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 306 Key failure
 ** 307 Delivery failure limit exceeded
 ** 308 Delivery delay not reached
-** 309 Encryption type not supported
+** 309 Algorith not supported
 * 4xx: Client-Related Codes
 ** 400 Bad Request
 ** 401 Unauthorized
