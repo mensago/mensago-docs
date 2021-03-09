@@ -162,6 +162,23 @@ _Checks for the existence of a file or directory on the server_
 
 Returns `200 OK` if the file or directory exists.
 
+=== GETQUOTA
+
+_Gets the disk quota for the current workspace. Administrators may request the quota for other workspaces._
+
+[cols="1,3a"]
+|===
+| Parameters | * Workspace (administrator only)
+| Returns | * 200 OK
+** Size
+
+| Possible Errors 
+| * 404 NOT FOUND
+* 403 FORBIDDEN
+|===
+
+GETQUOTA obtains the disk quota value for the current workspace. An administrator account can also include a workspace ID in the Workspace parameter to obtain the disk quota for another workspace. The Size value returned is the disk quota measured in mebibytes. If issued the Workspace parameter is included in the command when issued by a non-administrator, `403 FORBIDDEN` is returned.
+
 === GETUPDATES
 
 _Requests all changes since the time specified_
@@ -334,6 +351,26 @@ _Upload an item to the server_
 The client uploads data to a file on the server. First is the request for the upload, submitting the size of the upload in bytes, the hash value computed on the client side in CryptoString format, and the location to which the file is to be uploaded. The size is expected to be accurate, as the data is treated as binary and will not be reformatted or otherwise modified. `409 QUOTA INSUFFICIENT` is returned if the workspace does not have sufficient space (or if the filesystem on the server lacks sufficient space). If the client is cleared for upload after all server-side checks are complete, `100 CONTINUE` is returned along with the name of the temporary file used to store the data during upload. Once the upload is complete, the server calculates the hash value of the data received, and if the value matches that sent by the client, `200 OK` is returned along with the name of the file in its requested location. If the hashes do not match, `410 HASH MISMATCH` is returned, the temporary file is deleted, and the client will need to attempt the upload again. 
 
 If the upload is somehow interrupted, the client can request resuming a previous upload. To finish the upload, the UPLOAD command must be sent a second time with all previous fields along with TempName and Offset fields, where TempName contains the name of the file initially given by the server and Offset containing the starting point to resume the upload. The rest of the process continues as normal until the file is uploaded. Note that if the server does not support the requested algorithm for the hash, `309 ALGORITHM NOT SUPPORTED` will be returned.
+
+== Administrator Command Reference
+
+=== SETQUOTA
+
+_Sets the disk quota for one or more workspaces_
+
+[cols="1,3a"]
+|===
+| Parameters | * Workspaces
+* Size
+| Returns | * 200 OK
+
+| Possible Errors 
+| * 404 NOT FOUND
+* 403 FORBIDDEN
+|===
+
+SETQUOTA customizes a workspace's disk quota size. The Size parameter is measured in mebibytes and is expected to be an integer greater than 0. The Workspaces parameter is a string containing a comma-separated list of workspace IDs. If issued by a non-administrator, `403 FORBIDDEN` is returned.
+
 
 == Status Codes
 
