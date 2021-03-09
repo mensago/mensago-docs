@@ -162,22 +162,23 @@ _Checks for the existence of a file or directory on the server_
 
 Returns `200 OK` if the file or directory exists.
 
-=== GETQUOTA
+=== GETQUOTAINFO
 
-_Gets the disk quota for the current workspace. Administrators may request the quota for other workspaces._
+_Gets the disk quota size and disk usage for the current workspace. Administrators may request the quota for other workspaces._
 
 [cols="1,3a"]
 |===
 | Parameters | * Workspace (administrator only)
 | Returns | * 200 OK
-** Size
+** QuotaSize
+** DiskUsage
 
 | Possible Errors 
 | * 404 NOT FOUND
 * 403 FORBIDDEN
 |===
 
-GETQUOTA obtains the disk quota value for the current workspace. An administrator account can also include a workspace ID in the Workspace parameter to obtain the disk quota for another workspace. The Size value returned is the disk quota measured in mebibytes. If issued the Workspace parameter is included in the command when issued by a non-administrator, `403 FORBIDDEN` is returned.
+GETQUOTA obtains the disk quota value for the current workspace. The QuotaSize value returned is the disk quota measured in mebibytes. The DiskUsage value returned is measured in bytes for greater precision. An administrator account can also include a comma-separated list of workspace IDs in the Workspace parameter to obtain the disk quota size and disk usage for other workspaces. Up to 100 workspace IDs may be specified in this manner, and the values in QuotaSize and DiskUsage will be comma-separated values in the same order as the workspaces were specified. If issued the Workspace parameter is included in the command when issued by a non-administrator, `403 FORBIDDEN` is returned.
 
 === GETUPDATES
 
