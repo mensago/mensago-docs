@@ -370,7 +370,7 @@ _Sets the disk quota for one or more workspaces_
 * 403 FORBIDDEN
 |===
 
-SETQUOTA customizes a workspace's disk quota size. The Size parameter is measured in mebibytes and is expected to be an integer greater than 0. The Workspaces parameter is a string containing a comma-separated list of workspace IDs. If issued by a non-administrator, `403 FORBIDDEN` is returned.
+SETQUOTA customizes a workspace's disk quota size. The Size parameter is measured in mebibytes and is expected to be an integer greater than 0. The Workspaces parameter is a string containing a comma-separated list of workspace IDs. If issued by a non-administrator, `403 FORBIDDEN` is returned. Note that if the quota for a workspace has been set to a value less than its current disk usage, the workspace will be unable to send messages or upload any new user files until either the quota increased to greater than its usage or the usage is decreased to less than its quota.
 
 
 == Status Codes
