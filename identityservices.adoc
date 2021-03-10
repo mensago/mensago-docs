@@ -6,7 +6,6 @@
 :description: Structure and description of identity services provided by the Mensago platform
 :keywords: Mensago, identity, cryptography, workspaces
 :toc: preamble
-:source-highlighter: rouge
 :table-stripes: odd
 
 *Status:* Draft in progress +
