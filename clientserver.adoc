@@ -176,9 +176,10 @@ _Gets the disk quota size and disk usage for the current workspace. Administrato
 | Possible Errors 
 | * 404 NOT FOUND
 * 403 FORBIDDEN
+* 414 LIMIT REACHED
 |===
 
-GETQUOTAINFO obtains the disk quota value for the current workspace. The QuotaSize value returned is the disk quota measured in mebibytes. The DiskUsage value returned is measured in bytes for greater precision. An administrator account can also include a comma-separated list of workspace IDs in the Workspaces parameter to obtain the disk quota size and disk usage for other workspaces. Up to 100 workspace IDs may be specified in this manner, and the values in QuotaSize and DiskUsage will be comma-separated values in the same order as the workspaces were specified. If issued the Workspace parameter is included in the command when issued by a non-administrator, `403 FORBIDDEN` is returned.
+GETQUOTAINFO obtains the disk quota value for the current workspace. The QuotaSize value returned is the disk quota measured in mebibytes. The DiskUsage value returned is measured in bytes for greater precision. An administrator account can also include a comma-separated list of workspace IDs in the Workspaces parameter to obtain the disk quota size and disk usage for other workspaces. Up to 100 workspace IDs may be specified in this manner, and the values in QuotaSize and DiskUsage will be comma-separated values in the same order as the workspaces were specified. If issued the Workspace parameter is included in the command when issued by a non-administrator, `403 FORBIDDEN` is returned. `414 LIMIT REACHED` is returned if an administrator requests more than 100 workspaces at once.
 
 === GETUPDATES
 
