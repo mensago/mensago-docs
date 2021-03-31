@@ -90,7 +90,7 @@ _Copies an item from the selected directory to another on the server_
 | Parameters | * SourceFile
 * DestDir
 | Returns | * 200 OK
-** CopyName
+** NewName
 | Possible Errors 
 | * 404 NOT FOUND
 * 409 QUOTA UNSUFFICIENT
