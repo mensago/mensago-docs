@@ -222,14 +222,15 @@ _Gets list of items in selected directory_
 
 [cols="1,3a"]
 |===
-| Parameters | * _optional:_ Time
+| Parameters | * _optional:_ Path
+* _optional:_ Time
 | Returns | * 200 OK
 ** Files
 | Possible Errors 
 | * 404 NOT FOUND
 |===
 
-Obtains a list of the entries in the current directory. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the files created at or after the timestamp are returned. If omitted or set to zero, all items in the current directory are returned. The server's response, if 200 OK, will also contain the Files field which is a list type field containing the names of the files.
+Obtains a list of the entries in the specified directory or the current one if not specified. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the files created at or after the timestamp are returned. If omitted or set to zero, all items in the current directory are returned. The server's response, if 200 OK, will also contain the Files field which is a list type field containing the names of the files.
 
 === LISTDIRS
 
@@ -237,14 +238,14 @@ _Gets list of subdirectories of the selected directory_
 
 [cols="1,3a"]
 |===
-| Parameters | _None_
+| Parameters | * _optional:_ Path
 | Returns | * 200 OK
 ** Directories
 | Possible Errors 
 | * 404 NOT FOUND
 |===
 
-Returns a list of the subdirectories of the currently-selected directory. The Directories field will be a list type field each of the directories' names.
+Returns a list of the subdirectories of the specified directory or the current one if not specified. The Directories field will be a list type field each of the directories' names.
 
 === MKDIR
 
