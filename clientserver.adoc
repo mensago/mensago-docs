@@ -145,7 +145,7 @@ _Download an item from the selected directory_
 | * 404 NOT FOUND
 |===
 
-The client downloads data from a file on the server. The client first makes the request, which includes name of the file in the current directory. Assuming that all goes well, the server returns `100 CONTINUE` along with the size of the file in bytes. The client acknowledges readiness for the transfer by sending `100 CONTINUE`. The server then transmits the data. If an offset is supplied by the client, the server is expected to begin transmission starting at the specified offset in order to resume a previously-interrupted transmission.
+The client downloads data from a file on the server. The client first makes the request, which includes name of the file in the current directory. Assuming that all goes well, the server returns `100 CONTINUE` along with the size of the file in bytes. The client acknowledges readiness for the transfer by resending the DOWNLOAD command with the size given by the server attached in the Size field. The server then transmits the data. If an offset is supplied by the client, the server is expected to begin transmission starting at the specified offset in order to resume a previously-interrupted transmission.
 
 === EXISTS
 
