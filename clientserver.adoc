@@ -195,7 +195,7 @@ _Requests all changes since the time specified_
 
 The client requests a list of updates since the requested time. Time is submitted in seconds since the Epoch (UNIX time), UTC time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest.
 
-The Remaining field exists for circumstances where there are an unusually large number of updates requested. The field contains the number of updates not returned by the server. Server implementors would be wise to set a maximum number of updates returned by one transation.
+The Remaining field exists for circumstances where there are an unusually large number of updates requested. The field contains the number of updates not returned by the server. Server implementors would be wise to set a maximum number of updates returned by one transaction.
 
 There are three types of updates: CREATE, DELETE, and MOVE.
 
