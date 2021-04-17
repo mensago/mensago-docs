@@ -190,31 +190,30 @@ _Requests all changes since the time specified_
 | Parameters | * Time
 | Returns | * 200 OK
 ** Updates
-** Remaining
 |===
 
-The client requests a list of updates since the requested time. Time is submitted in seconds since the Epoch (UNIX time), UTC time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest.
-
-The Remaining field exists for circumstances where there are an unusually large number of updates requested. The field contains the number of updates not returned by the server. Server implementors would be wise to set a maximum number of updates returned by one transaction.
+The client requests a list of updates since the requested time. Time is submitted in seconds since the Epoch (UNIX time), UTC time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 8192 byte limit for message sizes creates a rough upper boundary of 150-175 update records.
 
 There are three types of updates: CREATE, DELETE, and MOVE.
 
 ....
 Updates : [
 	{	"Type" : "Create", 
-		"Path" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1" 
+		"Data" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Time" : "1616083888"
 	},
 	{	"Type" : "Move",
-		"Source" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Destination" : "/ ec795b28-ea77-4b5d-b860-6d484222feb1" 
+		"Data" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Time" : "1616083888"
 	},
 	{	"Type" : "Delete",
-		"Path" : "/ ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1"
+		"Data" : "/ ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Time" : "1616083888"
 	}
 ]
 ....
 
-`Create` and `Delete` updates list the full path of the new item and is received even if the item is not part of the selected directory. `Move` updates follow the format of the MOVE command, providing the full path of the item prior to the move and then the new directory to which it was moved.
+`Create` and `Delete` updates list the full path of the new item and is received even if the item is not part of the selected directory. `Move` updates follow the format of the MOVE command, providing the full path of the item prior to the move and then the new directory to which it was moved. Both paths are returned in the same string, in this case.
 
 === LIST
 
