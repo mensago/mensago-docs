@@ -316,6 +316,7 @@ _Sends an item to another server_
 |===
 | Parameters | * Size
 * Hash
+* Domain
 * _resume only:_ Name
 * _resume only:_ Offset
 | Returns | * 200 OK
@@ -326,7 +327,7 @@ _Sends an item to another server_
 * 414 LIMIT REACHED
 |===
 
-This command works exactly like UPLOAD except that the server processes it for delivery to another domain instead of for local storage. The message uploaded is expected to have encrypted delivery information sections for both the sending and receiving servers. Items uploaded via SEND without delivery information are should be expected to be deleted by the server.
+This command works exactly like UPLOAD except that the server processes it for delivery to another domain instead of for local storage. The message uploaded is expected to have encrypted delivery information sections for both the sending and receiving servers. Items uploaded via SEND without delivery information are should be expected to be deleted by the server. The Domain parameter specifies the receiving domain, enabling the server to know where to deliver the message without having to decrypt the sender header. Note that the recipient's domain is used and not the recipient's entire address.
 
 === UPLOAD
 _Upload an item to the server_
