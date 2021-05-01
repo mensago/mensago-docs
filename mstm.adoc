@@ -49,7 +49,7 @@ The problems which MSTM is intended to solve in replacing HTML for rich formatti
 
 * _Accessibility Problems_ - The client has final say on how a message is displayed and easier parsing gives control to accessibility tools like screen readers.
 
-* _Security_ - no embedded scripting. Period.
+* _Security_ - Allowing executable code, such as Javascript, in an environment that needs to be secure is a recipe for security problems. No embedded scripting of any kind is permitted. Period.
 
 * _Bloat_ - Messages are much smaller because of fewer header fields, simpler markup, and messages don’t need to internally store two different copies of the same content. A web browser is not required to
 be a component of a messaging client, reducing binary size and code complexity.
@@ -59,7 +59,7 @@ be a component of a messaging client, reducing binary size and code complexity.
 === anchor:syntax[]Syntax
 
 MSTM marks text with pairs of tags enclosed in square brackets. Each opening tag MUST have a corresponding closing tag. Each closing tag MUST begin with a forward slash (/) immediately before the text of the
-closing tag. White space MAY be found between the square brackets and the enclosed text, but space MUST NOT be found between the slash and the tag text. For example:
+closing tag. Whitespace MAY be found between the square brackets and the enclosed text, but space MUST NOT be found between the slash and the tag text. For example:
 
 *Correct*
 
