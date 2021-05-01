@@ -28,22 +28,58 @@ Like those that came before, Mensago' client-server protocol is text-based for g
 
 Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms. Argon2id is utilized for password hashing. SHA2-256, AES-256 and the 2048- and 4096-bit versions of RSA are options for environments which require certified algorithms.
 
-== Client Items
+== Client Files
 
-The Mensago server's main role is storage and synchronization of opaque data files called *client items*. These JSON-formatted text files contain an encrypted payload, where the actual message content is stored, and some minimal metadata in its header.
+The Mensago server's main role is storage and synchronization of opaque data files called *client files*. These files contain four parts:
 
-*TODO:* Message format sample here
+1. An identifier line for `magic(5)` -- all client files begin with this.
+2. JSON-formatted envelope data
+3. A separator line consisting of 10 dashes (ASCII 45) followed by a carriage return and line feed
+4. The Base85-encoded encrypted payload.
 
-*Client Item Fields*
+The payload for a client file begins with a line containing a CryptoString identifier indicating the encryption type. For more information about the CryptoString format, please consult the Mensago Platform Overview. The payload data then begins on a new line. The unencrypted payload itself is JSON-structured data, detailed further below.
+
+The payload encryption type is currently either XSALSA20 or AES-256. The XSalsa20 cipher uses Poly1305 for message authentication and the AES ciphers use GCM. XSalsa20 is preferred because it is faster overall without depending on hardware acceleration.
+
+[source]
+----
+MENSAGO
+{
+    "Version": "1.0",
+    "Receiver": "G!$Rod&LyJ6-yNaemQ?i`l&*|{V&aco)IUNj!RuS3VbAVQ5@BFu!lQDF+6&n>Zjm7h6#cL<jct?4uqj@#SYJ=n3@GqIuXvwJyfK>$uQ}u%kTd_L?rC1uNRLe0@<is)NRiCl?Ws;EI!0}a}H1c!-Z}lLp@SBdiAEK>86z",
+    "Sender": "65}GwUkZNN42t=#`4wj4V~Z~ND97KHB1pnvzmpwUgcjANT>3_j9+}!u)pvsgD07Sr3EC@K$~hc&(jpsJQ|}eT8=N7`t$}KgF9qi~dDVA{5W^uq9zx_LR$KKseCbt4_y6Lqj6xAQfK^jjrS;Cx4~mLV<mnnjk*cY*!W$ZaGTfo&",
+    "Date": "20190905 155323",
+    "KeyHash": "BLAKE2B-256:cy)wynX>FX1!`%3rR}t1ILJTtM*q)|cI_^ycs9D?",
+    "PayloadKey": "2Iuql{B^xtCES?}`Sy-o-z##Jzo&blqkQMk_Vg@yrNal66#^p2X9waP??5078`D#ab*_n4sNR1glHWqEaf_wQ53z~vRl1o<?JaRMugPL#gjI)<sAv6DTm_@6^#"
+}
+----------
+XSALSA20
+Out!JUOZxWzT9FMtl@QKpJH4;jPOT>16T0I(-53YFi~@mT|zBb`dC8ZmyYw&wL3fVjAB6F3GyL<KxMj0tW23agZPJRzosYY_jO$Q(w+mq6fOu9T%9=OB8#BGEJ+mpg&)4`i<K)!PSS`(-xmDfMD<e44%P-fbPHDhQtt+xW#p*JX_ZT&jX~M*-62-aD?r>ye=HonJ*-C1edIoZ>XJb9cFrN`8e@3|`UV1v{{i60Z{gY(UlT)k-u)csnX-S4Gph=XC3o>}mGQzaKx&Wt&XJsJr9D`U%uQ0;D6@R|ZJ8Ag^)*OG3nB&~k#pi;)_pXh_J8&)Al$G`;evJ*ViFas&P%Z8nAR0#s6r1Ubj#wo{m+S*4g9CZpGZlU+-!5;Hg3fEj>(;i(sNVDDGlKfMWS1=IJkXp)JR9SdHb7*>`;y;qwlp~C%L;vcuE^(<ad^G{-)cS
+----
+
+*Client File Envelope Fields*
 
 Version::
 REQUIRED. A numeric string set to the client item API version. Until such time after this standard has reached final 1.0 status, this will be set to "1.0".
 
+Date::
+REQUIRED. UTC timestamp of when the file was created. This timestamp MUST be in the format "YYYYMMDD HHMMSS".
+
+PayloadKey::
+REQUIRED. The ephemeral 32-byte key used to encrypt the payload. Each key is unique to the file. For deliverable data, i.e. messages, this key is encrypted with a public key held by the recipient. For files not intended to be delivered, such as contacts, notes, and tasks, this key is encrypted with a public key held by the file owner.
+
 KeyHash::
 REQUIRED. A hash of the encryption key used. The hash itself is Base85-encoded and is prefixed by the algorithm used, which can be `BLAKE2B-256`, `SHA-256`, `SHA512`, `SHA3-256`, or `SHA3-512`. `BLAKE2B-256` is preferred because of its speed apart from hardware acceleration.
 
-Payload::
-REQUIRED. A string containing the real data for the item, encrypted and Base85-encoded. The unencrypted payload is JSON data, but the schema is context-specific. For speed, a symmetric key is used to encrypt the payload. The algorithm must be `AES256`, `AES128`, or `XSALSA20`. The XSalsa20 cipher uses Poly1305 for message authentication and the AES ciphers use GCM. XSalsa20 is preferred because it is faster overall without depending on hardware acceleration.
+Sender::
+CONDITIONAL. The contents of this field consists of Base85-encoded encrypted JSON data. It is required if the client file is intended for delivery and MUST be accompanied by a `Receiver` field. The unencrypted data contains only two fields: the `From` field, which contains the full address of the sender, and the `RecipientDomain` field, which contains only the domain of the intended recipient. It is encrypted with the Primary Encryption Key of the sender's organization. This construct helps protect sender and recipient privacy.
+
+Receiver::
+CONDITIONAL. The contents of this field consists of Base85-encoded encrypted JSON data. It is required if the client file is intended for delivery and MUST be accompanied by a `Sender` field. The unencrypted data contains only two fields: the `To` field, which contains the full address of the recipient, and the `SenderDomain` field, which contains only the domain of the sender. It is encrypted with the Primary Encryption Key of the recipient's organization. This construct helps protect sender and recipient privacy.
+
+*Client File Payload Structure*
+
+TODO
 
 == Limitations, Maximums, and Timeouts
 

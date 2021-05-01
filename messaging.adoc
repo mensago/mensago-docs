@@ -7,7 +7,7 @@ v1.0, 2019-09-06
 
 == Description
 
-The reason for Mensago’ existence is to replace e-mail with a secure, private, and otherwise better technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are generated to be used for management of communications on the Mensago platform. This specification describes messaging workflows and the payload portion of a client item which is used for messaging. The wrapper information for the client item, i.e. encryption type, recipient address, etc., is described in the Mensago Client-Server API specification.
+The reason for Mensago’ existence is to replace e-mail with a secure, private, and otherwise better technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are for communications management. This specification describes messaging workflows and the payload portion of a client item which is used for messaging. The wrapper information for the client item, i.e. encryption type, recipient address, etc., is described in the Mensago Client-Server API specification.
 
 == Encryption Keys
 
@@ -37,18 +37,22 @@ a shared workspace have been obtained.
 
 Every user file on a Mensago server is stored in encrypted form. All binary data is Base85-encoded so that it is human-readable at a basic level in the event of the need for an administrator's intervention. Listed below is a sample of the contents of one of these files.
 
-[source,json]
+[source]
 ----
+MENSAGO
 {
-  "Type": "usermessage",
-  "Version": "1.0",
-  "Recipient": "2!Z1$O<N#siM>)d^J@DD3`<g0G<KtG#J#j)@6Lq~G;637T%1`uQk0Dp6KQr0dSQ+Wrb3Aya?OSTJB;PWJ2LDO`mtV8T!yL-+(GVVsoF3f^N4lf|C@UAKOwP;TtlRa^*kG<K~QyY*tJCKfSrpUj_zoP6Kzr<4L~lB0C=(",
-  "Sender": "Ud7EGjyiKRAu0O<f7xDZL<nS!monST3zNwDDttu*(cCtVP?YU>9X~QUU{tKW<%4WGl=aV-`F??zVghog5uf?TJ{}e-<U044_5J<~^t86~1m)-IPiok3W_Ea6G3zh;-;ou<n}c=KxEC4wAVQc(bX-rTjQY5D7H^9{nY39tXV*3^",
-  "Date": "20190905 155323",
-  "PayloadKey": "oDq7T<grqJ*|*yU%4Dc5r`6m+0ue%ckAnfB(dOPnoub*_WpzMKHl6q@ghNN2Fz^3$z#NOQA$HTC`}|)>4RB7jSkhxNZ@J#>Tc(-)+%TW@1ZqJt#o{c@j>#m#X#",
-  "Payload": "&8a~nkrzJz<7U%|HtS;2a%E@1<83UC9SK!mJ|ILI{m*wS^7s%pgTI6XI2*9I6~Uz4@nRg$U+U@au>4E<&_Vo*vV{RkiC5$p*bEfwA2t4Q12qntnDxL|Z3QF+6r=gPG!flc){)UcoM|%WfgNzZ?$nynN8E4Jx76Z2hZf`WdoPPeOnH@=I%<p!Lu=7j0R=;-agWX=T0V)wStxbUM(y~#c@tS`i%aT>sbPZY1FY^W_sAOjNZHn%{&PzNAuxDC5}H8oSOLMQa}E@OGvc1V)OKYY&lKgX`~oS80hh4jh&UsA(%lL8kHe*kq7rHkl)+n3X@ejMy<ch0{(Gd-+g51d2VoE)1AcMv8x)Bn+a%e`MlxH@FI6WUvSz^hK<dpt;4U3Q0ZI1LYr3d_*!c#g-;^Z}?FvRTB;>>hBRo^4`dz{-CH6yxok0r=d=o+Dy`2{D8EpxV"
+    "Version": "1.0",
+    "Receiver": "G!$Rod&LyJ6-yNaemQ?i`l&*|{V&aco)IUNj!RuS3VbAVQ5@BFu!lQDF+6&n>Zjm7h6#cL<jct?4uqj@#SYJ=n3@GqIuXvwJyfK>$uQ}u%kTd_L?rC1uNRLe0@<is)NRiCl?Ws;EI!0}a}H1c!-Z}lLp@SBdiAEK>86z",
+    "Sender": "65}GwUkZNN42t=#`4wj4V~Z~ND97KHB1pnvzmpwUgcjANT>3_j9+}!u)pvsgD07Sr3EC@K$~hc&(jpsJQ|}eT8=N7`t$}KgF9qi~dDVA{5W^uq9zx_LR$KKseCbt4_y6Lqj6xAQfK^jjrS;Cx4~mLV<mnnjk*cY*!W$ZaGTfo&",
+    "Date": "20190905 155323",
+    "KeyHash": "BLAKE2B-256:cy)wynX>FX1!`%3rR}t1ILJTtM*q)|cI_^ycs9D?",
+    "PayloadKey": "2Iuql{B^xtCES?}`Sy-o-z##Jzo&blqkQMk_Vg@yrNal66#^p2X9waP??5078`D#ab*_n4sNR1glHWqEaf_wQ53z~vRl1o<?JaRMugPL#gjI)<sAv6DTm_@6^#"
 }
+----------
+XSALSA20
+Out!JUOZxWzT9FMtl@QKpJH4;jPOT>16T0I(-53YFi~@mT|zBb`dC8ZmyYw&wL3fVjAB6F3GyL<KxMj0tW23agZPJRzosYY_jO$Q(w+mq6fOu9T%9=OB8#BGEJ+mpg&)4`i<K)!PSS`(-xmDfMD<e44%P-fbPHDhQtt+xW#p*JX_ZT&jX~M*-62-aD?r>ye=HonJ*-C1edIoZ>XJb9cFrN`8e@3|`UV1v{{i60Z{gY(UlT)k-u)csnX-S4Gph=XC3o>}mGQzaKx&Wt&XJsJr9D`U%uQ0;D6@R|ZJ8Ag^)*OG3nB&~k#pi;)_pXh_J8&)Al$G`;evJ*ViFas&P%Z8nAR0#s6r1Ubj#wo{m+S*4g9CZpGZlU+-!5;Hg3fEj>(;i(sNVDDGlKfMWS1=IJkXp)JR9SdHb7*>`;y;qwlp~C%L;vcuE^(<ad^G{-)cS
 ----
+
 It is immediately obvious that very little useful data can be gleaned from the contents of one of these files. This is by design. It is impossible for a malicious actor who has compromised the sending or receiving server to immediately discern anything. If the actor were able to access the private key for the server, they could decrypt the `Recipient` field for incoming messages and the `Sender` field for outgoing messages. Both fields could be decrypted for messages which were sent and received by users within the organization. The only information gained would be sender and recipient information and timestamps of the messages.
 
 When fully decrypted, the message information would look like this:
@@ -56,25 +60,30 @@ When fully decrypted, the message information would look like this:
 [source,json]
 ----
 {
-  "Type": "usermessage",
   "Version": "1.0",
-  "Recipient": {
+  "Receiver": {
     "To": "22222222-2222-2222-2222-222222222222/example.com",
-    "Sender": "example.com"
+    "SenderDomain": "example.com"
   },
   "Sender": {
     "From": "11111111-1111-1111-1111-111111111111/example.com",
-    "Recipient": "example.com"
+    "RecipientDomain": "example.com"
   },
   "Date": "20190905 155323",
-  "Payload": {
-    "From": "11111111-1111-1111-1111-111111111111/example.com",
-    "To": "22222222-2222-2222-2222-222222222222/example.com",
-    "Date": "20190905 155323",
-    "ThreadID": "2280c1f2-d9c0-440c-a182-967b16ba428a",
-    "Subject": "Sample User Message",
-    "Body": "It was a bright cold day in April, and the clocks were striking thirteen."
-  }
+}
+----
+
+The PayloadKey field would just contain a 32-byte blob of binary data that was used for the encryption key. The payload, which was kept separate in the file, would look like this:
+
+[source,json]
+----
+{
+  "From": "11111111-1111-1111-1111-111111111111/example.com",
+  "To": "22222222-2222-2222-2222-222222222222/example.com",
+  "Date": "20190905 155323",
+  "ThreadID": "2280c1f2-d9c0-440c-a182-967b16ba428a",
+  "Subject": "Sample User Message",
+  "Body": "It was a bright cold day in April, and the clocks were striking thirteen."
 }
 ----
 
