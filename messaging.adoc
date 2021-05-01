@@ -123,6 +123,8 @@ _Data_ - REQUIRED. The Base85-encoded data.
 
 System messages are not sent directly to a user. Instead, they facilitate communications and protocol state and are encrypted unless stated otherwise. Aside from those directly-related to messaging, system messages are defined in the specification to which they are related.
 
+All system messages are required to have the type `sysmessage` and also have a `Subtype` field, which indicates the type of system message. The schema for a system message is defined based on the `Type`, `Subtype`, and `Version` fields.
+
 *Abuse Report*
 
 Abuse reports are sent to the address specified in the organization’s keycard, or if not specified, the Admin address. It is structurally similar to a standard user message except that the subtype is `abusereport` and the subject MUST be the numeric address of the offender. The body of the message MUST contain the description of the abuse report. The submitter MAY attach a sample of the message to the
