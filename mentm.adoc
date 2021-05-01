@@ -96,9 +96,13 @@ The technical expertise of the user cannot be assumed in any way. Any references
 
 === anchor:incorrect-content-handling[]Handling Incorrect Content
 
-Although it is expected that most content will conform to this specification, there will be instances where it does not. This section defines some general rules for handling incorrect content. 
+Although it is expected that most content will conform to this specification, there will be instances where it does not. This section defines some rules of thumb for handling incorrect content. 
 
-TODO: Finish
+Auto-Close Where Appropriate::
+In the case of missing closing tags, add closing tags where appropriate. For example, some formatting tags like `bold` and `code` can be safely closed at the end of a document or when a `table` tag is encountered. Table-related tags like `cell` and `header` should be closed with a `table` closing tag. This will still make the document not display as intended, but undefined behavior can be reduced.
+
+Ignore Failing Data::
+Many kinds of errors can be handled simply by ignoring the bad data or doing nothing. If a closing tag is encountered which does not have a match, strip it out and move on. Nonstandard parameters can be ignored. If a tag is missing a required parameter, simply remove it -- and the corresponding closing tag -- before rendering. Colors that don't exist can either be black or continue the existing color. In short, it is better to display the content "poorly" than not at all.
 
 == anchor:tag-reference[]Tag Reference
 
