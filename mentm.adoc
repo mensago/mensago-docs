@@ -92,7 +92,13 @@ Each parameter MUST follow the format of parameter name, equal sign, and value e
 
 As a security and privacy measure, all content referenced in a document MUST be local to the client, such as a file or database record. Only filenames are used. The exact method of storing and retrieving said content is left to the implementor. For example, in the case of a note in which the user has inserted an image, the image MUST be local to the PC on which the note is written. Images obtained from the World Wide Web MAY be used ONLY if the image is first downloaded to local storage and then a link created which points to the downloaded copy.
 
-Any references to non-local content SHOULD be displayed clearly as a hyperlink and be in a way that the user is able to see the exact destination. URL de-obfuscation is not a requirement, but is highly recommended. Conversion of escape codes to actual characters, such as %20 for spaces, is recommended for link display to aid less-technical users in understanding link destinations. Although not required, integration of website/domain reputation services is also recommended for client implementations.
+The technical expertise of the user cannot be assumed in any way. Any references to non-local content MUST be displayed clearly as a hyperlink and be formatted in a way that the user is able to see the exact destination. URL de-obfuscation is not required, but it is highly recommended. Conversion of escape codes to actual characters, such as %20 for spaces, is recommended for link display to aid less-technical users in understanding link destinations. Although not required, integration of website/domain reputation services is also recommended for client implementations.
+
+=== anchor:incorrect-content-handling[]Handling Incorrect Content
+
+Although it is expected that most content will conform to this specification, there will be instances where it does not. This section defines some general rules for handling incorrect content. 
+
+TODO: Finish
 
 == anchor:tag-reference[]Tag Reference
 
