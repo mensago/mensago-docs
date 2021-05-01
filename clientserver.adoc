@@ -57,6 +57,24 @@ XSALSA20
 Out!JUOZxWzT9FMtl@QKpJH4;jPOT>16T0I(-53YFi~@mT|zBb`dC8ZmyYw&wL3fVjAB6F3GyL<KxMj0tW23agZPJRzosYY_jO$Q(w+mq6fOu9T%9=OB8#BGEJ+mpg&)4`i<K)!PSS`(-xmDfMD<e44%P-fbPHDhQtt+xW#p*JX_ZT&jX~M*-62-aD?r>ye=HonJ*-C1edIoZ>XJb9cFrN`8e@3|`UV1v{{i60Z{gY(UlT)k-u)csnX-S4Gph=XC3o>}mGQzaKx&Wt&XJsJr9D`U%uQ0;D6@R|ZJ8Ag^)*OG3nB&~k#pi;)_pXh_J8&)Al$G`;evJ*ViFas&P%Z8nAR0#s6r1Ubj#wo{m+S*4g9CZpGZlU+-!5;Hg3fEj>(;i(sNVDDGlKfMWS1=IJkXp)JR9SdHb7*>`;y;qwlp~C%L;vcuE^(<ad^G{-)cS
 ----
 
+A fully-decrypted file header, excluding the `PayloadKey` field, would look like this:
+
+[source,json]
+----
+{
+  "Version": "1.0",
+  "Receiver": {
+    "To": "22222222-2222-2222-2222-222222222222/example.com",
+    "SenderDomain": "example.com"
+  },
+  "Sender": {
+    "From": "11111111-1111-1111-1111-111111111111/example.com",
+    "RecipientDomain": "example.com"
+  },
+  "Date": "20190905 155323",
+}
+----
+
 *Client File Envelope Fields*
 
 Version::
@@ -79,7 +97,15 @@ CONDITIONAL. The contents of this field consists of Base85-encoded encrypted JSO
 
 *Client File Payload Structure*
 
-TODO
+The payload of a client file is separated from the header information for delivery efficiency. Its contents are also JSON data. The precise schema used depends on the purpose of the payload. All payloads are required to have two specific fields for identification purposes.
+
+Type::
+REQUIRED. This field is a lowercase string which defines the purpose of the rest of the data.
+
+Version::
+REQUIRED. This field is the API version for the payload type. It is different from the `Version` field used in the file header.
+
+Aside from these two platform-required fields, there may also be other fields in the payload as defined by the type of data stored therein.
 
 == Limitations, Maximums, and Timeouts
 
@@ -101,13 +127,15 @@ Universally Unique Identifiers (UUIDs) are used extensively. Files utilize a thr
 
 Server-side paths are represented in a unique way: the start of the path is always a single slash (`/`) followed by directory elements. Each directory element is separated by a space. Because filesystem entries  follow a very specific format, accounting for whitespace and special  characters in paths is not necessary. An example path looks like this: `/ 0cfb91e8-256b-420b-b37d-db28004120f5 aa7347c1-a837-460f-8cf0-698d4411758a ac7971bf-fe44-400c-8605-eb499b9274ad`. Server-side paths are always absolute–relative references -- using `.` and `..` are not supported, and any path using them MUST be rejected. Path references are always relative to the root directory of a workspace; no access outside of the workspace directory hierarchy is permitted for any client.
 
-Although there is a standard filesystem layout for Mensago workspace  data, the server is not responsible for creating any directories; it is all handled by the client. Clients are expected to maintain a mapping of the real name of a directory in the workspace to the UUID used for its name on the server side. A malicious actor with server access is able to obtain very little useful information about any of the files stored on the system.
+Each workspace has a standard filesystem layout. Directories are utilized for each data mode -- messages, calendars, contact, etc. The server is not responsible for creating any of these directories; each of these is managed by the client. Clients are expected to maintain a mapping of the real name of a directory in the workspace to the UUID used for its name on the server side. A malicious actor with server access is able to obtain very little useful information about any of the files stored on the system.
+
+Mensago servers will ensure certain directories exist within the workspace storage area to ensure message delivery. Although the details may vary from one server implementation to another, a temporary storage area is utilized for uploads before they are transferred to workspace storage. If a standard file/folder filesystem layout is used for temporary file storage, it is recommended that implementations use `/ tmp` as the temporary storage location with a subdirectory dedicated to the temporary file for each workspace. Servers should also ensure that each workspace's root directory exists along with the `new` subdirectory within each workspace root directory that is used for new message storage.
 
 == Settings Sync and Server-Side Storage
 
 In order to provide the highest level of privacy and security for user data, the server is given a minimal level of trust. This means that it can be utilized for basic functions to assist client software, but all user data must be inaccessible from the server side.
 
-Server-side storage for data other than client items should be stored in the `/ settings` directory. Device-specific key exchange archives should be stored here. Client software may also store application-specific settings information in an encrypted archive file, as well. Although JSON is recommended as a storage format inside the encrypted archive, the exact format is determined by the application.
+Server-side storage for data other than client files should be stored in the `/ settings` directory. Device-specific key exchange archives should be stored here. Client software may also store application-specific settings information in an encrypted archive file, as well. Although JSON is recommended as a storage format inside the encrypted archive, the exact format is determined by the application.
 
 The name of the settings file is determined by the client software. The file is expected to be encrypted by a key used just for settings storage. The recommended format for maximum privacy is to use the first 32 characters of the Base64-encoded hash of the encryption key followed by a period and a number indicating the version. An example would look like this: `f9c9e42c25002e7148dceea7d687fea89.23`.
 
