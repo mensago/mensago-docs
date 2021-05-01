@@ -173,10 +173,10 @@ design of the platform.
 The contact request process is as follows:
 
 [arabic]
-. User #1 retrieves and validates User #2’s keycard. The keycard request is sent both through the user’s server and from the user’s client itself to ensure no sneaky tricks by either server. The keycard for User #2 contains an encryption key used to encrypt the contact request. More information on keycards can be found in the link:/spec/keycard[Keycard Specification].
+. User #1 retrieves and validates User #2’s keycard. The keycard request is sent both through the user’s server and from the user’s client itself to ensure no sneaky tricks by either server. The keycard for User #2 contains an encryption key used to encrypt the contact request. More information on keycards can be found in the Keycard Specification.
 . User #1 sends a request to User #2. This request contains whatever contact information User #1 wishes to share (name, address, etc.) in the form of a Personal Information Profile (PIP). It is signed by User #1’s
 request signing key so that User #2 can verify that the request actually came from User #1 and encrypted with User #2’s request encryption key so that no one except User #2 can read it. Once received, User #2 can
-determine if contact should be permitted. More information on PIPs can be found in the link:/spec/contacts[Contacts Specification].
+determine if contact should be permitted. More information on PIPs can be found in the Contacts Specification.
 . User #2 may drop the request and optionally block future requests. If User #2 approves the request, an encrypted response is sent with User #2’s PIP. Unlike the initial request, the acceptance message contains
 the full information provided in the PIP provided by User #2. . User #1 receives the approval and is asked to share his/her personal information with User #2. How much information is shared is up to User
 #1. This response also includes other encryption keys, such as User #1’s broadcast and system keys.
@@ -196,8 +196,7 @@ Initiated by a client when a user requests contact with another user. The client
 *Contact Request: Stage 2 (Initiation)*
 
 Sent after the potential contact’s request key has been received. The client is not required to provide any more personal information than that which is already available in the user’s keycard. However, users
-are encouraged to share additional information to help the recipient validate who the sender is. With the exception of non-primary encryption keys, any field found in the link:/spec/clientside/contacts[Contacts
-Specification] can be found as part the contact request payload. A sample payload is shown below.
+are encouraged to share additional information to help the recipient validate who the sender is. With the exception of non-primary encryption keys, any field found in the Contacts Specification can be found as part the contact request payload. A sample payload is shown below.
 
 [source,json]
 ----
