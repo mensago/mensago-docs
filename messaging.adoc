@@ -11,13 +11,11 @@ The reason for Mensago’ existence is to replace e-mail with a secure, private,
 
 == Encryption Keys
 
-Each Mensago workspace uses multiple encryption keys. Two of the reasons for this are flexibility and security: concerns are better separated and if a key should be compromised, it is easier to update the one key for one component of the system than to update all of them.
+Each Mensago workspace uses multiple encryption keys. Two of the reasons for this are flexibility and security: concerns are better separated and if a key should be compromised, it is far easier to update the one key for one component of the system than to update all of them.
 
-*Primary Key* : The account primary key is an asymmetric keypair. This key is used for one-to-one messaging and encrypting other security keys for transport.
+*Message Encryption/Signing Keys* : Each contact in a workspace's address book is assigned its own unique keypairs which are used for signing and encrypting messages, preventing contacts from sharing keys. 
 
-*Signing Key* : This asymmetric keypair is the workspace’s identity key.
-
-*Contact Request Key* : This asymmetric key is only used for contact requests. Unlike all other user keys, the public half of this one is published the user’s keycard and is easily-accessible public information.
+*Contact Request Encryption Key* : This asymmetric keypair is only used for contact requests. The public half of this key and the public half of the user's Contact Request Signing Key (below) are published the user’s keycard and are easily-accessible public information, unlike all of a workspace's other encryption and signing keys.
 
 *Contact Request Signing Key* : This asymmetric keypair is for signing contact requests before they are encrypted.
 
@@ -55,7 +53,7 @@ Out!JUOZxWzT9FMtl@QKpJH4;jPOT>16T0I(-53YFi~@mT|zBb`dC8ZmyYw&wL3fVjAB6F3GyL<KxMj0
 
 It is immediately obvious that very little useful data can be gleaned from the contents of one of these files. This is by design. It is impossible for a malicious actor who has compromised the sending or receiving server to immediately discern anything. If the actor were able to access the private key for the server, they could decrypt the `Recipient` field for incoming messages and the `Sender` field for outgoing messages. Both fields could be decrypted for messages which were sent and received by users within the organization. The only information gained would be sender and recipient information and timestamps of the messages.
 
-When fully decrypted, the message information would look like this:
+When fully decrypted, the message envelope information would look like this:
 
 [source,json]
 ----
@@ -73,7 +71,7 @@ When fully decrypted, the message information would look like this:
 }
 ----
 
-The PayloadKey field would just contain a 32-byte blob of binary data that was used for the encryption key. The payload, which was kept separate in the file, would look like this:
+The `PayloadKey` field would just contain a 32-byte blob of binary data that was used for the encryption key. The payload, which was kept separate in the file, would look like this:
 
 [source,json]
 ----
@@ -101,7 +99,7 @@ _CC_ - OPTIONAL. A list of numeric Mensago addresses of any carbon-copied recipi
 
 _BCC_ - OPTIONAL. A list of numeric Mensago addresses of any blind carbon-copied recipients.
 
-_Date_ - REQUIRED. The UTC date and time when the message was sent. The date MUST be sent using https://en.wikipedia.org/wiki/ISO_8601[ISO 8601] basic (compact) format. The time MUST be sent in the format HHMMSS. One space MUST be used to separate the two as in the following example: `YYMMDD HHMMSS`.
+_Date_ - REQUIRED. The UTC date and time when the message was sent in the format `YYMMDD HHMMSS`.
 
 _ThreadID_ - REQUIRED. A UUID is used to represent the conversation ID.
 
