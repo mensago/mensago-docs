@@ -93,13 +93,13 @@ _Type_ - REQUIRED. This field is required for all payloads. It defines the type 
 
 _Version_ - REQUIRED. This field is required for all payloads. In this case it contains the messaging API version.
 
-_From_ - REQUIRED. The numeric Mensago address of the sender.
+_From_ - REQUIRED. The workspace address of the sender.
 
-_To_ - REQUIRED. The numeric Mensago address of the recipient.
+_To_ - REQUIRED. The workspace address of the recipient. This field MUST contain only one address. If a message is sent to multiple recipients, the others must be indicated in the `CC` or `BCC` fields. At no time should this field contain a Mensago address, such as _CatsR4Evar/example.com_
 
-_CC_ - OPTIONAL. A list of numeric Mensago addresses of any carbon-copied recipients.
+_CC_ - OPTIONAL. A list of other recipients. Like the `To` field, this MUST contain only workspace addresses. Each recipient in this field will be able to see the workspace addresses of other recipients in this field.
 
-_BCC_ - OPTIONAL. A list of numeric Mensago addresses of any blind carbon-copied recipients.
+_BCC_ - OPTIONAL. A list of workspace addresses of any blind carbon-copied recipients. Recipients in this field will not see the addresses of any other recipients in their copy of the message. Like the `To` field, this MUST contain only workspace addresses.
 
 _Date_ - REQUIRED. The UTC date and time when the message was sent in the format `YYMMDD HHMMSS`.
 
@@ -137,7 +137,7 @@ administrator, if need be.
     "Subtype" : "abusereport",
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
-    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com" ],
+    "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
     "Date" : "20190905 155323",
     "ThreadID" : "8e24ab6b-b466-492b-a3b1-4ce736a59563",
     "Subject" : "df7c310a-b947-4f9d-a66b-600d5fdd7e0c/mensago-example.com",
@@ -157,7 +157,7 @@ message except that the subtype is `supportrequest`. The subject MUST contain a 
     "Subtype" : "supportrequest",
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
-    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com" ],
+    "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
     "Date" : "20190905 155323",
     "ThreadID" : "8e24ab6b-b466-492b-a3b1-4ce736a59563",
     "Subject" : "I can't find the Any key",
@@ -206,7 +206,7 @@ Specification] can be found as part the contact request payload. A sample payloa
     "SubType" : "ContactReq.1",
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
-    "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com" ],
+    "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
     "Date" : "20190905 155323",
     "Sensitivity" : "Public",
     "EntityType" : "individual",
