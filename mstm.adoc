@@ -37,7 +37,7 @@ v1.0, 2019-08-08
 
 == anchor:description[]Description
 
-MSTM, pronounced _MISS-tim_ or _em-ESS-tee-em-ell_, is short for Mensago Safe Text Markup. It is a plaintext-with-markup format for describing rich formatting in a way that is expressive, easy to parse, and easy to implement with a measure of safety and security. It is heavily inspired by https://en.wikipedia.org/wiki/BBCode[BBCode], but introduces changes to make it more consistent and full-featured. It is intended to be the transmission format for all text on the Mensago platform, including messages, notes, and so on.
+MSTM, pronounced _MISS-tim_ or _em-ESS-tee-em_, is short for Mensago Safe Text Markup. It is a plaintext-with-markup format for describing rich formatting in a way that is expressive, easy to parse, and easy to implement with a measure of safety and security. It is heavily inspired by https://en.wikipedia.org/wiki/BBCode[BBCode], but introduces changes to make it more consistent and full-featured. It is intended to be the transmission format for all text on the Mensago platform, including messages, notes, and so on.
 
 Mensago clients need to provide users the ability to communicate in an expressive manner in the same way that has been established with HTML e-mail. *Supporting HTML as a document format is _strictly_ prohibited.* HTML, unfortunately, presents a number of challenges, including security and historical quirks in its syntax.
 
