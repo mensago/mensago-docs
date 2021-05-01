@@ -134,7 +134,7 @@ Version:: REQUIRED. API version of the payload.
 
 Sensitivity:: REQUIRED. How sensitive the contact information is. This may be `public`, `private`, or `secret`. This field has no vCard equivalent.
 
-EntityType:: REQUIRED. `entitytype` maps to the vCard field `KIND`. Values are `group`, `individual` (the default), or `org`. The `member` field (listed below) is required for the `org` type and optional for `group`.
+EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Values are `group`, `individual` (the default), or `org`. The `Member` field (listed below) is required for the `org` type and optional for `group`.
 
 Source:: REQUIRED. This field denotes the origin of the information. `owner` means that the information is updated by the entity itself – updates from the entity are sent to keep this information current. `client` means that the user’s client, not the owner, maintains this information. More information about this field and how the mechanism works can be found in the section _Updates and Client-Side Annotations_.
 
@@ -160,7 +160,7 @@ MailingAddresses:: OPTIONAL. This group contains a dictionary of field groups. E
 
 Phone:: OPTIONAL. This field contains a list of key-value pairs containing the name of a phone number, such as "Fax" or "Mobile". Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. An asterisk (’*’) MAY be prefixed to a name to indicate the preferred contact number.
 
-Mensago:: OPTIONAL. This field contains a list of field groups containing the components of the contact’s Mensago addresses. `userid` contains the friendly part of the address. `workspace` contains the UUID numeric identifier used for the entity’s account. `domain` contains the fully-qualified domain. If `userid` is empty, then the client is expected to display the numeric address and domain, separated by a forward slash, e.g. `cavsfan4life/mensago-example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/mensago-example.com`. `preferred` denotes whether the address is the owner’s preferred address. The `mensago` field group is not required, but if it is present, all of its subfields are required to be present.
+Mensago:: OPTIONAL. This field contains a list of field groups containing the components of the contact’s Mensago addresses. `UserID` contains the friendly part of the address. `Workspace` contains the UUID numeric identifier used for the entity’s account. `Domain` contains the fully-qualified domain. If `UserID` is empty, then the client is expected to display the numeric address and domain, separated by a forward slash, e.g. `cavsfan4life/mensago-example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/mensago-example.com`. `Preferred` denotes whether the address is the owner’s preferred address. The `Mensago` field group is not required, but if it is present, all of its subfields are required to be present.
 
 Mensago:Keys:: CONDITIONAL. This field group list contains the contact’s Mensago encryption keys. Each key is named by its purpose. These are currently `signing`, `primary`, `social`, or `broadcast`. It is a required part of the `mensago` field group.
 
@@ -184,7 +184,7 @@ Website:: OPTIONAL. `Website` specifies the URL of a website for the entity and 
 
 Photo:: OPTIONAL.
 
-Photo:Mime:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. It contains the MIME type of the data stored in the `data` field. Mensago clients MUST support `image/webp`, `image/png`, and `image/jpg` display. Because of the flexibility, quality, and smaller sizes of the format, WEBP images should be preferred. They SHOULD also support HEIF and SVG. Support for other formats is optional, but support for animated profile photos is discouraged.
+Photo:Mime:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. It contains the MIME type of the data stored in the `Data` field. Mensago clients MUST support `image/webp`, `image/png`, and `image/jpg` display. Because of the flexibility, quality, and smaller sizes of the format, WEBP images should be preferred. They SHOULD also support HEIF and SVG. Support for other formats is optional, but support for animated profile photos is discouraged.
 
 Photo:Data:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. The data in this field MUST be no larger than 500KiB before encoding is applied.
 
@@ -198,7 +198,7 @@ Attachments:Name:: CONDITIONAL. This field is REQUIRED if the `Attachments` fiel
 
 Attachments:Mime:: CONDITIONAL. This field is REQUIRED if the `Attachments` field is used. It contains the MIME type of the encoded data.
 
-Attachments:Data:: CONDITIONAL. This field is REQUIRED if the `Attachments` field is used. It contains the actual base85-encoded data of the attachment.
+Attachments:Data:: CONDITIONAL. This field is REQUIRED if the `Attachments` field is used. It contains the actual Base85-encoded data of the attachment.
 
 == Personal Information Profiles
 
