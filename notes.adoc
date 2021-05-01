@@ -50,7 +50,7 @@ https://en.wikipedia.org/wiki/ISO_8601[ISO 8601] basic (compact) format. The tim
 
 - _Title_ - A string up to 100 characters in length. The characters MUST be valid printable UTF-8 characters or a space. Note that while the field is required, the field itself MAY be empty.
 
-- _Body_ - AnTM-formatted text of any length. Escapement of content for JSON compliance is required.
+- _Body_ - MSTM-formatted text of any length. Escapement of content for JSON compliance is required.
 
 - _Group_ - The group in which the note may be found. The default value for `group` should be ``default''.
 
@@ -61,4 +61,4 @@ https://en.wikipedia.org/wiki/ISO_8601[ISO 8601] basic (compact) format. The tim
 
 === Note Content
 
-With notes being merely cloud-synchronized text files, there isn’t much to be said about them. The body content may contain UTF-8 encoded plain text or AnTM-formatted text.
+With notes being merely cloud-synchronized text files, there isn’t much to be said about them. The body content may contain UTF-8 encoded plain text or MSTM-formatted text.

@@ -190,7 +190,7 @@ Photo:Data:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is t
 
 Languages:: OPTIONAL. `Languages` roughly maps to the vCard `LANG` field. It is a list of languages used in communications with the entity. The languages are listed in order of preference from most preferred to least. The codes themselves MUST follow the format established in the https://en.wikipedia.org/wiki/ISO_639-3[ISO 639-3] standard.
 
-Notes:: OPTIONAL. Contains miscellaneous text notes stored in AnTM format. This field MAY NOT contain any attachment-type data – it MUST contain only text – but it MAY contain any other kind of AnTM-permitted data, such as links or tables.
+Notes:: OPTIONAL. Contains miscellaneous text notes stored in MSTM format. This field MAY NOT contain any attachment-type data – it MUST contain only text – but it MAY contain any other kind of MSTM-permitted data, such as links or tables.
 
 Attachments:: OPTIONAL. This field group contains miscellaneous data intended to be associated with the entity.
 
