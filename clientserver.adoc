@@ -279,6 +279,20 @@ Updates : [
 
 `Create` and `Delete` updates list the full path of the new item and is received even if the item is not part of the selected directory. `Move` updates follow the format of the MOVE command, providing the full path of the item prior to the move and then the new directory to which it was moved. Both paths are returned in the same string, in this case.
 
+=== IDLE
+
+_A command used to keep the connection alive_
+[cols="1,3a"]
+|===
+| Parameters | * _optional:_ CountUpdates
+| Returns | * 200 OK
+** UpdateCount (if requested)
+| Possible Errors 
+| * None
+|===
+
+IDLE is sent by clients to notify the server that it is still connected and active. An optional parameter, `CountUpdates`, contains the client's current UTC UNIX time and requests that the server count the number of updates pending. The server always returns `200 OK` unless there is some sort of internal error. If an update count was requested, it is returned as the field `UpdateCount` and contains an integer of the number of update records pending.
+
 === LIST
 
 _Gets list of items in selected directory_
