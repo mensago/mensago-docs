@@ -253,10 +253,11 @@ _Requests all changes since the time specified_
 |===
 | Parameters | * Time
 | Returns | * 200 OK
+** UpdateCount
 ** Updates
 |===
 
-The client requests a list of updates since the requested time. Time is submitted in seconds since the Epoch (UNIX time), UTC time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 8192 byte limit for message sizes creates a rough upper boundary of 150-175 update records.
+The client requests a list of updates since the requested time. Time is submitted in seconds since the Epoch (UNIX time), UTC time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 8192 byte limit for message sizes creates a rough upper boundary of 150-175 update records. The `UpdateCount` field contains the total number of updates from that point on, even if the updates themselves cannot all be returned in the response. A client can know that it is current if `UpdateCount` equals the number of items in the `Updates` field or if `UpdateCount` is zero.
 
 There are three types of updates: CREATE, DELETE, and MOVE.
 
