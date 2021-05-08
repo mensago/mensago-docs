@@ -37,7 +37,7 @@ The Mensago server's main role is storage and synchronization of opaque data fil
 3. A separator line consisting of 10 dashes (ASCII 45) followed by a carriage return and line feed
 4. The Base85-encoded encrypted payload.
 
-The payload for a client file begins with a line containing a CryptoString identifier indicating the encryption type. For more information about the CryptoString format, please consult the Mensago Platform Overview. The payload data then begins on a new line. The unencrypted payload itself is JSON-structured data, detailed further below.
+The envelope information is standard JSON-formatted data. The listing below is formatted for readability, but in day-to-day usage, minified JSON is the norm. The payload for a client file begins with a line containing a CryptoString identifier indicating the encryption type. For more information about the CryptoString format, please consult the Mensago Platform Overview. The payload data then begins on a new line. The unencrypted payload itself is JSON-structured data, detailed further below.
 
 The payload encryption type is currently either XSALSA20 or AES-256. The XSalsa20 cipher uses Poly1305 for message authentication and the AES ciphers use GCM. XSalsa20 is preferred because it is faster overall without depending on hardware acceleration.
 
