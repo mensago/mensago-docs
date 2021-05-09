@@ -78,7 +78,7 @@ A fully-decrypted file header, excluding the `PayloadKey` field, would look like
 *Client File Envelope Fields*
 
 Version::
-REQUIRED. A numeric string set to the client item API version. Until such time after this standard has reached final 1.0 status, this will be set to "1.0".
+REQUIRED. A numeric string set to the client file API version. Until such time after this standard has reached final 1.0 status, this will be set to "1.0".
 
 Date::
 REQUIRED. UTC timestamp of when the file was created. This timestamp MUST be in the format "YYYYMMDD HHMMSS".
@@ -109,9 +109,9 @@ Aside from these two platform-required fields, there may also be other fields in
 
 == Limitations, Maximums, and Timeouts
 
-Maximum line size for the Mensago protocol is measured in bytes, not characters, due to the varying size of UTF-8 code points. Each line in the protocol is expected to be terminated by a carriage return and line feed character pair (CR-LF, `\r\n`). In order to accommodate 4096-bit RSA keys, one line in an client-server message may be up to 8KiB (8192 bytes), including the line terminator. Similar to http://www.courier-mta.org/cone/smap1.html[SMAP], Mensago commands and replies MUST be no more than 16 KiB (16384 bytes) including line ending. This maximum applies only to commands and replies themselves and not to file transfer data.
+Because the Mensago protocol is based on JSON, maximum line sizes and line ending style don't matter. Instead, a general command size is expected. Any message sent MUST be no larger than 16 KiB (16384 bytes). This maximum applies only to commands and replies themselves and not to file transfer data.
 
-Although client items have no theoretical size limit, there are some practical limits placed on user messages. For efficency of transmission and storage, messages SHOULD be no more than 50 MiB. Server administrators MAY impose a hard limit of some size, but it SHOULD be no less than this. Client items not scheduled for delivery MAY be of any size, although server administrators MAY impose a maximum size for client items in general.
+Although client files have no theoretical size limit, there are some practical limits placed on user messages. For efficency of transmission and storage, messages SHOULD be no more than 50 MiB. Server administrators MAY impose a hard limit of some size, but it SHOULD be no less than this. client files not scheduled for delivery MAY be of any size, although server administrators MAY impose a maximum size for client files in general.
 
 As part of the Guarded Trust principle and also general resource conservation, there are some soft limitations imposed on clients. An individual device is limited to 25 recipients per minute. This is a configurable soft default limit. It is intended to prevent spam and Reply All storms and encourage more thoughtful inclusion of others in group conversations.
 
@@ -456,7 +456,7 @@ SETQUOTA customizes a workspace's disk quota size. The Size parameter is measure
 
 == Status Codes
 
-Most commands require the context of an authenticated login session. Attempts to use such a command outside of an authenticated session will result in a `401 UNAUTHORIZED` response. Likewise, if a user does not have sufficient permissions to execute a command or execute a command on a specific client item, `403 FORBIDDEN` is returned.
+Most commands require the context of an authenticated login session. Attempts to use such a command outside of an authenticated session will result in a `401 UNAUTHORIZED` response. Likewise, if a user does not have sufficient permissions to execute a command or execute a command on a specific client file, `403 FORBIDDEN` is returned.
 
 * 1xx: Info Codes
 ** 100 Continue
