@@ -7,7 +7,7 @@ v1.1, 2021-05-01
 
 == Description
 
-The reason for Mensago’ existence is to replace e-mail with a secure, private, and otherwise better technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are for communications management. This specification describes messaging workflows and the payload portion of a client item which is used for messaging. The wrapper information for the client item, i.e. encryption type, recipient address, etc., is described in the Mensago Client-Server API specification.
+The reason for Mensago’ existence is to replace e-mail with a secure, private, and otherwise better technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are for communications management. This specification describes messaging workflows and the payload portion of a client file which is used for messaging. The wrapper information for the client file, i.e. encryption type, recipient address, etc., is described in the Mensago Client-Server API specification.
 
 == Encryption Keys
 
@@ -26,7 +26,7 @@ Because this key can potentially be given out to large numbers of recipients, a 
 
 *Social Key*: This symmetric key will be used specifically for the Terrazzo social networking module. This key type may also have multiple keys.
 
-*Storage Key*: This symmetric key is used to encrypt client items for storage and synchronization on the server.
+*Storage Key*: This symmetric key is used to encrypt client files for storage and synchronization on the server.
 
 *Key Request Key* : This one-time-use asymmetric key is generated when encryption keys are requested for the first of a user’s devices to access a shared workspace. It is discarded after the encryption keys for
 a shared workspace have been obtained.

@@ -33,7 +33,7 @@ user ID:: the optional human-friendly part of a Mensago address. Example: `Seño
 
 keycard:: a digital certificate representing a person or organization that contains encryption keys and public information in a cryptographically secure and verifiable form.
 
-client item:: a server-side file containing JSON-structured Mensago data. It consists of a header, an encrypted payload, and some minimal metadata. Each client item represents a corresponding file on the user's device.
+client file:: a server-side file containing JSON-structured Mensago data. It consists of a header, an encrypted payload, and some minimal metadata. Each client file represents a corresponding file on the user's device.
 
 == Architecture
 
