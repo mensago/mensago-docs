@@ -24,7 +24,7 @@ Communication between Mensago clients and servers is a synchronous text-based pr
 
 Compatibility with POP, IMAP, and SMTP has prompted great heroics in the more than 40 years since e-mail’s invention, but these protocols are the root cause behind the many problems which plague modern e-mail. A fresh start is needed, based on best-of-breed technologies and methods available now.
 
-Like those that came before, Mensago' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted.
+Like those that came before, Mensago' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The JSON schema used for commands consists of strings and, in certain cases, lists of strings. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted. All time values are standardized on UTC and, with a few exceptions, are in UNIX format, meaning the number of seconds since January 1, 1970.
 
 Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms without relying on hardware acceleration. Argon2id is utilized for password hashing.
 
@@ -109,7 +109,7 @@ Aside from these two platform-required fields, there may also be other fields in
 
 == Limitations, Maximums, and Timeouts
 
-Because the Mensago protocol is based on JSON, maximum line sizes and line ending style don't matter. Instead, a general command size is expected. Any message sent MUST be no larger than 16 KiB (16384 bytes). This maximum applies only to commands and replies themselves and not to file transfer data.
+Because the Mensago protocol is based on JSON, maximum line sizes and line ending style don't matter. Instead, a general command size is expected. Any message sent MUST be no larger than 16 KiB (16384 bytes). This maximum applies only to commands and replies themselves and not to file transfer data. 
 
 Although client files have no theoretical size limit, there are some practical limits placed on user messages. For efficency of transmission and storage, messages SHOULD be no more than 50 MiB. Server administrators MAY impose a hard limit of some size, but it SHOULD be no less than this. client files not scheduled for delivery MAY be of any size, although server administrators MAY impose a maximum size for client files in general.
 
@@ -140,6 +140,10 @@ Server-side storage for data other than client files should be stored in workspa
 The name of the settings file is determined by the client software. The file is expected to be encrypted by a key used just for settings storage. The recommended format for maximum privacy is to use the first 32 characters of the Base64-encoded hash of the encryption key followed by a period and a number indicating the version. An example would look like this: `f9c9e42c25002e7148dceea7d687fea89.23`. Base64 is needed in this case because many of the symbols utilized by Base85 are forbidden for filesystem use.
 
 The device-checking feature of Mensago Identity Services provides a relatively painless form of multifactor authentication while also providing a way for new devices to receive the keys used by clients. Specific information on this process can be found in the Identity Services design document.
+
+== Update Notifications
+
+Because of the wide variety of possible uses for the platform, clients are afforded several options to obtain updates. The GETUPDATES command provides a simple, if heavy, means of getting updates. This method is not recommended for update polling. The IDLE command may be used to obtain a count of updates pending for the device based on the previous time updates were checked. To enable a form of push notifications, any command which returns a `200 OK` status may also include the field `UpdateCount`, which contains a string of the number of updates pending.
 
 == Command Reference
 
