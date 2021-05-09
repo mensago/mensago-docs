@@ -143,7 +143,7 @@ The device-checking feature of Mensago Identity Services provides a relatively p
 
 == Update Notifications
 
-Because of the wide variety of possible uses for the platform, clients are afforded several options to obtain updates. The GETUPDATES command provides a simple, if heavy, means of getting updates. This method is not recommended for update polling. The IDLE command may be used to obtain a count of updates pending for the device based on the previous time updates were checked. To enable a form of push notifications, any command which returns a `200 OK` status may also include the field `UpdateCount`, which contains a string of the number of updates pending.
+Because of the wide variety of possible uses for the platform, clients are afforded several options to obtain updates. The GETUPDATES command provides a simple, if heavy, means of getting updates. This method is not recommended for update polling. The IDLE command may be used to obtain a count of updates pending for the device based on the previous time updates were checked. To enable a form of push notifications, any command which returns a `200 OK` status may also include the field `UpdateCount`, which contains a string of the number of updates pending. This field is only sent once, so checking incoming successful messages for this extra field is key to responsive, low-overhead update checking.
 
 == Command Reference
 
