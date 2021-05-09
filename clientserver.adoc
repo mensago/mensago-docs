@@ -115,7 +115,7 @@ Although client files have no theoretical size limit, there are some practical l
 
 As part of the Guarded Trust principle and also general resource conservation, there are some soft limitations imposed on clients. An individual device is limited to 25 recipients per minute. This is a configurable soft default limit. It is intended to prevent spam and Reply All storms and encourage more thoughtful inclusion of others in group conversations.
 
-Idle sessions MAY be ended by a server. A server MUST wait a minimum of 30 minutes before terminating a connection. Likewise, clients which are left idle for extended periods of time should wait no more than 29 minutes to periodically send `NOOP` commands to keep the connection alive, although a client's update polling may make this unnecessary. 
+Idle sessions MAY be ended by a server. A server MUST wait a minimum of 30 minutes before terminating a connection. Likewise, clients which are left idle for extended periods of time should wait no more than 29 minutes to periodically send `IDLE` commands to keep the connection alive, although a client's update polling may make this unnecessary.
 
 In order to prevent a denial-of-service on servers which permit public account registration, by default a server limits account registration to once per 10 minute time period from an individual IP address. This timeout does not apply to an administrator creating accounts locally on the server itself. 10 minutes is the default, but an administrator may change this value.
 
