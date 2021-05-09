@@ -26,7 +26,7 @@ Compatibility with POP, IMAP, and SMTP has prompted great heroics in the more th
 
 Like those that came before, Mensago' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted.
 
-Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms. Argon2id is utilized for password hashing. SHA2-256, AES-256 and the 2048- and 4096-bit versions of RSA are options for environments which require certified algorithms.
+Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms without relying on hardware acceleration. Argon2id is utilized for password hashing.
 
 == Client Files
 
