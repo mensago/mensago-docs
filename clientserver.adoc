@@ -482,7 +482,8 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 306 Key failure
 ** 307 Delivery failure limit exceeded
 ** 308 Delivery delay not reached
-** 309 Algorith not supported
+** 309 Algorithm not supported
+** 310 Delivery refused
 * 4xx: Client-Related Codes
 ** 400 Bad Request
 ** 401 Unauthorized
@@ -500,3 +501,6 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 413 Invalid Signature
 ** 414 Limit Reached
 ** 415 Expired
+* 5xx: Transport-Related Codes
+** 500 Address not found
+** 501 Destination unavailable
