@@ -123,12 +123,11 @@ _Data_ - REQUIRED. The Base85-encoded data.
 
 System messages are not sent directly to a user. Instead, they facilitate communications and protocol state and are encrypted unless stated otherwise. Aside from those directly-related to messaging, system messages are defined in the specification to which they are related.
 
-All system messages are required to have the type `sysmessage` and also have a `Subtype` field, which indicates the type of system message. The schema for a system message is defined based on the `Type`, `Subtype`, and `Version` fields.
+All system messages are required to have the type `sysmessage` and also have a `Subtype` field, which indicates the type of system message. The schema for a system message is defined based on the `Type`, `Subtype`, and `Version` fields. For system messages originating from an organization's server sent to one of its users, the `From` field set to the organization's domain without a workspace ID.
 
 *Abuse Report*
 
-Abuse reports are sent to the address specified in the organization’s keycard, or if not specified, the Admin address. It is structurally similar to a standard user message except that the subtype is `abusereport` and the subject MUST be the numeric address of the offender. The body of the message MUST contain the description of the abuse report. The submitter MAY attach a sample of the message to the
-administrator, if need be.
+Abuse reports are sent to the address specified in the organization’s keycard, or if not specified, the Admin address. It is structurally similar to a standard user message except that the subtype is `abusereport` and the subject MUST be the numeric address of the offender. The body of the message MUST contain the description of the abuse report. The submitter MAY attach a sample of the message to the administrator, if need be.
 
 [source,json]
 ----
@@ -141,6 +140,24 @@ administrator, if need be.
     "Date" : "20190905 155323",
     "ThreadID" : "8e24ab6b-b466-492b-a3b1-4ce736a59563",
     "Subject" : "df7c310a-b947-4f9d-a66b-600d5fdd7e0c/mensago-example.com",
+    "Body" : "This user purposely sent me malware which raised my insurance rates by 15%.",
+}
+----
+
+*Delivery Report*
+
+Delivery reports are sent when a message has some sort of problem that prevents its delivery. Examples of situations warranting a delivery report include a destination server not responding, a destination server refusing delivery from the organization, or insufficient disk space in the recipient's workspace. This type of system message does not require a ThreadID, as these are issued by servers and replies are not permitted. 
+
+[source,json]
+----
+{
+    "Type" : "sysmessage",
+    "Subtype" : "deliveryfailure",
+    "Version" : "1.0",
+    "From" : "mensago-example.com",
+    "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
+    "Date" : "20190905 155323",
+    "Subject" : "Delivery Report: address bendover.com not found",
     "Body" : "This user purposely sent me malware which raised my insurance rates by 15%.",
 }
 ----
