@@ -146,7 +146,7 @@ Abuse reports are sent to the address specified in the organization’s keycard,
 
 *Delivery Report*
 
-Delivery reports are sent when a message has some sort of problem that prevents its delivery. Examples of situations warranting a delivery report include a destination server not responding, a destination server refusing delivery from the organization, or insufficient disk space in the recipient's workspace. This type of system message does not require a ThreadID, as these are issued by servers and replies are not permitted. 
+Delivery reports are sent when a message has some sort of problem that prevents its delivery. Examples of situations warranting a delivery report include a destination server not responding, a destination server refusing delivery from the organization, or insufficient disk space in the recipient's workspace. This type of system message does not require a ThreadID, as these are issued by servers and replies are not permitted.
 
 [source,json]
 ----
@@ -157,10 +157,24 @@ Delivery reports are sent when a message has some sort of problem that prevents 
     "From" : "mensago-example.com",
     "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
     "Date" : "20190905 155323",
-    "Subject" : "Delivery Report: address bendover.com not found",
-    "Body" : "This user purposely sent me malware which raised my insurance rates by 15%.",
+    "Subject" : "Delivery Report: bendover.com Not Responding",
+    "Body" : "The Body should contain an appropriate message as outlined below.",
 }
 ----
+
+Because delivery reports are seen by users but may need to provide technical information for the user to give to technical support, bounce messages need to strike a careful balance between being technical enough to be helpful without being so technical as to confuse the end user. The recommended choice is to provide a basic summary of what happened in plain (non-technical) language and provide a section of techical text which is clearly marked as being information that the user can provide to technical support if asked. Using the above sample payload as context, an example Body field is given below.
+
+====
+The organization at bendover.com could not be reached. Their Mensago server might be down or there may be an Internet outage. The server will continue to periodically try to deliver your message, but there may be a delay in it reaching its destination. You will be notified if delivery is not possible.
+
+- - - 
+
+Information for Technical Support: +
+Error Code: 501 DESTINATION CURRENTLY UNAVAILABLE +
+Domain: bendover.com +
+Time: 2021-05-11 16:23:08 UTC
+====
+
 
 *Support Request*
 
