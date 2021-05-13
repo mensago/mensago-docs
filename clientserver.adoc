@@ -503,4 +503,5 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 415 Expired
 * 5xx: Transport-Related Codes
 ** 500 Address not found
-** 501 Destination unavailable
+** 501 Destination Currently Unavailable
+** 502 Delivery Failed - Destination Unavailable
