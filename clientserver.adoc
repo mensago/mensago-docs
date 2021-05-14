@@ -506,3 +506,5 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 501 Destination Currently Unavailable
 ** 502 Delivery Failed - Destination Unavailable
 ** 503 Bad Recipient Address
+** 504 Unreadable Recipient Address
+
