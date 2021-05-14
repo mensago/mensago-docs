@@ -505,3 +505,4 @@ Most commands require the context of an authenticated login session. Attempts to
 ** 500 Address not found
 ** 501 Destination Currently Unavailable
 ** 502 Delivery Failed - Destination Unavailable
+** 503 Bad Recipient Address
