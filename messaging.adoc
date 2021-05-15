@@ -42,7 +42,7 @@ MENSAGO
     "Version": "1.0",
     "Receiver": "G!$Rod&LyJ6-yNaemQ?i`l&*|{V&aco)IUNj!RuS3VbAVQ5@BFu!lQDF+6&n>Zjm7h6#cL<jct?4uqj@#SYJ=n3@GqIuXvwJyfK>$uQ}u%kTd_L?rC1uNRLe0@<is)NRiCl?Ws;EI!0}a}H1c!-Z}lLp@SBdiAEK>86z",
     "Sender": "65}GwUkZNN42t=#`4wj4V~Z~ND97KHB1pnvzmpwUgcjANT>3_j9+}!u)pvsgD07Sr3EC@K$~hc&(jpsJQ|}eT8=N7`t$}KgF9qi~dDVA{5W^uq9zx_LR$KKseCbt4_y6Lqj6xAQfK^jjrS;Cx4~mLV<mnnjk*cY*!W$ZaGTfo&",
-    "Date": "20190905 155323",
+    "Date": "20190905T155323Z",
     "KeyHash": "BLAKE2B-256:cy)wynX>FX1!`%3rR}t1ILJTtM*q)|cI_^ycs9D?",
     "PayloadKey": "2Iuql{B^xtCES?}`Sy-o-z##Jzo&blqkQMk_Vg@yrNal66#^p2X9waP??5078`D#ab*_n4sNR1glHWqEaf_wQ53z~vRl1o<?JaRMugPL#gjI)<sAv6DTm_@6^#"
 }
@@ -67,7 +67,7 @@ When fully decrypted, the message envelope information would look like this:
     "From": "11111111-1111-1111-1111-111111111111/example.com",
     "RecipientDomain": "example.com"
   },
-  "Date": "20190905 155323",
+  "Date": "20190905T155323Z",
 }
 ----
 
@@ -80,7 +80,7 @@ The `PayloadKey` field would just contain a 32-byte blob of binary data that was
   "Version": "1.0",
   "From": "11111111-1111-1111-1111-111111111111/example.com",
   "To": "22222222-2222-2222-2222-222222222222/example.com",
-  "Date": "20190905 155323",
+  "Date": "20190905T155323Z",
   "ThreadID": "2280c1f2-d9c0-440c-a182-967b16ba428a",
   "Subject": "Sample User Message",
   "Body": "It was a bright cold day in April, and the clocks were striking thirteen."
@@ -137,7 +137,7 @@ Abuse reports are sent to the address specified in the organization’s keycard,
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
     "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
-    "Date" : "20190905 155323",
+    "Date" : "20190905T155323Z",
     "ThreadID" : "8e24ab6b-b466-492b-a3b1-4ce736a59563",
     "Subject" : "df7c310a-b947-4f9d-a66b-600d5fdd7e0c/mensago-example.com",
     "Body" : "This user purposely sent me malware which raised my insurance rates by 15%.",
@@ -156,7 +156,7 @@ Delivery reports are sent when a message has some sort of problem that prevents 
     "Version" : "1.0",
     "From" : "mensago-example.com",
     "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
-    "Date" : "20190905 155323",
+    "Date" : "20190905T155323Z",
     "Subject" : "Delivery Report: bendover.com Not Responding",
     "Body" : "The Body should contain an appropriate message as outlined below.",
 }
@@ -189,7 +189,7 @@ message except that the subtype is `supportrequest`. The subject MUST contain a 
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
     "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
-    "Date" : "20190905 155323",
+    "Date" : "20190905T155323Z",
     "ThreadID" : "8e24ab6b-b466-492b-a3b1-4ce736a59563",
     "Subject" : "I can't find the Any key",
     "Body" : "Connect tells me to press Any key, but I can't find it on my keyboard anywhere!",

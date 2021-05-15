@@ -216,7 +216,7 @@ When a new device is added to a Mensago workspace, an alert is sent to the user'
     "Version" : "1.0",
     "From" : "example.com",
     "To" : [ "662679bd-3611-4d5e-a570-52812bdcc6f3/example.com" ],
-    "Date" : "20190905 155323",
+    "Date" : "20190905T155323Z",
     "Attachments" : [
         {
             "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",
@@ -239,7 +239,7 @@ All fields are required except for `Device-Name` and `Device-Description`. The `
     "Version" : "1.0",
     "From" : "662679bd-3611-4d5e-a570-52812bdcc6f3/example.com",
     "To" : [ "example.com" ],
-    "Date" : "20190905 155437",
+    "Date" : "20190905T155437Z",
     "Attachments" : [
         {
             "Request-ID" : "e1f4ddc7-3011-468a-9b52-da0c065fc773",

@@ -24,7 +24,7 @@ Communication between Mensago clients and servers is a synchronous text-based pr
 
 Compatibility with POP, IMAP, and SMTP has prompted great heroics in the more than 40 years since e-mail’s invention, but these protocols are the root cause behind the many problems which plague modern e-mail. A fresh start is needed, based on best-of-breed technologies and methods available now.
 
-Like those that came before, Mensago' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The JSON schema used for commands consists of strings and, in certain cases, lists of strings. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted. All time values are standardized on UTC and, with a few exceptions, are in UNIX format, meaning the number of seconds since January 1, 1970.
+Like those that came before, Mensago' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The JSON schema used for commands consists of strings and, in certain cases, lists of strings. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted. All time values are standardized on UTC and, with a few exceptions, are in the compact https://en.wikipedia.org/wiki/ISO_8601[ISO8601] format `YYYYMMDDTHHMMSSZ`.
 
 Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms without relying on hardware acceleration. Argon2id is utilized for password hashing.
 
@@ -123,7 +123,7 @@ In order to prevent a denial-of-service on servers which permit public account r
 
 Because a server is not permitted to know more than is necessary about the information it processes, the filesystem itself utilizes opaque, but unique, identifiers for files and directories.
 
-Universally Unique Identifiers (UUIDs) are used extensively. Files utilize a three-part naming system, consisting of the number of seconds since the UNIX epoch, the size of the file in bytes, and the file’s version 4 UUID. An example looks like this: `1535760000.9457.8ba70831-d189-4aaa-b6e6-5cca0823b205`. Directories also utilize UUIDs instead of alphanumeric names.
+Universally Unique Identifiers (UUIDs) are used extensively. Files utilize a three-part naming system, consisting of a timestamp in the compact ISO8601 format used elsewhere, the size of the file in bytes, and the file’s version 4 UUID. An example looks like this: `20201106T2121Z.9457.8ba70831-d189-4aaa-b6e6-5cca0823b205`. Directories also utilize UUIDs instead of alphanumeric names.
 
 Mensago server-side paths are quite unusual, but intended to be secure and easy to parse and validate. First, all paths are absolute relative to the top level directory for holding workspace data -- the classic "." and ".." shortcuts are not used. The start of any path is always a single slash (`/`) followed by directory elements. Each directory element is separated by a space. Because filesystem entries follow a very specific format, accounting for whitespace and special characters in paths is not necessary. A sample directory path looks like this: `/ 0cfb91e8-256b-420b-b37d-db28004120f5 aa7347c1-a837-460f-8cf0-698d4411758a ac7971bf-fe44-400c-8605-eb499b9274ad`. No access outside of the workspace directory hierarchy is permitted for any client.
 
@@ -261,7 +261,7 @@ _Requests all changes since the time specified_
 ** Updates
 |===
 
-The client requests a list of updates since the requested time. Time is submitted in seconds since the Epoch (UNIX time), UTC time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 8192 byte limit for message sizes creates a rough upper boundary of 150-175 update records. The `UpdateCount` field contains the total number of updates from that point on, even if the updates themselves cannot all be returned in the response. A client can know that it is current if `UpdateCount` equals the number of items in the `Updates` field or if `UpdateCount` is zero.
+The client requests a list of updates since the requested time. Time is submitted in the ISO8601 format and UTC timezone standard for the platform. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 8192 byte limit for message sizes creates a rough upper boundary of 150-175 update records. The `UpdateCount` field contains the total number of updates from that point on, even if the updates themselves cannot all be returned in the response. A client can know that it is current if `UpdateCount` equals the number of items in the `Updates` field or if `UpdateCount` is zero.
 
 There are three types of updates: CREATE, DELETE, and MOVE.
 
@@ -296,7 +296,7 @@ _A command used to keep the connection alive_
 | * None
 |===
 
-IDLE is sent by clients to notify the server that it is still connected and active. An optional parameter, `CountUpdates`, contains the client's current UTC UNIX time and requests that the server count the number of updates pending. The server always returns `200 OK` unless there is some sort of internal error. If an update count was requested, it is returned as the field `UpdateCount` and contains an integer of the number of update records pending.
+IDLE is sent by clients to notify the server that it is still connected and active. An optional parameter, `CountUpdates`, contains the client's current date and time in ISO8601 format standard for the platform and requests that the server count the number of updates pending. The server always returns `200 OK` unless there is some sort of internal error. If an update count was requested, it is returned as the field `UpdateCount` and contains an integer of the number of update records pending.
 
 === LIST
 
@@ -312,7 +312,7 @@ _Gets list of items in selected directory_
 | * 404 NOT FOUND
 |===
 
-Obtains a list of the entries in the specified directory or the current one if not specified. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be submitted in seconds since the Epoch (UNIX time), UTC time. If provided, only the files created at or after the timestamp are returned. If omitted or set to zero, all items in the current directory are returned. The server's response, if 200 OK, will also contain the Files field which is a list type field containing the names of the files.
+Obtains a list of the entries in the specified directory or the current one if not specified. This command will return entries which only matches the expected filename format on the server side, consisting of a timestamp, file size, and file UUID, all three joined together with periods. This command takes an optional timestamp parameter. As with GETUPDATES, the timestamp is expected to be `YYYYMMDDTHHMMSSZ`. If provided, only the files created at or after the timestamp are returned. If omitted or set to zero, all items in the current directory are returned. The server's response, if 200 OK, will also contain the Files field which is a list type field containing the names of the files.
 
 === LISTDIRS
 
@@ -342,7 +342,7 @@ _Creates a new directory_
 | * 408 RESOURCE EXISTS
 |===
 
-Create a workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. The command works similarly to the UNIX command `mkdir -p`, which creates directorys and parent directorys as needed to ensure that the entire path exists. If the leaf already exists, `408 RESOURCE EXISTS` is returned.
+Create a workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. The command works similarly to the UNIX command `mkdir -p`, which creates directories and parent directorys as needed to ensure that the entire path exists. If the leaf already exists, `408 RESOURCE EXISTS` is returned.
 
 === MOVE
 
