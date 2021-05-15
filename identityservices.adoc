@@ -136,6 +136,8 @@ Time-To-Live:: Number of days in which the keycard may remain in a resolver cach
 
 Expires:: The date after which this keycard is considered to be expired. Because keycards themselves are not associated with any costs, ensuring an organization ALWAYS has a valid keycard is paramount to the security of its users. Keycard resolvers and clients MUST refuse to deliver messages to domains with expired keycards.
 
+Timestamp:: The time and date when the entry was created. The format is expected to be in the ISO8601 format `YYYYMMDDTHHMMSSZ`, implying the UTC timezone.
+
 Custody-Signature:: The Base85-encoded chain-of-custody signature in CryptoString format. This field does not exist in an organization’s first keycard entry. It MUST follow the last informational field of the entry if it exists. The signature includes all previous fields and is signed with private half of the `Primary-Verification-Key` field from the previous entry. This field is required EXCEPT for the first entry of the organization's keycard.
 
 Previous-Hash:: The `Hash` field of the previous entry in the organization's keycard. Because it is the first entry in the entire keycard database, an organization’s root keycard entry will not have this field, but for all others it is required.
@@ -169,6 +171,8 @@ Alternate-Encryption-Key:: another public key in CryptoString format for third p
 Time-To-Live:: Number of days in which the keycard may remain in a resolver cache. Recommended value is 7, but it MUST NOT be less than 1 or greater than 30. After this period of time, a resolver MUST check to ensure that the keycard has not changed.
 
 Expires:: The date after which this keycard is considered to be expired. Keycard resolvers and clients MUST refuse to deliver messages to users with expired keycards.
+
+Timestamp:: The time and date when the entry was created. The format is expected to be in the ISO8601 format `YYYYMMDDTHHMMSSZ`, implying the UTC timezone.
 
 Custody-Signature:: The chain-of-custody signature in CryptoString format. This field does not exist in a user’s first keycard entry. It MUST be the first field following the standard informational fields and MUST be the first of the three signatures on a user keycard if it exists. It contains the signature for all previous fields and is signed with the private half of the `Contact-Request-Verification-Key` of the previous keycard entry.
 
