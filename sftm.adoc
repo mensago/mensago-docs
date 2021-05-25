@@ -1,15 +1,15 @@
-= Mensago Text Markup (MSTM)
+= Safe Formatted Text Markup (SFTM) and the Safe Document Format
 Jon Yoder <jsyoder@mailfence.com>
-v1.0, 2019-08-08
+v1.0, 2021-05-25
 
-*Status:* Review +
-*Abstract:* Rich text formatting language for client-side use
+*Status:* Draft (Incomplete) +
+*Abstract:* Rich text formatting language for client-side use and an 
 
 == Table of Contents
 
 * <<description,Description>>
 ** <<syntax,Syntax>>
-** <<embedded-content,Embedded Content>>
+** <<document-structure,Document Structure>>
 * <<tag-reference,Tag Reference>>
 ** <<align-text,Align Text>>
 ** <<bold,Bold>>
@@ -33,33 +33,29 @@ v1.0, 2019-08-08
 * <<standard-fonts,Standard Fonts>> +
 * <<final-notes,Final Notes>>
 
-
-
 == anchor:description[]Description
 
-MSTM, pronounced _MISS-tim_ or _em-ESS-tee-em_, is short for Mensago Safe Text Markup. It is a plaintext-with-markup format for describing rich formatting in a way that is expressive, easy to parse, and easy to implement with a measure of safety and security. It is heavily inspired by https://en.wikipedia.org/wiki/BBCode[BBCode], but introduces changes to make it more consistent and full-featured. It is intended to be the transmission format for all text on the Mensago platform, including messages, notes, and so on.
+SFTM stands for Safe Formatted Text Markup. It is a plaintext-with-markup format for describing rich formatting in a way that is expressive, easy to parse, and easy to implement with a measure of safety and security. It is intended to be the transmission format for all text on the Mensago platform, including messages, notes, and so on. It also is a feature subset of the Safe Document Format, a standard intended to replace the Portable Document Format (PDF) and Microsoft Word documents as the default word processing document formats for document exchange.
 
 Mensago clients need to provide users the ability to communicate in an expressive manner in the same way that has been established with HTML e-mail. *Supporting HTML as a document format is _strictly_ prohibited.* HTML, unfortunately, presents a number of challenges, including security and historical quirks in its syntax.
 
-The problems which MSTM is intended to solve in replacing HTML for rich formatting are as follows:
+The problems which SFTM is intended to solve in replacing HTML for rich formatting are as follows:
 
 * _Unnecessary Complexity_ - No CSS. Simpler syntax. Easier parsing.
 
-* _Text Client Compatibility_ - HTML is notoriously bad for e-mail clients like Pine. Mailing lists should have a much easier time compiling digests.
+* _Text Client Compatibility_ - HTML is notoriously bad for command line e-mail clients like Pine and Mutt. Mailing lists should have a much easier time compiling digests.
 
 * _Accessibility Problems_ - The client has final say on how a message is displayed and easier parsing gives control to accessibility tools like screen readers.
 
-* _Security_ - Allowing executable code, such as Javascript, in an environment that needs to be secure is a recipe for security problems. No embedded scripting of any kind is permitted. Period.
+* _Security_ - Allowing executable code, such as Javascript, in an environment that needs to be secure is a recipe for security problems. No embedded scripting of any kind is permitted. Period. The same goes for binary embedding technologies like OLE.
 
-* _Bloat_ - Messages are much smaller because of fewer header fields, simpler markup, and messages don’t need to internally store two different copies of the same content. A web browser is not required to
-be a component of a messaging client, reducing binary size and code complexity.
+* _Bloat_ - Messages are much smaller because of fewer header fields, simpler markup, and messages don’t need to internally store two different copies of the same content. A web browser is not required to be a component of a messaging client, reducing binary size and code complexity.
 
-* _Privacy_ - Web beacons/bugs are eliminated because messages are self-contained. Read receipts require the request of the sender and permission of the recipient.
+* _Privacy_ - Documents are self-contained, eliminating Web beacons/bugs. Read receipts require the request of the sender and permission of the recipient.
 
 === anchor:syntax[]Syntax
 
-MSTM marks text with pairs of tags enclosed in square brackets. Each opening tag MUST have a corresponding closing tag. Each closing tag MUST begin with a forward slash (/) immediately before the text of the
-closing tag. Whitespace MAY be found between the square brackets and the enclosed text, but space MUST NOT be found between the slash and the tag text. For example:
+SFTM marks text with pairs of tags enclosed in square brackets. Each opening tag MUST have a corresponding closing tag. Each closing tag MUST begin with a forward slash (/) immediately before the text of the closing tag. Whitespace MAY be found between the square brackets and the enclosed text, but space MUST NOT be found between the slash and the tag text. Tags are also expected to be all lowercase. For example:
 
 *Correct*
 
@@ -73,8 +69,7 @@ closing tag. Whitespace MAY be found between the square brackets and the enclose
 `+[b]Bold text[/ b]+` +
 `+[b]Bold text[b/]+` +
 
-Opening tags MAY have parameters, depending on the specific tag. These parameters MUST follow the tag name and MUST be separated by one or more spaces or tabs. Newlines and carriage returns MUST NOT be placed within
-the tags.
+Opening tags MAY have parameters, depending on the specific tag. These parameters MUST follow the tag name and MUST be separated by one or more spaces or tabs. Like tags, parameter names are expected to be all lowercase. Newlines and carriage returns MUST NOT be placed within the tags.
 
 Each parameter MUST follow the format of parameter name, equal sign, and value enclosed by double quotes. If a double quotation mark needs to be part of the parameter value, the escape code `+\u0034+` MUST used in its place. Other escape codes MAY be used to specify other Unicode characters using the same format.
 
@@ -88,11 +83,26 @@ Each parameter MUST follow the format of parameter name, equal sign, and value e
 `+[font family='Helvetica' size='9' color='red']Styled text[/font]+` +
 `+[font family:"Helvetica" size:"9" color:"red"]Styled text[/font]+` +
 
-=== anchor:embedded-content[]Embedded Content
+=== anchor:document-structure[]Document Structure
 
-As a security and privacy measure, all content referenced in a document MUST be local to the client, such as a file or database record. Only filenames are used. The exact method of storing and retrieving said content is left to the implementor. For example, in the case of a note in which the user has inserted an image, the image MUST be local to the PC on which the note is written. Images obtained from the World Wide Web MAY be used ONLY if the image is first downloaded to local storage and then a link created which points to the downloaded copy.
+An SFTM document consists of a `document` tag pair enclosing a header, a body, and a section for embedded attachments. Only the `document` tag pair and the `body` section are required for a valid SFTM document. An example of this structure is given below.
 
-The technical expertise of the user cannot be assumed in any way. Any references to non-local content MUST be displayed clearly as a hyperlink and be formatted in a way that the user is able to see the exact destination. URL de-obfuscation is not required, but it is highly recommended. Conversion of escape codes to actual characters, such as %20 for spaces, is recommended for link display to aid less-technical users in understanding link destinations. Although not required, integration of website/domain reputation services is also recommended for client implementations.
+----
+[document]
+[head]
+	[meta title="A Sample Document"]
+[/head]
+[body]
+This is a sample document.
+[/body]
+[attachments]
+[/attachments]
+[/document]
+----
+
+As a security and privacy measure, all content referenced in a document MUST be local to the document. This can mean that the content is embedded in the `attachments` section or stored locally in a file or database record. Only filenames are used. In the case of content stored outside the document, the exact method of storing and retrieving said content is left to the implementor. For example, in the case of a document in which the user has inserted an image, the image MUST be local to the PC on which the message is written. Images obtained from the World Wide Web MAY be used ONLY if the image is first downloaded to local storage and then a link created which points to the downloaded copy. If a document is to be stored locally, such as a message stored in a Mensago client, it is recommended to store the contents of any attachments separately from the rest of the document so the user can access and interact with them and to reduce bloat if the message itself is stored in a database.
+
+The technical expertise of the user cannot be assumed in any way. Any references to non-local content MUST be displayed clearly as a hyperlink and be formatted in a way that the user is able to see the exact destination. URL de-obfuscation is not required, but it is highly recommended. Conversion of escape codes to actual characters, such as %20 for spaces, is recommended for link display to aid less-technical users in understanding link destinations. Although not required, integration of website/domain reputation services is also recommended for client implementations. Information about the destination can be fetched by the client application and stored in the document header at the time of authoring to increase the recipient's privacy. Clients are not required to trust this link information if included in a document from another source, i.e. a message sent from a friend.
 
 === anchor:incorrect-content-handling[]Handling Incorrect Content
 
@@ -231,7 +241,7 @@ Defines a table header row. Only `cell` tags MUST be placed inside `row` or `hea
 
 *Notes*
 
-Unlike HTML, tag pairs are used with images in MSTM documents, with the enclosed text to be rendered as the image's caption. A number by itself MUST be considered a pixel size and a number ending in a percent symbol MUST be interpreted as a percentage relative to the image's size in pixels.
+Unlike HTML, tag pairs are used with images in SFTM documents, with the enclosed text to be rendered as the image's caption. A number by itself MUST be considered a pixel size and a number ending in a percent symbol MUST be interpreted as a percentage relative to the image's size in pixels.
 
 === anchor:italics[]Italics
 
@@ -422,7 +432,7 @@ Text enclosed by this tag pair is rendered as underlined text.
 
 === anchor:color-reference[]Color Reference
 
-MSTM color references follow Web standards, supporting 140 different color names and associated hextet values.
+SFTM color references follow Web standards, supporting 140 different color names and associated hextet values.
 
 pass:[<table>
 <th>Color Name</th><th>Hex Value</th><th>Color</th>
@@ -589,4 +599,4 @@ These font families have wide Unicode coverage and readability, enabling easy co
 
 == anchor:final-notes[]Final Notes
 
-BBCode was born out of a need for safety and security for user-submitted forum posts combined with a desire for expressiveness. Conversion to other formats is expected. However, *UNDER NO CIRCUMSTANCES* should any programming language text be permitted to execute. *Ever.* Any code in the body of a document should be treated like text. For example, in converting MSTM to HTML, the first change to be made should be substituting `+&lt;+` and `+&gt;+` for < and > in order to prevent any HTML tags, particularly `<script>` tags, from being executed or rendered downstream. This is not to say that syntax highlighting is forbidden--any text contents outside of the MSTM tags are expected to be displayed, not executed or rendered. 
+BBCode was born out of a need for safety and security for user-submitted forum posts combined with a desire for expressiveness. Conversion to other formats is expected. However, *UNDER NO CIRCUMSTANCES* should any programming language text be permitted to execute. *Ever.* Any code in the body of a document should be treated like text. For example, in converting SFTM to HTML, the first change to be made should be substituting `+&lt;+` and `+&gt;+` for < and > in order to prevent any HTML tags, particularly `<script>` tags, from being executed or rendered downstream. This is not to say that syntax highlighting is forbidden--any text contents outside of the SFTM tags are expected to be displayed, not executed or rendered. 
