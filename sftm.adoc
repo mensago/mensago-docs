@@ -71,12 +71,20 @@ SFTM marks text with pairs of tags enclosed in square brackets. Each opening tag
 
 Opening tags MAY have parameters, depending on the specific tag. These parameters MUST follow the tag name and MUST be separated by one or more spaces or tabs. Like tags, parameter names are expected to be all lowercase. Newlines and carriage returns MUST NOT be placed within the tags.
 
-Each parameter MUST follow the format of parameter name, equal sign, and value enclosed by double quotes. If a double quotation mark needs to be part of the parameter value, the escape code `+\u0034+` MUST used in its place. Other escape codes MAY be used to specify other Unicode characters using the same format.
+Because SFTM documents are UTF-8 encoded, few escapements are actually needed. In fact, only three are needed:
+
+- `\u34;` - the double-quotation mark (`"`)
+- `\u133;` - the left square bracket (`[`)
+- `\u135;` - the right square bracket (`]`)
+
+As seen in the list above, formatting for an escaped character is the prefix `\u` followed by the decimal value of the character and a semicolon. Although escape codes could be used for other characters, these are the only ones permitted at this time; it is better to just use the character itself for visual clarity and prevents obfuscation.
+
+Each parameter MUST follow the format of parameter name, equal sign, and value enclosed by double quotes. If a double quotation mark needs to be part of the parameter's value, its escape code must be used in its place. Unlike HTML, only double quotes are permitted to be used to enclose parameter values.
 
 **Correct**  
 
 `+[font family="Arial" size="12" color="blue"]Styled text[/font]+` +
-`+[tag param1="Being \u0034cute\u0034"]Tag text[/tag]+`
+`+[tag param1="Being \u34;cute\u34;"]Tag text[/tag]+`
 
 **Incorrect**  
 
