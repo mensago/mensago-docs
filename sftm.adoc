@@ -112,6 +112,14 @@ As a security and privacy measure, all content referenced in a document MUST be 
 
 The technical expertise of the user cannot be assumed in any way. Any references to non-local content MUST be displayed clearly as a hyperlink and be formatted in a way that the user is able to see the exact destination. URL de-obfuscation is not required, but it is highly recommended. Conversion of escape codes to actual characters, such as %20 for spaces, is recommended for link display to aid less-technical users in understanding link destinations. Although not required, integration of website/domain reputation services is also recommended for client implementations. Information about the destination can be fetched by the client application and stored in the document header at the time of authoring to increase the recipient's privacy. Clients are not required to trust this link information if included in a document from another source, i.e. a message sent from a friend.
 
+In the absence of specified formatting, documents should use these formatting defaults:
+
+- Page background color should be White (#FFFFFF).
+- Text color should be Black (#000000).
+- Documents for screen reading should use Noto Sans, 12pt.
+- Documents for print should use Noto Serif, 12pt.
+- Links should be boldfaced and underlined.
+
 === anchor:incorrect-content-handling[]Handling Incorrect Content
 
 Although it is expected that most content will conform to this specification, there will be instances where it does not. This section defines some rules of thumb for handling incorrect content. 
@@ -596,7 +604,7 @@ pass:[<table>
 
 == anchor:standard-fonts[]Standard Fonts
 
-As part of the pursuit of good design, some attention to typography is important. Although users may have preferences, having some standardized available typefaces for the platform would be prudent. These fonts MUST be available and are recommended, but not required, be the default fonts for client software.
+As part of the pursuit of good design, some attention to typography is important. Although users may have preferences, having some standardized available typefaces for the platform would be prudent. These fonts MUST be available and should be the default fonts for client software.
 
 - Noto Sans
 - Noto Serif
