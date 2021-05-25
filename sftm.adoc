@@ -10,25 +10,26 @@ v1.0, 2021-05-25
 * <<description,Description>>
 ** <<syntax,Syntax>>
 ** <<document-structure,Document Structure>>
-* <<tag-reference,Tag Reference>>
-** <<align-text,Align Text>>
-** <<bold,Bold>>
-** <<cell,Cell>>
-** <<code,Code / Preformatted>>
+* <<structure-tag-reference,Structure Tag Reference>>
 ** <<document,Document>>
-** <<header,Header>>
+* <<formatting-tag-reference,Formatting Tag Reference>>
+** <<bold,Bold>>
+** <<code,Code / Preformatted>>
 ** <<image,Image>>
 ** <<italics,Italics>>
 ** <<link,Link>>
 ** <<list,List / List Item>>
 ** <<quote,Quote>>
-** <<row,Row>>
 ** <<strikeout,Strikeout>>
 ** <<styled-text,Styled Text>>
 ** <<subscript,Subscript>>
 ** <<superscript,Superscript>>
-** <<table,Table>>
 ** <<underline,Underline>>
+** <<table-tags,Table Tags>>
+*** <<table,Table>>
+*** <<header,Header>>
+*** <<row,Row>>
+*** <<cell,Cell>>
 * <<color-reference,Color Reference>> +
 * <<standard-fonts,Standard Fonts>> +
 * <<final-notes,Final Notes>>
@@ -130,67 +131,7 @@ In the case of missing closing tags, add closing tags where appropriate. For exa
 Ignore Failing Data::
 Many kinds of errors can be handled simply by ignoring the bad data or doing nothing. If a closing tag is encountered which does not have a match, strip it out and move on. Nonstandard parameters can be ignored. If a tag is missing a required parameter, simply remove it -- and the corresponding closing tag -- before rendering. Colors that don't exist can either be black or continue the existing color. In short, it is better to display the content "poorly" than not at all.
 
-== anchor:tag-reference[]Tag Reference
-
-=== anchor:align-text[]Align Text
-
-*Syntax*
-
- [align type="left"]aligned text[/align]
-
-*Parameters*
-
-- *type*: REQUIRED. Specifies the type of alignment. May be `left`, `center`, `right`, or `justified`.
-
-*Notes*
-
-This tag specifies horizontal alignment of enclosed text.
-
-=== anchor:bold[]Bold
-
-*Syntax*
-
- [b]Bold text[/b]
-
-*Parameters*
-
-- None
-
-*Notes*
-
-This tag causes all enclosed text to be boldfaced.
-
-=== anchor:cell[]Cell
-
- [cell color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/cell]
-
-*Parameters*
-
-- *color*: OPTIONAL. Color of the text in the cells.
-
-- *bgcolor*: OPTIONAL. Background color of the cells.
-
-- *align*: OPTIONAL. Horizontal alignment of the cell contents. 
-
-- *valign*: OPTIONAL. Vertical alignment of the cell contents.
-
-*Notes*
-
-Defines a table cell. Only `cell` tags MUST be placed inside `row` or `header` tags. Table content MUST be placed inside `cell` tags. Non-compliant code MUST be ignored, and implementors are encouraged to remove non-compliant content.
-
-=== anchor:code[]Code / Preformatted
-
-*Syntax*
-
- [code language="markdown"]preformatted text[/code]
-
-*Parameters*
-
-- *language*: OPTIONAL. Specifies a language, enabling syntax highlighting of the enclosed text.
-
-*Notes*
-
-This tag marks enclosed text as preformatted code. Such text MUST be rendered with a fixed-width font and whitespace MUST not be modified. A language MAY be specified, but syntax highlighting is not a requirement.
+== anchor:structure-tag-reference[]Structure Tag Reference
 
 === anchor:document[]Document
 
@@ -222,25 +163,36 @@ This tag marks enclosed text as preformatted code. Such text MUST be rendered wi
 
 This tag is used to enclose all text in the document. Any text preceding the opening tag or following the closing tag MUST be ignored or, even better, removed. Note that these parameters are all optional and MAY be ignored by the renderer.
 
-=== anchor:header[] Header
+
+== anchor:formatting-tag-reference[]Formatting Tag Reference
+
+=== anchor:bold[]Bold
 
 *Syntax*
 
- [header color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/header]
+ [b]Bold text[/b]
 
 *Parameters*
 
-- *color*: OPTIONAL. Color of the text in the cells.
-
-- *bgcolor*: OPTIONAL. Background color of the cells.
-
-- *align*: OPTIONAL. Horizontal alignment of the cell contents. 
-
-- *valign*: OPTIONAL. Vertical alignment of the cell contents.
+- None
 
 *Notes*
 
-Defines a table header row. Only `cell` tags MUST be placed inside `row` or `header` tags. Table content MUST be placed inside `cell` tags. Non-compliant code MUST be ignored, and implementors are encouraged to remove non-compliant content.
+This tag causes all enclosed text to be boldfaced.
+
+=== anchor:code[]Code / Preformatted
+
+*Syntax*
+
+ [code language="markdown"]preformatted text[/code]
+
+*Parameters*
+
+- *language*: OPTIONAL. Specifies a language, enabling syntax highlighting of the enclosed text.
+
+*Notes*
+
+This tag marks enclosed text as preformatted code. Such text MUST be rendered with a fixed-width font and whitespace MUST not be modified. A language MAY be specified, but syntax highlighting is not a requirement.
 
 === anchor:image[]Image
 
@@ -328,26 +280,6 @@ These tags are for constructing unordered and ordered lists.
 
 Displays the enclosed text in a block quote style.  
 
-=== anchor:row[]Row
-
-*Syntax*
-
- [row color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/row]
-
-*Parameters*
-
-- *color*: OPTIONAL. Color of the text in the cells.
-
-- *bgcolor*: OPTIONAL. Background color of the cells.
-
-- *align*: OPTIONAL. Horizontal alignment of the cell contents. 
-
-- *valign*: OPTIONAL. Vertical alignment of the cell contents.
-
-*Notes*
-
-Defines a table row. Only `cell` tags MUST be placed inside `row` or `header` tags. Table content MUST be placed inside `cell` tags. Non-compliant code MUST be ignored, and implementors are encouraged to remove non-compliant content.
-
 === anchor:strikeout[]Strikeout
 
 *Syntax*
@@ -408,7 +340,24 @@ Text enclosed by this tag pair is rendered as subscripted text.
 
 Text enclosed by this tag pair is rendered as superscripted text.
 
-=== anchor:table[]Table / Row / Cell
+=== anchor:underline[]Underline
+
+*Syntax*
+
+ [u]Underlined text[/u]
+
+*Parameters*
+
+- None
+
+*Notes*
+
+Text enclosed by this tag pair is rendered as underlined text.
+
+
+=== anchor:table-tags-reference[]Table Tags
+
+==== anchor:table[]Table / Row / Cell
 
 *Syntax*
 
@@ -432,19 +381,64 @@ Text enclosed by this tag pair is rendered as superscripted text.
 
 The `table` tags enclose table structure tags, i.e. `header` and `row` tags, and enable default styling of the rows and cells. Text and other content are expected to be placed within `cell` tags. Content not following the expected structure of a `table` construct, for example, a `cell` tag pair not inside a `header` or `row` tag pair, MUST be ignored or, better yet, removed.
 
-=== anchor:underline[]Underline
+==== anchor:header[] Header
 
 *Syntax*
 
- [u]Underlined text[/u]
+ [header color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/header]
 
 *Parameters*
 
-- None
+- *color*: OPTIONAL. Color of the text in the cells.
+
+- *bgcolor*: OPTIONAL. Background color of the cells.
+
+- *align*: OPTIONAL. Horizontal alignment of the cell contents. 
+
+- *valign*: OPTIONAL. Vertical alignment of the cell contents.
 
 *Notes*
 
-Text enclosed by this tag pair is rendered as underlined text.
+Defines a table header row. Only `cell` tags MUST be placed inside `row` or `header` tags. Table content MUST be placed inside `cell` tags. Non-compliant code MUST be ignored, and implementors are encouraged to remove non-compliant content.
+
+==== anchor:row[]Row
+
+*Syntax*
+
+ [row color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/row]
+
+*Parameters*
+
+- *color*: OPTIONAL. Color of the text in the cells.
+
+- *bgcolor*: OPTIONAL. Background color of the cells.
+
+- *align*: OPTIONAL. Horizontal alignment of the cell contents. 
+
+- *valign*: OPTIONAL. Vertical alignment of the cell contents.
+
+*Notes*
+
+Defines a table row. Only `cell` tags MUST be placed inside `row` or `header` tags. Table content MUST be placed inside `cell` tags. Non-compliant code MUST be ignored, and implementors are encouraged to remove non-compliant content.
+
+==== anchor:cell[]Cell
+
+ [cell color="#EEEEEE" bgcolor="#111111" align="left" valign="top"][/cell]
+
+*Parameters*
+
+- *color*: OPTIONAL. Color of the text in the cells.
+
+- *bgcolor*: OPTIONAL. Background color of the cells.
+
+- *align*: OPTIONAL. Horizontal alignment of the cell contents. 
+
+- *valign*: OPTIONAL. Vertical alignment of the cell contents.
+
+*Notes*
+
+Defines a table cell. Only `cell` tags MUST be placed inside `row` or `header` tags. Table content MUST be placed inside `cell` tags. Non-compliant code MUST be ignored, and implementors are encouraged to remove non-compliant content.
+
 
 === anchor:color-reference[]Color Reference
 
