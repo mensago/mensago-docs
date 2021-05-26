@@ -20,6 +20,7 @@ v1.0, 2021-05-25
 ** <<align,Align>>
 ** <<bold,Bold>>
 ** <<code,Code / Preformatted>>
+** <<hrule,Horizontal Rule>>
 ** <<image,Image>>
 ** <<italics,Italics>>
 ** <<link,Link>>
@@ -324,6 +325,26 @@ This tag causes all enclosed text to be boldfaced.
 *Notes*
 
 This tag marks enclosed text as preformatted code. Such text MUST be rendered with a fixed-width font and whitespace MUST not be modified. A language MAY be specified, but syntax highlighting is not a requirement.
+
+=== anchor:hrule[]Horizontal Rule
+
+*Syntax*
+
+----
+[hrule style="double"][/hr]
+----
+
+*Parameters*
+
+- *color*: OPTIONAL. Specifies the color of the horizontal rule. Defaults to the current text color.
+
+- *width*: OPTIONAL. Specifies in `in`, `cm`, `mm`, or `%` of the page width the size of the rule.
+
+- *style*: OPTIONAL. May be `single` (default), `double`, `dotted`, or `dashed`.
+
+*Notes*
+
+The horizontal rule is used to define a content break. Any content placed in between the opening and closing tags is ignored.
 
 === anchor:image[]Image
 
