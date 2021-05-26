@@ -12,7 +12,12 @@ v1.0, 2021-05-25
 ** <<document-structure,Document Structure>>
 * <<structure-tag-reference,Structure Tag Reference>>
 ** <<document,Document>>
+** <<head,Head>>
+** <<meta,Meta>>
+** <<body,Body>>
+** <<attachments,Attachments>>
 * <<formatting-tag-reference,Formatting Tag Reference>>
+** <<align,Align>>
 ** <<bold,Bold>>
 ** <<code,Code / Preformatted>>
 ** <<image,Image>>
@@ -32,6 +37,8 @@ v1.0, 2021-05-25
 *** <<cell,Cell>>
 * <<color-reference,Color Reference>> +
 * <<standard-fonts,Standard Fonts>> +
+* <<safe-document-format,Safe Document Format>>
+** <<sdf-meta,Meta>>
 * <<final-notes,Final Notes>>
 
 == anchor:description[]Description
@@ -137,34 +144,157 @@ Many kinds of errors can be handled simply by ignoring the bad data or doing not
 
 *Syntax*
 
- [document language="en-us" color="#ffffff" image="tile.jpg" repeat="yes"]
+----
+ [document]
  .
  .
  .
  [/document]
+----
 
 *Parameters*
 
-- *bgcolor*: OPTIONAL. Specifies the background color of the page. It may be specified as an RGB hextet, e.g. `#ff0033` or as a color name from the <<color-reference,Color Reference>> section.
-
-- *color*: OPTIONAL. Specifies the default text color of the page. As with the `bgcolor` parameter, it may be specified as an RGB hextet, e.g. `#ff0033` or as a color name from the [Color Reference](#color-ref) section.
-
-- *height*: OPTIONAL. Specifies the height of the document in inches (in) or millimeters (mm). Note that some contexts, such as conversion to HTML may ignore this value. This parameter is also ignored if the `width` parameter is omitted.
-
-- *image*: OPTIONAL. Specifies the name of the image to be used as the document background.
-
-- *language*: OPTIONAL. Specifies the language in which the document is written, specified as an IETF language tag, e.g. "en-us".
-
-- *repeat*: OPTIONAL. Specifies whether or not the background image should repeat itself. Values MUST be *yes* or *no*. This parameter is ignored if the image does not exist or is invalid.
-
-- *width*: OPTIONAL. Specifies the width of the document in inches (in) or millimeters (mm). Note that some contexts, such as conversion to HTML may ignore this value. This parameter is also ignored if the `height` parameter is omitted.
+None
 
 *Notes*
 
 This tag is used to enclose all text in the document. Any text preceding the opening tag or following the closing tag MUST be ignored or, even better, removed. Note that these parameters are all optional and MAY be ignored by the renderer.
 
+=== anchor:head[]Head
+
+*Syntax*
+
+----
+[head]
+.
+.
+.
+[/head]
+----
+
+*Parameters*
+
+None
+
+*Notes*
+
+This tag encloses any document header-related information, including link information and meta information, like the title and languages.
+
+=== anchor:meta[]Meta
+
+*Syntax*
+
+----
+[head]
+[meta color="#ffffff" image="tile.jpg" repeat="yes"][/meta]
+[meta language="en-us" keywords="sample,example,sdf"]
+[/head]
+----
+
+*Parameters*
+
+- *language*: OPTIONAL. Specifies the language in which the document is written, specified as an IETF language tag, e.g. "en-us".
+
+- *bgcolor*: OPTIONAL. Specifies the background color of the page. It may be specified as an RGB hextet, e.g. `#ff0033` or as a color name from the <<color-reference,Color Reference>> section.
+
+- *color*: OPTIONAL. Specifies the default text color of the page. As with the `bgcolor` parameter, it may be specified as an RGB hextet, e.g. `#ff0033` or as a color name from the <<color-ref,Color Reference>> section.
+
+- *image*: OPTIONAL. Specifies the name of the image to be used as the document background.
+
+- *repeat*: CONDITIONAL. Specifies whether or not the background image should repeat itself. Values MUST be *yes* or *no*. This parameter is ignored if the image does not exist or is invalid.
+
+- *title*: OPTIONAL. Title of the document.
+
+- *author*: OPTIONAL. A comma-separated list of the document's authors.
+
+- *keywords*: OPTIONAL. A comma-separated list of keyword related to the document.
+
+- *description*: OPTIONAL. A textual description of the page content.
+
+*Notes*
+
+The `meta` tag supplements the document with information about the document, such as default formatting parameters, title, and language. It is valid only when placed inside a valid `head` tag pair. Multiple `meta` tags may be used in the header with different parameters to aid readability.
+
+=== anchor:linkinfo[]LinkInfo
+
+*Syntax*
+
+----
+[head]
+[linkinfo name="link1" site:"youtube.com" title="Skillet - Hero (Official Video)"]
+[/head]
+----
+
+*Parameters*
+
+- *name*: Specifies the name of the document link referenced.
+
+- *site*: The fully-qualified domain name of the site.
+
+- *title*: The title of the page linked to. Note that this field should taken from the header of the page and MUST not be editable by the user. It is a required parameter, but may be empty if the linked page does not specify one or if the link is for a downloadable file.
+
+*Notes*
+
+The `linkinfo` tag provides additional information about the target of a link which appears in the body of the document.
+
+=== anchor:fontinfo[]FontInfo
+
+*Syntax*
+
+----
+[head]
+[fontinfo]
+[/head]
+----
+
+*Parameters*
+
+- *name*: REQUIRED. The name of the font used
+
+- *source*: OPTIONAL. A source link for the font used.
+
+- *fallback*: A comma-separated list of fallback typefaces which can be used if the original font is not available.
+
+*Note*
+
+The `fontinfo` tag represents a compromise between design and security. It permits users to allow the automatic download and temporary use of fonts not already installed in their system to be able to see the document exactly as the author had intended. Client software implementors should make this functionality opt-in because of potential privacy and security implications. The `fallback` parameter is a comma-separated list of other font families which could be used instead of the one specified. The final entry in this list should be a generic type, such as `mono`,`serif`, or `sans-serif`.
+
+=== anchor:body[]Body
+
+*Syntax*
+
+----
+[body]
+.
+.
+.
+[/body]
+----
+
+*Parameters*
+
+None
+
+*Notes*
+
+The `body` tag, aside from the `document` tag, is the only required structure tag in the document. It encapsulates all displayed content. Unlike HTML, SFTM body tags do not have formatting parameters; they are handled as parameters of the <<meta,Meta>> tag.
+
 
 == anchor:formatting-tag-reference[]Formatting Tag Reference
+
+=== anchor:align[]Align
+
+*Syntax*
+
+ [align type="left"]aligned text[/align]
+
+*Parameters*
+
+- *type*: REQUIRED. Specifies the type of alignment. May be `left`, `center`, `right`, or `justified`.
+
+*Notes*
+
+This tag specifies horizontal alignment of enclosed text.
 
 === anchor:bold[]Bold
 
@@ -174,7 +304,7 @@ This tag is used to enclose all text in the document. Any text preceding the ope
 
 *Parameters*
 
-- None
+None
 
 *Notes*
 
@@ -235,11 +365,11 @@ This tag marks enclosed text as italicized.
 
 - *url*: OPTIONAL. The address of the link.
 
-- *name*: OPTIONAL. The name of the link -- just like with named anchors in HTML.  
+- *name*: CONDITIONAL. The name of the link itself. It is required only if another link in the document needs to refer to it or if there is a `linkinfo` tag in the head which references it.
 
 *Notes*
 
-Text enclosed in this tag pair is a hyperlink. Links MUST be either a relative in-page link or a canonical remote link. As stated in the Embedded Content section, implementors MUST clearly display links as such and are strongly encouraged to add features to protect users from malicious links and enable them to quickly understand the destination of the link.  
+Text enclosed in this tag pair is a hyperlink. Links MUST be either a relative in-page link or a canonical remote link. As stated in the <<document-structure,Document Structure>> section, implementors MUST clearly display links as such and are strongly encouraged to add features to protect users from malicious links and enable them to quickly understand the destination of the link. It is also recommended that client software add `linkinfo` tags to documents with external links for additional transparency.
 
 === anchor:list[]List / List Item
 
@@ -606,6 +736,39 @@ As part of the pursuit of good design, some attention to typography is important
 - Fira Code
 
 These font families have wide Unicode coverage and readability, enabling easy communication across many languages. Fira Code provides many helpful ligatures for code display.
+
+== anchor:safe-document-format[]Safe Document Format
+
+The Safe Document Format is a superset of the SFTM standard and is intended for situations where documents from unknown or untrusted sources are exchanged. Unlike SFTM, SDF documents are intended for print material and includes information which facilitates this usage. All SFTM tags and rules apply and are supplemented by these additional parameters and tags below.
+
+== anchor:sdf-structure-tags,SDF Structure Tag Information
+
+=== anchor:sdf-meta,SDF Meta
+
+*Parameters*
+
+- *width*: CONDITIONAL. Specifies the width of the document in inches (in) or millimeters (mm). Note that some contexts, such as conversion to HTML may ignore this value. This parameter is also ignored if the `height` parameter is omitted.
+
+- *height*: CONDITIONAL. Specifies the height of the document in inches (in) or millimeters (mm). Note that some contexts, such as conversion to HTML may ignore this value. This parameter is also ignored if the `width` parameter is omitted.
+
+- *size*: CONDITIONAL. This parameter overrides the `width` and `height` parameters and may be used instead of them to quickly specify the size and orientation of the document. The list of supported document sizes are listed in the Notes section below. Choosing landscape orientation is done by appending "-landscape" to the size name, e.g. "letter-landscape".
+
+- *margins*: This parameter specifies the size of the page margins. If left unspecified, 1" margins are used for US (Imperial) page sizes and 2.5cm for metric page sizes.
+
+*Notes*
+
+If an SDF document does not specify a page size, the default page size appropriate for the locale is chosen, e.g. `letter` for the United States, and `a4` for many other countries. The list of currently supported page sizes are listed below. As listed, they assume portrait orientation, but appending `-landscape` to the name chooses the same size with landscape orientation.
+
+- `a3` through `a6`
+- `b4(iso)` through `b6(iso)`
+- `b4(jis)` through `b6(jis)`
+- `letter`
+- `legal`
+- `longbond`
+- `tabloid`
+- `16kai`
+- `32kai`
+- `big32kai`
 
 == anchor:final-notes[]Final Notes
 
