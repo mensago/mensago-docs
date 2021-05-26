@@ -827,9 +827,9 @@ Web browsers are known for displaying just about any type of image file thrown a
 
 The Safe Document Format is a superset of the SFTM standard and is intended for situations where documents from unknown or untrusted sources are exchanged. Unlike SFTM, SDF documents are intended for print material and includes information which facilitates this usage. All SFTM tags and rules apply and are supplemented by these additional parameters and tags below.
 
-== anchor:sdf-structure-tags,SDF Structure Tag Information
+== anchor:sdf-structure-tags[]SDF Structure Tag Information
 
-=== anchor:sdf-meta,SDF Meta
+=== anchor:sdf-meta[]SDF Meta
 
 *Parameters*
 
@@ -855,6 +855,17 @@ If an SDF document does not specify a page size, the default page size appropria
 - `16kai`
 - `32kai`
 - `big32kai`
+
+=== anchor:sdf-p[]SDF Paragraph
+
+*Parameters*
+
+- *tabstops*: OPTIONAL. Permits the setting of tab stops for enclosed paragraphs. Values are comma-separated and may be in `in`, `cm`, `mm`, or `%`. If only one value is given, tab stops are assumed to be the same value across the page. If multiple values are given, only those values are used.
+
+*Notes*
+
+If left unspecified, tab stops are set at 1 inch (2.54cm).
+
 
 == anchor:final-notes[]Final Notes
 
