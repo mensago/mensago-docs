@@ -815,6 +815,10 @@ As part of the pursuit of good design, some attention to typography is important
 
 These font families have wide Unicode coverage and readability, enabling easy communication across many languages. Fira Code provides many helpful ligatures for code display.
 
+== anchor:image-formats[]Standard Image Formats
+
+Web browsers are known for displaying just about any type of image file thrown at them. SFTM documents support only two types: WEBP and JPEG. This is for security purposes. The WEBP format is open source, documented, has excellent compression efficiency and quality, and supports both lossy and lossless compression. In order to reduce code maintenance and attack surface, clients should convert all supported lossless image formats to lossless WEBP when imported into a document. Because JPEG images are much more common than WEBP and utilize lossy compression, they are not converted in order to prevent image quality loss.
+
 == anchor:safe-document-format[]Safe Document Format
 
 The Safe Document Format is a superset of the SFTM standard and is intended for situations where documents from unknown or untrusted sources are exchanged. Unlike SFTM, SDF documents are intended for print material and includes information which facilitates this usage. All SFTM tags and rules apply and are supplemented by these additional parameters and tags below.
