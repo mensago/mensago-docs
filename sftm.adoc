@@ -24,6 +24,7 @@ v1.0, 2021-05-25
 ** <<italics,Italics>>
 ** <<link,Link>>
 ** <<list,List / List Item>>
+** <<paragraph,Paragraph>>
 ** <<quote,Quote>>
 ** <<strikeout,Strikeout>>
 ** <<styled-text,Styled Text>>
@@ -388,13 +389,69 @@ Text enclosed in this tag pair is a hyperlink. Links MUST be either a relative i
 
 *Parameters*
 
-- *style*: OPTIONAL. The style of list, such as `upper-roman`, `square`, or `lower-alpha`. For a complete list, consult the CSS3 list of styles for the property `list-style-type`.
+- *style*: OPTIONAL. The style of list, such as `upper-roman`, `square`, or `lower-alpha`. For a complete list of available styles see the list in the Notes section.
 
 - The `li` tag has no parameters.  
 
 *Notes*
 
 These tags are for constructing unordered and ordered lists.
+
+[cols="1,3a"]
+|===
+| _Ordered List Styles_ | _Unordered List Styles_
+| decimal  | circle
+| upper-roman | dash
+| lower-roman | square
+| upper-alpha | triangle
+| lower-alpha | diamond
+| | star
+| | checkmark
+| | box
+| | arrowhead
+|===
+
+
+=== anchor:paragraph[]Paragraph
+
+*Syntax*
+
+----
+[p]Paragraph text[/p]
+----
+
+*Parameters*
+
+- *align*: OPTIONAL. Sets the text alignment for the paragraph. Choose from `left`, `center`, `right`, `justified`.
+
+- *left-indent*: OPTIONAL. Sets the left margin of the paragraph in `in`, `cm`, `mm`, or `%`.
+
+- *right-ident*: OPTIONAL. Sets the right margin of the paragraph in `in`, `cm`, `mm`, or `%`.
+
+- *first-indent*: OPTIONAL. Sets the first line indentation. The total indentation for the first line of the paragraph is this value plus the `left-indent` value. This value can be negative if a hanging indent is desired.
+
+- *line-spacing*: OPTIONAL. Sets the line spacing mode for the paragraph. Choose from `single`, `double`, `1.5`, `1.15`, `proportional`, `at-least`, `leading`, and `fixed`. More information about this modes can be found below in the Notes section.
+
+- *above*: OPTIONAL. Sets the margin above the paragraph.
+
+- *below*: OPTIONAL. Sets the margin below the paragraph.
+
+*Note*
+
+This tag defines the formatting for one or more paragraphs. Whitespace is significant in SFTM documents, and each new line counts as a paragraph. One `p` tag pair can thus define the style for all paragraphs in a document.
+
+[cols="1,1,3a"]
+|===
+| _Line Spacing Mode_ | _Parameter_ | _Effect_
+| single | none | single line spacing
+| double | none | double line spacing
+| 1.5    | none | spacing equal to 1.5 lines
+| 1.15   | none | (default) spacing equal to 1.15 lines
+| proportional | percentage | Spacing based on the the proportion of the line size. `proportional:100%` is equivalent to `single`.
+| at-least     | size | Line height must be at least the specified size in `in`, `cm`, or `mm`. Decimal values are permitted. Example: `at-least:5mm`.
+| leading      | size | Sets the height of the space in between two lines in `in`, `cm`, or `mm`. Decimal values are permitted. Example: `leading:.01in`.
+| fixed        | size | Sets a fixed spacing between lines in `in`, `cm`, or `mm`. Decimal values are permitted. Example: `fixed:1cm`.
+|===
 
 === anchor:quote[]Quote
 
@@ -432,9 +489,9 @@ Displays the enclosed text with a single-line strikeout style.
 
 *Parameters*
 
-- *Family*: OPTIONAL. The family name of the font to use.
+- *family*: OPTIONAL. The family name of the font to use.
 
-- *Size*: OPTIONAL. The size in points or, if *px* is appended to the size, pixels.  
+- *size*: OPTIONAL. The size in points or, if *px* is appended to the size, pixels.  
 
 - *color*: OPTIONAL. The color of the text. This may be specified by RGB hextet or by color name. See the [Color Reference](#color-ref) section for details.
 
