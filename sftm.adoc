@@ -363,9 +363,9 @@ This tag marks enclosed text as italicized.
 
 *Parameters*
 
-- *url*: OPTIONAL. The address of the link.
+- *url*: OPTIONAL. The address of the link. If a link is internal to the document, it should begin with a hashtag and then the name of the link.
 
-- *name*: CONDITIONAL. The name of the link itself. It is required only if another link in the document needs to refer to it or if there is a `linkinfo` tag in the head which references it.
+- *name*: CONDITIONAL. The name of the link itself, which should be unique to the document. It is required only if another link in the document needs to refer to it or if there is a `linkinfo` tag in the head which references it. 
 
 *Notes*
 
