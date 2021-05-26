@@ -14,6 +14,8 @@ v1.0, 2021-05-25
 ** <<document,Document>>
 ** <<head,Head>>
 ** <<meta,Meta>>
+** <<linkinfo,LinkInfo>>
+** <<fontinfo,FontInfo>>
 ** <<body,Body>>
 ** <<attachments,Attachments>>
 * <<formatting-tag-reference,Formatting Tag Reference>>
@@ -237,7 +239,7 @@ The `meta` tag supplements the document with information about the document, suc
 
 *Notes*
 
-The `linkinfo` tag provides additional information about the target of a link which appears in the body of the document.
+The `linkinfo` tag provides additional information about the target of a link which appears in the body of the document. Its intent is for client software to automatically obtain contextual information for link to be displayed so that a user can make an informed decision to click or not click on it.
 
 === anchor:fontinfo[]FontInfo
 
@@ -520,7 +522,7 @@ Displays the enclosed text with a single-line strikeout style.
 
 *Notes*
 
-This tag pair provides a fast, simple, flexible way to adjust the look of text. Note that the font must already be installed on the user's system. Multiple font families MAY be specified in a comma-separated list as in HTML5 `font` tags. See the section [Standard Fonts](#standard-fonts) for more details on font availability.
+This tag pair provides a fast, simple, flexible way to adjust the look of text. Note that the font must already be installed on the user's system. If specifying a non-standard font, it is highly recommended to add a `fontinfo` tag to the document head. See the section on <<standard-fonts,Standard Fonts>>  and the <<fontinfo,FontInfo>> tag for more details on font availability and usage.
 
 === anchor:subscript[]Subscript
 
