@@ -1,5 +1,5 @@
-= Safe Formatted Text Markup (SFTM) and the Safe Document Format
-Jon Yoder <jsyoder@mailfence.com>
+= Safe Formatted Text Markup (SFTM) and the Safe Document Format (SDF)
+Jon Yoder <jon@yoder.cloud>
 v1.0, 2021-05-25
 
 *Status:* Draft (Incomplete) +
