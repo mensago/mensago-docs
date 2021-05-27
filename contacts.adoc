@@ -184,7 +184,7 @@ Website:: OPTIONAL. `Website` specifies the URL of a website for the entity and 
 
 Photo:: OPTIONAL.
 
-Photo:Mime:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. It contains the MIME type of the data stored in the `Data` field. Mensago clients MUST support `image/webp`, `image/png`, and `image/jpg` display. Because of the flexibility, quality, and smaller sizes of the format, WEBP images should be preferred. They SHOULD also support HEIF and SVG. Support for other formats is optional, but support for animated profile photos is discouraged.
+Photo:Mime:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. It contains the MIME type of the data stored in the `Data` field. Mensago clients MUST support `image/webp`, `image/png`, and `image/jpg` display. Because of the flexibility, quality, and smaller sizes of the format, WEBP images should be preferred. Support for other formats is optional, but support for animated profile photos is discouraged.
 
 Photo:Data:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. The data in this field MUST be no larger than 500KiB before encoding is applied.
 
