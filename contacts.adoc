@@ -1,9 +1,15 @@
 = Mensago Contact Information and Address Books
-Jon Yoder <jsyoder@mailfence.com>
-v1.1, 2021-05-01
+:author: Jon Yoder
+:email: jon@yoder.cloud
+:revdate: 2021-05-01
+:revnumber: 1.1
+:description: Structure and description of Mensago contact information and processes
+:keywords: Mensago, contacts, pip
+:toc: preamble
+:table-stripes: odd
 
 *Status:* Draft (incomplete) +
-*Abstract:* Mensago address book information
+*Abstract:* Mensago contact information and processes
 
 == Description
 
@@ -200,7 +206,7 @@ Attachments:Mime:: CONDITIONAL. This field is REQUIRED if the `Attachments` fiel
 
 Attachments:Data:: CONDITIONAL. This field is REQUIRED if the `Attachments` field is used. It contains the actual Base85-encoded data of the attachment.
 
-== Personal Information Profiles
+== anchor:pips[]Personal Information Profiles
 
 Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Personal Information Profiles enable a user to easily and quickly decide what information is shared or not shared. Each PIP has an information sensitivity class and a name. The name is chosen by the user and can be something as simple as "Family" or "Private". The information sensitivity class is limited to `public`, `private`, or `secret`.
 
@@ -222,27 +228,25 @@ Information updates are sent whenever users update their contact information. Th
 
 == Contact Requests
 
-Unlike e-mail, communication with other users on the Mensago platform is on an opt-in basis. A contact request exchange similar to those found on social media must take place before any sort of communication can take place between two entities. The result is a simple, familiar concept which places users in control and provides a means to exchange encryption keys. Filtering and organizing communications is part of the
-design of the platform.
+Unlike e-mail, communication with other users on the Mensago platform is on an opt-in basis. A Contact Request exchange similar to those found on social media must take place before any sort of communication can take place between two entities. The result is a simple, familiar concept which places users in control and provides a means to exchange encryption keys. Filtering and organizing communications is part of the design of the platform.
 
-The contact request process is as follows:
+The Contact Request process is as follows:
 
 [arabic]
 . User #1 retrieves and validates User #2’s keycard. The keycard for User #2 contains an encryption key used to encrypt the contact request. More information on this process and keycards in general can be found in the Keycard Specification.
-. User #1 sends a request to User #2. This request contains whatever contact information User #1 wishes to share (name, address, etc.) in the form of a Personal Information Profile (PIP). It is signed by User #1’s
-request signing key so that User #2 can verify that the request actually came from User #1 and encrypted with User #2’s request encryption key so that no one except User #2 can read it. Once received, User #2 can
-determine if contact should be permitted. More information on PIPs can be found in the Contacts Specification.
+. User #1 sends a request to User #2. This request contains whatever contact information User #1 wishes to share (name, address, etc.) in the form of a <<pips,Personal Information Profile>> (PIP). It is signed by User #1’s request signing key so that User #2 can verify that the request actually came from User #1 and encrypted with User #2’s request encryption key so that no one except User #2 can read it. Once received, User #2 can determine if contact should be permitted. More information on PIPs can be found in the <<pips,section further below>>.
 . User #2 may drop the request and optionally block future requests. If User #2 approves the request, an encrypted response is sent with User #2’s PIP. Unlike the initial request, the acceptance message contains
-the full information provided in the PIP provided by User #2. . User #1 receives the approval and is asked to share his/her personal information with User #2. How much information is shared is up to User
-#1. This response also includes public keys for both encryption and signing which are unique to that contact.
+the full information provided in the PIP provided by User #2.
+. User #1 receives the approval and is asked to share his/her personal information with User #2. How much information is shared is up to User #1. This response also includes public keys for both encryption and signing which are unique to that contact.
 
 This process enables exchange of information without exposure to infrastructure and a minimum of back-and-forth to enable the information exchange. The combination of contact requests and required encryption enables several security advantages:
 
-* Encryption can be computationally expensive, which makes mass messaging harder to hide on a compromised machine and slows throughput without placing undue hardships on individuals sending a message to a
-few friends.
+* Encryption can be computationally expensive, which makes mass messaging harder to hide on a compromised machine and slows throughput without placing undue hardships on individuals sending a message to a few friends.
 * Phishing is much more difficult because the sender’s identity is required and each contact's keypairs are unique.
 * Only contact requests may be sent to the user with their contact request key. Other types of messages encrypted with it are silently dropped.
 * Because the sender's verifiable identity is required, spamming people through the contact request mechanism is easily stopped.
+
+The Contact Request process is unique in that it is the only type of message that can be sent to a recipient without any prior contact having been made. As such, it is very strictly regulated. For example, file attachments of any type are not only part of the particular format used for Contact Requests, they are **utterly forbidden**. Clients which encounter a Contact Request message with any type of attachment MUST silently drop it. Users can -- and should -- be reported for sending spam via Contact Requests. Administrators are highly encouraged to suspend and/or terminate accounts which exhibit this behavior. 
 
 *Contact Request: Stage 1 (Lookup)*
 
@@ -278,11 +282,9 @@ Sent by a contact request recipient to approve a contact request. Should the rec
 
 *Contact Request: Stage 4 (Acknowledgement)*
 
-Sent by the initial contact request sender to fill in any information not initially sent. Additional personal information is not required for the acknowledgement, but this third step enables a sender to share enough
-information to be identified by the recipient in the initial message without sending potentially sensitive information to the wrong person. This payload uses the subtype `contactreq.3`. Note that the information sent in this message is supplemental to that sent in the initial request. The recipient’s address book information is updated when this message is received. When this message is sent, the client application should make a note of what information profile was used for future change updates.
+Sent by the initial contact request sender to fill in any information not initially sent. Additional personal information is not required for the acknowledgement, but this extra step enables a sender to share enough information to be identified by the recipient in the initial message without sending potentially sensitive information to the wrong person. This payload uses the subtype `contactreq.3`. Note that the information sent in this message is supplemental to that sent in the initial request. The recipient’s address book information is updated when this message is received. When this message is sent, the client application should make a note of what information profile was used for future change updates.
 
 *Contact Information Update*
 
-Sent by a user to notify contacts of a change in contact information. The payload sent uses the subtype `ContactUpdate`. The fields and structure are exactly the same as the contact requests, but the update
-message is encrypted with the user’s system key, not the recipient’s contact request key. Empty fields which are sent are intended to delete information which was previously available. Note that any client-side
-annotations made by the recipients to the sender’s contact information are retained, but the information provided by the sender is not.
+Sent by a user to notify contacts of a change in contact information. The payload sent uses the subtype ` `contactupdate`. The fields and structure are exactly the same as the contact requests, but the update
+message is encrypted with the user's regular contact key created for that recipient, not the recipient’s contact request key. Empty fields which are sent are intended to delete information which was previously available. Note that any client-side annotations made by the recipients to the sender’s contact information are retained, but the information provided by the sender is not.
