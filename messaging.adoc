@@ -109,6 +109,8 @@ _Subject_ - REQUIRED. A string up to 100 characters in length. The characters MU
 
 _Body_ - REQUIRED. A string of UTF-8 characters of any length. Escapement of content for JSON compliance is required.
 
+_Images_ - CONDITIONAL. A list of dictionaries containing image data used as embedded message content. Unlike images stored as attachments, items in this field are considered to be an integrated part of the message and are not stored separately in the filesystem. This field is only required if images are embedded, not attached. Aside from its name and different purpose, it follows the same format as the _Attachments_ field.
+
 _Attachments_ - OPTIONAL. A list of dictionaries containing attached data. Attachment format is listed below.
 
 *Attachment Fields*
