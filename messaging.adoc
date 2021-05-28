@@ -1,6 +1,12 @@
 = Mensago Messaging Specification
-Jon Yoder <jsyoder@mailfence.com>
-v1.1, 2021-05-01
+:author: Jon Yoder
+:email: jon@yoder.cloud
+:revdate: 2021-05-01
+:revnumber: 1.1
+:description: Structure and usage of Mensago messages and processes
+:keywords: Mensago, messaging
+:toc: preamble
+:table-stripes: odd
 
 *Status:* Draft +
 *Abstract:* Mensago message structure
@@ -19,12 +25,7 @@ Each Mensago workspace uses multiple encryption keys. Two of the reasons for thi
 
 *Contact Request Signing Key* : This asymmetric keypair is for signing contact requests before they are encrypted.
 
-*Broadcast Key* : This key is a symmetric key used for group messaging. The encryption standard may vary, but as of this writing, there are several supported standards: XChaCha20, ChaCha20, AES128, and AES256.
-Because this key can potentially be given out to large numbers of recipients, a workspace may have multiple broadcast keys.
-
 *System Key*: Another symmetric key, the system key is used for encrypting system messages. Users never directly interact with this key.
-
-*Social Key*: This symmetric key will be used specifically for the Terrazzo social networking module. This key type may also have multiple keys.
 
 *Storage Key*: This symmetric key is used to encrypt client files for storage and synchronization on the server.
 
