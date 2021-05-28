@@ -102,7 +102,7 @@ A slight variation of the standard JSON schema is used for offline messages. Off
 {
 	"Version" : "1.0",
 	"From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/example.com",
-	"Date" : "20201022 120000",
+	"Date" : "20201022T120000Z",
 	"ThreadID" : "2280c1f2-d9c0-440c-a182-967b16ba428a",
 	"Subject" : "Sample Offline Message",
 	"Body" : "The body of an offline message could very well be empty",
