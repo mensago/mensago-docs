@@ -95,6 +95,10 @@ CONDITIONAL. The contents of this field consists of Base85-encoded encrypted JSO
 Receiver::
 CONDITIONAL. The contents of this field consists of Base85-encoded encrypted JSON data. It is required if the client file is intended for delivery and MUST be accompanied by a `Sender` field. The unencrypted data contains only two fields: the `To` field, which contains the full address of the recipient, and the `SenderDomain` field, which contains only the domain of the sender. It is encrypted with the Primary Encryption Key of the recipient's organization. This construct helps protect sender and recipient privacy.
 
+SendTime::
+OPTIONAL. The UTC timestamp of when the message is requested to be delivered. This field is utilized for Scheduled Send functionality.
+
+
 *Client File Payload Structure*
 
 The payload of a client file is separated from the header information for delivery efficiency. Its contents are also JSON data. The precise schema used depends on the purpose of the payload. All payloads are required to have two specific fields for identification purposes.
