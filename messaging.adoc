@@ -88,6 +88,8 @@ The `PayloadKey` field would just contain a 32-byte blob of binary data that was
 }
 ----
 
+The actual structure of the file is quite simple. It is structured such that the basic information about the file can be read and parsed without having to read in the payload, which can get quite large. The first line is the magic file identifier `MENSAGO`. The envelope lines follow. Typically this is one line of minified JSON, but pretty-printed JSON data is also acceptable. File readers should read in line data until a line consisting of 10 dashes (`----------`) is read. This line functions as the payload marker. File readers interested only in the payload metadata can stop at this point, parse the JSON data, and move on. Following the payload marker is one line containing the algorithm used to encrypt the payload in CryptoString prefix format. For more information about the CryptoString format, please consult the Mensago Platform Overview. The rest of the file is the Base85-encoded encrypted payload.
+
 *User Message Fields*
 
 _Type_ - REQUIRED. This field is required for all payloads. It defines the type of payload.
