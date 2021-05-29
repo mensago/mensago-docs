@@ -265,7 +265,7 @@ are encouraged to share additional information to help the recipient validate wh
     "Version" : "1.0",
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
     "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
-    "Date" : "20190905 155323",
+    "Date" : "20190905T155323Z",
     "Sensitivity" : "Public",
     "EntityType" : "individual",
     "Name" : {
