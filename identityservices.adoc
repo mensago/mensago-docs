@@ -571,6 +571,7 @@ _Logs in with preregistration information_
 * _optional:_ Domain
 
 | Returns  | * 201 REGISTERED
+* Workspace-ID
 | Possible Errors | * 401 UNAUTHORIZED
 |===
 
