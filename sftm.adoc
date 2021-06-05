@@ -192,7 +192,7 @@ The `meta` tag supplements the document with information about the document, suc
 
 ----
 [head]
-[linkinfo name="link1" site:"youtube.com" title="Skillet - Hero (Official Video)"]
+[linkinfo name="link1" site:"youtube.com" ]Skillet - Hero (Official Video)[/linkinfo]
 [/head]
 ----
 
@@ -202,11 +202,9 @@ The `meta` tag supplements the document with information about the document, suc
 
 - *site*: The fully-qualified domain name of the site.
 
-- *title*: The title of the page linked to. Note that this field should taken from the header of the page and MUST not be editable by the user. It is a required parameter, but may be empty if the linked page does not specify one or if the link is for a downloadable file.
-
 *Notes*
 
-The `linkinfo` tag provides additional information about the target of a link which appears in the body of the document. Its intent is for client software to automatically obtain contextual information for link to be displayed so that a user can make an informed decision to click or not click on it.
+The `linkinfo` tag provides additional information about the target of a link which appears in the body of the document. Its intent is for client software to automatically obtain contextual information for link to be displayed so that a user can make an informed decision to click or not click on it. The title of the page linked to appears within the tag pair. This title should taken from the header of the page and MUST not be editable by the user. If the link target does not specify a title or if it is a downloadable file, the title may be empty.
 
 === anchor:fontinfo[]FontInfo
 
@@ -214,7 +212,7 @@ The `linkinfo` tag provides additional information about the target of a link wh
 
 ----
 [head]
-[fontinfo]
+[fontinfo name="Roboto" fallback="Helvetica, sans-serif"][/fontinfo]
 [/head]
 ----
 
@@ -222,13 +220,11 @@ The `linkinfo` tag provides additional information about the target of a link wh
 
 - *name*: REQUIRED. The name of the font used
 
-- *source*: OPTIONAL. A source link for the font used.
-
 - *fallback*: A comma-separated list of fallback typefaces which can be used if the original font is not available.
 
 *Note*
 
-The `fontinfo` tag represents a compromise between design and security. It permits users to allow the automatic download and temporary use of fonts not already installed in their system to be able to see the document exactly as the author had intended. Client software implementors should make this functionality opt-in because of potential privacy and security implications. The `fallback` parameter is a comma-separated list of other font families which could be used instead of the one specified. The final entry in this list should be a generic type, such as `mono`,`serif`, or `sans-serif`.
+The `fontinfo` tag specifies information about a nonstandard font used in the document. The `fallback` parameter is a comma-separated list of other font families which could be used instead of the one specified. The final entry in this list should be a generic type, such as `mono`,`serif`, or `sans-serif`. Text inside the tag pair is currently ignored.
 
 === anchor:body[]Body
 
