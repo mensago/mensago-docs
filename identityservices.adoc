@@ -76,17 +76,32 @@ Obtaining and verifying a recipient's keycard is required before any contact can
 
 It is unfortunate that so many security-oriented systems are forced to depend on an insecure system like DNS. Nevertheless, it has proved difficult to replace. DNS records are used by keycard resolvers to obtain basic configuration information and as a way to validate organization keycards.
 
-Securing a domain’s resource records with DNSSEC cannot be recommended enough. When DNSSEC signatures are present, TLS signatures can be provided in DNS and used to validate the domain’s TLS certificate. In such situations, a certificate signed by a recognized third-party certificate authority (CA) is not required. In light of CA compromises in recent years, this is a notable benefit. Without the presence of DNSSEC, resolvers MUST require the TLS certificate of a Mensago server to be signed by a recognized third party CA.
+Securing a domain’s resource records with DNSSEC cannot be recommended enough. When DNSSEC signatures are present, a hash of the public key in the server's TLS certificate in DNS and used to validate the domain’s TLS certificate. In such situations, a certificate signed by a recognized third-party certificate authority (CA) is not required. In light of CA compromises in recent years, this is a notable benefit. Without the presence of DNSSEC, resolvers MUST require the TLS certificate of a Mensago server to be signed by a recognized third party CA.
 
-An Mensago management record utilizes the resource record type `MSGX`, short for MenSaGo eXchange. Alternatively, if a TXT record type must be used, the name subdomain prefix `_mensago` MUST be used, e.g. `_mensago.example.com`. When searching for a record, resolvers should begin with the fully-qualified domain name for the service and work their way up the domain hierarchy until a matching resource record is found or the top level of the domain has been reached. For example, if a resolver is attempting to resolve `sub.domain.example.com`, it should first look for an `MSGX` record for `sub.domain.example.com` or a `TXT` record with the name `_mensago.sub.domain.example.com`. Not finding one, then it should follow the same procedure for `domain.example.com`, and then finally `example.com`. If the hierarchy has been traversed and no management record has been found, the domain is to be assumed to not offer Mensago services.
+Aside from the optional SRV record used for client autoconfiguration, TXT records are required, providing a second source of information about a server. The organization's Primary Verification Key is required to be stored in DNS and is used to assist in confirming a server's identity. 
 
 When working with DNS TXT records and the maximum length of 255 characters per string, fields MUST NOT be split across strings. A good policy for TXT record fields would be one string per field. Likewise, for maximum compatibility, DNS responses should be no longer than 512 bytes. Given the short length of Mensago DNS record fields, this should not be difficult.
 
+=== Server Autodiscovery
+
+Given the complicated nature of configuring e-mail clients, automatic configuration is considered a requirement for the platform. An administrator can add an SRV record to inform clients of the fully-qualified domain name and port used by its Mensago server. This DNS record is optional. If not provided, clients check if the organization has a `mensago` subdomain, i.e. `mensago.subdomain.example.com` and, if not, work its way up the domain hierarchy. For example, for the domain `subdomain.example.com`, a client would perform the following steps:
+
+. Check for an SRV record with the service type `_mensago`, and use the supplied FQDN and port if it exists
+. Perform a DNS lookup for `mensago.subdomain.example.com`
+. Perform a DNS lookup for `mensago.example.com`
+. Attempt to connect to `example.com`
+
+The default port, 2001, is always used unless there is an SRV record in DNS which specified otherwise. If there is no SRV record and nothing is found at any of the specified subdomains, the organization is assumed to not offer Mensago services.
+
 === Management Record Fields
 
-pk:: REQUIRED. This contains the CryptoString-formatted verification key for the organization signature found in the organization’s current keycard entry. It MUST match the key in the `Primary-Signing-Key` field of the organization's current keycard entry. Resolvers MUST reject any keycard which does not validate with a verification key from the management record. 
+These fields are part of the TXT record for an organization's DNS configuration.
 
-sk:: OPTIONAL. This contains the secondary verification key and corresponds to `Secondary-Verification-Key`. As a matter of course, when a keycard is updated, the key in the `pk` field is usually converted to an `sk` field unless the key was revoked. If the `pk` key was revoked, the `sk` field should be empty and the new entry in the organization's keycard should NOT have a `Secondary-Signing-Key` field. If the current entry in the organization's keycard contains this field, the DNS record MUST be present. 
+pvk:: REQUIRED. This contains the CryptoString-formatted verification key for the organization signature found in the organization’s current keycard entry. It MUST match the key in the `Primary-Signing-Key` field of the organization's current keycard entry. Resolvers MUST reject any keycard which does not validate with a verification key from the management record. 
+
+svk:: CONDITIONAL. This contains the secondary verification key and corresponds to `Secondary-Verification-Key`. As a matter of course, when a keycard is updated, the key in the `pvk` field is usually converted to an `svk` field unless the key was revoked. If the `pvk` key was revoked, the `svk` field should be empty and the new entry in the organization's keycard should NOT have a `Secondary-Signing-Key` field. If the current entry in the organization's keycard contains this field, the DNS record MUST be present. 
+
+tls:: OPTIONAL. This field contains a CryptoString-formatted hash of the public key found in the server's TLS certificate. Although optional, use of this field is highly recommended. Because of the 255 byte limit on TXT records, it is recommended that this field be put into its own TXT record and a 128-bit or 192-bit hash be used.
 
 == Lifecycle: Rotation and Revocation
 
