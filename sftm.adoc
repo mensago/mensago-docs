@@ -794,6 +794,48 @@ Web browsers are known for displaying just about any type of image file thrown a
 
 The Safe Document Format is a superset of the SFTM standard and is intended for situations where documents from unknown or untrusted sources are exchanged. Unlike SFTM, SDF documents are intended for print material and includes information which facilitates this usage. All SFTM tags and rules apply and are supplemented by these additional parameters and tags below.
 
+== anchor:sdf-crypto[]SDF Digital Signatures and Encryption
+
+Building upon the foundations of the Mensago communications platform, SDF documents can also be signed. Two other sections may exist beyond the document's ending `[/document]` tag, one for a digital signature and one for encryption.
+
+=== anchor:signature[]Signature
+
+*Syntax*
+
+ [signature type="ed25519" encoding="base85" address="csimons/example.com"]vp6R*W==)9>Us`MA!pz>7yyT&2{I&;`8hQmP<I2uJqu*<OA`O}!a^*e!W5dkVJ%_~V>KQpl;wN+#kXe)[/signature]
+
+*Parameters*
+
+- *type*: The signing algorithm used. Currently the only supported algorithms are `ed25519`, `rsa2048`, and `rsa4096`. 
+
+- *encoding*: The type of binary-to-text algorithm used, which may either be `base64` or `base85`.
+
+- *address*: Address of the entity signing the document. This may be a regular Mensago address or a workspace address.
+
+*Notes*
+
+This tag, if it exists, MUST appear immediately following the document's closing `[/document]` tag. The text enclosed by the tag pair is the encoded digital signature of the entire document, including the `[document]` tag pair. This tag pair is required if encryption is used, in which case document contents are signed before they are encrypted.
+
+=== anchor:docencryption[]Encryption
+
+*Syntax*
+
+ [encryption type="xsalsa20" keyencoding="base85" keyencryption="curve25519" docencoding="base85"]ihbCfWuF8`7x}bk7vBjJel?p52RB8ALs3MNy)CSw[/encryption]
+
+*Parameters*
+
+- *type*: The encryption algorithm used. Currently the only supported algorithms are `aes128`, `aes256`, or `xsalsa20`.
+
+- *keyencoding*: The type of binary-to-text algorithm used on the encryption key, which may either be `base64` or `base85`.
+
+- *keyencryption*: CONDITIONAL. The type of encryption used to encrypt the document key, which may be `curve25519`, `rsa2048`, or `rsa4096`. This parameter is required if the document key is encrypted with a public key. If password-based encryption is utilized, this parameter is not used.
+
+- *docencoding*: The type of binary-to-text algorithm used to encode the encrypted document contents, which may either be `base64` or `base85`.
+
+*Notes*
+
+This tag, if it exists, MUST appear immediately following the document's closing `[/signature]` tag. The contents of the document are encrypted, encoded using either Base64 or Base85 encoding, and placed between the two `document` tags.
+
 == anchor:sdf-structure-tags[]SDF Structure Tag Information
 
 === anchor:sdf-meta[]SDF Meta
