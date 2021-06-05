@@ -1,49 +1,16 @@
 = Safe Formatted Text Markup (SFTM) and the Safe Document Format (SDF)
-Jon Yoder <jon@yoder.cloud>
-v1.0, 2021-05-25
+:author: Jon Yoder
+:email: jon@yoder.cloud
+:revdate: 2021-05-25
+:revnumber: 1.0
+:description: A rich-formatting markup language and document format designed for safe document exchange
+:keywords: sftm, sdf, html, bbcode
+:toc: preamble
+:table-stripes: odd
 
 *Status:* Draft (Incomplete) +
 *Abstract:* Rich text formatting language for client-side use and an 
 
-== Table of Contents
-
-* <<description,Description>>
-** <<syntax,Syntax>>
-** <<document-structure,Document Structure>>
-* <<structure-tag-reference,Structure Tag Reference>>
-** <<document,Document>>
-** <<head,Head>>
-** <<meta,Meta>>
-** <<linkinfo,LinkInfo>>
-** <<fontinfo,FontInfo>>
-** <<body,Body>>
-** <<attachments,Attachments>>
-* <<formatting-tag-reference,Formatting Tag Reference>>
-** <<align,Align>>
-** <<bold,Bold>>
-** <<code,Code / Preformatted>>
-** <<hrule,Horizontal Rule>>
-** <<image,Image>>
-** <<italics,Italics>>
-** <<link,Link>>
-** <<list,List / List Item>>
-** <<paragraph,Paragraph>>
-** <<quote,Quote>>
-** <<strikeout,Strikeout>>
-** <<styled-text,Styled Text>>
-** <<subscript,Subscript>>
-** <<superscript,Superscript>>
-** <<underline,Underline>>
-** <<table-tags,Table Tags>>
-*** <<table,Table>>
-*** <<header,Header>>
-*** <<row,Row>>
-*** <<cell,Cell>>
-* <<color-reference,Color Reference>> +
-* <<standard-fonts,Standard Fonts>> +
-* <<safe-document-format,Safe Document Format>>
-** <<sdf-meta,Meta>>
-* <<final-notes,Final Notes>>
 
 == anchor:description[]Description
 
@@ -865,7 +832,6 @@ If an SDF document does not specify a page size, the default page size appropria
 *Notes*
 
 If left unspecified, tab stops are set at 1 inch (2.54cm).
-
 
 == anchor:final-notes[]Final Notes
 
