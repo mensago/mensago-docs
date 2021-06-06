@@ -179,11 +179,9 @@ Contact-Request-Encryption-Key:: the public half of a key pair in CryptoString f
 
 Contact-Request-Verification-Key:: the public half of a signing key pair in CryptoString format for verifying the signature on a contact request.
 
-Public-Encryption-Key:: a public key in CryptoString format for third party use. Possible uses include website authentication or PGP. Although reserved, this field is required.
+Encryption-Key:: a public key in CryptoString format for third party use. Possible uses include website authentication or PGP. Although reserved, this field is required.
 
-Alternate-Encryption-Key:: OPTIONAL. another public key in CryptoString format for third party use.
-
-Public-Verification-Key:: a verification key in CryptoString format for third party use. Possible uses include signing documents and other files.
+Verification-Key:: a verification key in CryptoString format for third party use. Possible uses include signing documents and other files.
 
 Time-To-Live:: Number of days in which the keycard may remain in a resolver cache. Recommended value is 7, but it MUST NOT be less than 1 or greater than 30. After this period of time, a resolver MUST check to ensure that the keycard has not changed.
 
