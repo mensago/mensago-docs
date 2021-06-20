@@ -101,6 +101,8 @@ pvk:: REQUIRED. This contains the CryptoString-formatted verification key for th
 
 svk:: CONDITIONAL. This contains the secondary verification key and corresponds to `Secondary-Verification-Key`. As a matter of course, when a keycard is updated, the key in the `pvk` field is usually converted to an `svk` field unless the key was revoked. If the `pvk` key was revoked, the `svk` field should be empty and the new entry in the organization's keycard should NOT have a `Secondary-Signing-Key` field. If the current entry in the organization's keycard contains this field, the DNS record MUST be present. 
 
+ek:: REQUIRED. This contains the CryptoString-formatted encryption key corresponding to the `Encryption-Key` found in the organization’s current keycard entry. This key is used for clients to authenticate servers. 
+
 tls:: OPTIONAL. This field contains a CryptoString-formatted hash of the public key found in the server's TLS certificate. Although optional, use of this field is highly recommended. Because of the 255 byte limit on TXT records, it is recommended that this field be put into its own TXT record and a 128-bit or 192-bit hash be used.
 
 == Lifecycle: Rotation and Revocation
