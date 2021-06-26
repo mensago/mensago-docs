@@ -182,6 +182,10 @@ This tag encloses any document header-related information, including link inform
 
 - *description*: OPTIONAL. A textual description of the page content.
 
+- *version*: OPTIONAL. Indicates the version of the standard used. Until the specification reaches final approval this will always be `1.0`.
+
+- *doctype*: OPTIONAL. Indicates the type of document. It MUST be either `sftm` or `sdf` and dictates how the document is to be interpreted. For example, an SDF document with a doctype of `sftm` will cause the parser and/or interpreter to ignore SDF tags and extended attributes. Likewise, an SFTM document with a doctype of `sdf` will cause it to be interpreted as an SDF document with any defaults filling in the missing information.  
+
 *Notes*
 
 The `meta` tag supplements the document with information about the document, such as default formatting parameters, title, and language. It is valid only when placed inside a valid `head` tag pair. Multiple `meta` tags may be used in the header with different parameters to aid readability.
