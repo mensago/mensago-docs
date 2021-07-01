@@ -246,7 +246,7 @@ This process enables exchange of information without exposure to infrastructure 
 * Only contact requests may be sent to the user with their contact request key. Other types of messages encrypted with it are silently dropped.
 * Because the sender's verifiable identity is required, spamming people through the contact request mechanism is easily stopped.
 
-The Contact Request process is unique in that it is the only type of message that can be sent to a recipient without any prior contact having been made. As such, it is very strictly regulated. For example, file attachments of any type are not only part of the particular format used for Contact Requests, they are **utterly forbidden**. Clients which encounter a Contact Request message with any type of attachment MUST silently drop it. Users can -- and should -- be reported for sending spam via Contact Requests. Administrators are highly encouraged to suspend and/or terminate accounts which exhibit this behavior. 
+The Contact Request process is unique in that it is the only type of message that can be sent to a recipient without any prior contact having been made. As such, it is very strictly regulated. For example, not only are file attachments of any type not part of the specific format used for Contact Requests, they are **utterly forbidden**. Clients which encounter a Contact Request message with any type of attachment MUST silently drop it. Users can -- and should -- be reported for sending spam via Contact Requests. Administrators are highly encouraged to suspend and/or terminate accounts which exhibit this behavior. 
 
 *Contact Request: Stage 1 (Lookup)*
 
