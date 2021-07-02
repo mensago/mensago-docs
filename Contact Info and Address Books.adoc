@@ -24,7 +24,7 @@ The overall payload structure is that of a list of dictionaries containing conta
 [source,json]
 ----
 [   {   "Version" : "1.0",
-        "Sensitivity" : "Private",
+        "Sensitivity" : "private",
         "EntityType" : "individual",
         "Source" : "owner",
         "Update" : "no",
@@ -53,30 +53,26 @@ The overall payload structure is that of a list of dictionaries containing conta
                 "Region" : "Illinois",
                 "PostalCode" : "60106",
                 "Country" : "United States"
-            },
-            "Other" : [
-            ]
+            }
         ],
 
-        "Phone" : {
-            "Home" : "555-555-1234",
-            "Work" : "555-555-5678",
-            "Mobile" : "555-555-9090"
-        },
+        "Phone" : [
+            { "Label": "Home", "Value" : "555-555-1234" },
+            { "Label": "Work", "Value" : "555-555-5678" },
+            { "Label": "Mobile*", "Value" : "555-555-9090"}
+        ],
 
         "Mensago" : [
             {   "Label" : "Home",
                 "UserID" : "cavs4life",
-                "Preferred" : "yes",
                 "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
                 "Domain" : "mensago-example.com",
                 "Keys" : [
-                    {
-                        "Label" : "Primary",
+                    {   "Label" : "primary",
                         "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
                         "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
                     },
-                    {   "Label" : "Broadcast",
+                    {   "Label" : "broadcast",
                         "KeyHash" : "BLAKE2B-256:J=G?Q=(N-G4291qY52MM2IzhAwNog7S?RfZu9T;g",
                         "Value" : "XSALSA20:{^ovBGUU<+;))|hPZtYgEs)NRcZbe~K5*l=x^r)w"
                     }
@@ -87,9 +83,7 @@ The overall payload structure is that of a list of dictionaries containing conta
         "Anniversary" : "20001004",
         "Birthday" : "19900415",
         "Email" : [
-            {   "Label" : "Work",
-                "Address" : "rbrannan@contoso.com"
-            }
+            { "Label" : "Work", "Address" : "rbrannan@contoso.com" }
         ],
 
         "Organization" : {
@@ -113,7 +107,7 @@ The overall payload structure is that of a list of dictionaries containing conta
         "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving"
     },
     {   "Version" : "1.0",
-        "Sensitivity" : "Private",
+        "Sensitivity" : "private",
         "EntityType" : "individual",
         "Source" : "client",
         "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36",
@@ -132,41 +126,49 @@ Source:: REQUIRED. This field denotes the origin of the information. `owner` mea
 
 ID:: CONDITIONAL. `ID` is just a unique identifier created by the client to link multiple entries, such as for user annotations. It is a required field on the client side, but it is never transmitted for any purpose.
 
-Name:Formatted:: OPTIONAL. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
+FormattedName:: OPTIONAL. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
 
-Name:Nicknames:: OPTIONAL. `Nicknames` maps to the vCard field `NICKNAME`.
+Nicknames:: OPTIONAL. `Nicknames` maps to the vCard field `NICKNAME`.
 
-Name:Given:: OPTIONAL. The primary name for an entity. In many cultures, this is an individual’s first name.
+GivenName:: OPTIONAL. The primary name for an entity. In many cultures, this is an individual’s first name.
 
-Name:Family:: OPTIONAL. The family name for an entity.
+FamilyName:: OPTIONAL. The family name for an entity.
 
-Name:Additional:: OPTIONAL. A list of additional names for the entity. In English-speaking countries, this is generally an individual’s middle name(s) or initial.
+AdditionalNames:: OPTIONAL. A list of additional names for the entity. In English-speaking countries, this is generally an individual’s middle name(s) or initial.
 
-Name:Prefixes:: OPTIONAL. A list of prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
+Prefixes:: OPTIONAL. A list of prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
 
-Name:Suffixes:: OPTIONAL. A list of suffixes for an entity, such as "Esq." or "MD".
+Suffixes:: OPTIONAL. A list of suffixes for an entity, such as "Esq." or "MD".
 
 Gender:: OPTIONAL. `Gender` maps to the vCard `GENDER` field’s gender identity component, which is a free-form text field.
 
-MailingAddresses:: OPTIONAL. This group contains a dictionary of field groups. Each group in this field contains fields which map to corresponding parameters of the vCard field `ADR`. The name of each group does not have a vCard equivalent, but is used to denote the type of mailing address, such as "Home" or "Work". The mappings of these fields are explained in relation to U.S. mailing addresses merely for the sake of clarity. `POBox` is for postal office boxes. `StreetAddress` contains the street address. Apartment or suite numbers should use `ExtendedAddress` and not included in `StreetAddress`. When in doubt, consult the postal organization for a particular country for how these two fields should be used. `Locality`, `Region`, and `PostalCode` map to the city, state, and ZIP code for a U.S. address. `Country` is used for the country for an address.
+MailingAddresses:: OPTIONAL. This group contains a dictionary of field groups. Each group in this field contains fields which map to corresponding parameters of the vCard field `ADR`. The `Label` field in each group does not have a vCard equivalent, but is used to denote the type of mailing address, such as "Home" or "Work". The mappings of these fields are explained in relation to U.S. mailing addresses merely for the sake of clarity. `POBox` is for postal office boxes. `StreetAddress` contains the street address. Apartment or suite numbers should use `ExtendedAddress` and not be included in `StreetAddress`. When in doubt, consult the postal organization for a particular country for how these two fields should be used. `Locality`, `Region`, and `PostalCode` map to the city, state, and ZIP code for a U.S. address. `Country` is used for the country for an address.
 
-Phone:: OPTIONAL. This field contains a list of key-value pairs containing the name of a phone number, such as "Fax" or "Mobile". Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. An asterisk (’*’) MAY be prefixed to a name to indicate the preferred contact number.
+Phone:: OPTIONAL. This field contains a list of field groups containing the name of a phone number, such as "Fax" or "Mobile", which is stored in the `Label` field. Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. An asterisk (’*’) MAY be appended to the value of the `Label` field to indicate the preferred contact number.
 
-Mensago:: OPTIONAL. This field contains a list of field groups containing the components of the contact’s Mensago addresses. `UserID` contains the friendly part of the address. `Workspace` contains the UUID numeric identifier used for the entity’s account. `Domain` contains the fully-qualified domain. If `UserID` is empty, then the client is expected to display the numeric address and domain, separated by a forward slash, e.g. `cavsfan4life/mensago-example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/mensago-example.com`. `Preferred` denotes whether the address is the owner’s preferred address. The `Mensago` field group is not required, but if it is present, all of its subfields are required to be present.
+Mensago:: OPTIONAL. This field contains a list of field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it is present, all of its subfields are required to be present except possibly the `UserID` field.
 
-Mensago:Keys:: CONDITIONAL. This field group list contains the contact’s Mensago encryption keys. Each key is named by its purpose. These are currently `signing`, `primary`, `social`, or `broadcast`. It is a required part of the `mensago` field group.
+Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contact's address. `Workspace` contains the UUID numeric identifier used for the entity’s account. If `UserID` is empty or missing, the client MUST use the contact's workspace address, e.g. `cavsfan4life/example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/example.com`. 
 
-Mensago:Keys:Name:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `mensago` field group.
+Mensago:Domain:: CONDITIONAL. `Domain` contains the fully-qualified domain of the contact's address. 
 
-Mensago:Keys:Name:Value:: CONDITIONAL. This field contains the actual encryption key data. For public-key encryption, this is the contact’s public key. It is Base85-encoded and prefixed by the algorithm used. It is a required part of the `mensago` field group.
+Mensago:Label:: CONDITIONAL. This field indicates the type of address used, such as 'Home' or 'Work'. An asterisk (’*’) MAY be appended to its value to indicate the preferred address. 
 
-Anniversary:: OPTIONAL. `Anniversary` maps to the vCard field `ANNIVERSARY`. This is the date of marriage or equivalent for the entity. Format is YYMMDD or MMDD.
+Mensago:Keys:: CONDITIONAL. This field group sublist contains the contact’s Mensago encryption keys. Each key is named by its purpose. These are currently `signing`, `primary`, `social`, or `broadcast`. It is a required part of the `mensago` field group.
 
-Birthday:: OPTIONAL. `Birthday` maps to the vCard field `BDAY`. The birth date of the entity. Format is YYMMDD or MMDD.
+Mensago:Keys:Label:: CONDITIONAL. This field contains the label applied to the specific key. Unlike most `Label` fields, this MUST be one of several standardized possibilities. Currently its value may be `primary`, `signing`, `broadcast`, or `social`.
 
-Email:: OPTIONAL. This field contains a list of key-value pairs containing the name of the e-mail address and the address itself. Each entry in `Email` maps an individual vCard `EMAIL` field. An asterisk (’*’) MAY be prefixed to a name to indicate the preferred contact address.
+Mensago:Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
 
-Organization:: OPTIONAL. `Organization` maps to the vCard `ORG` field. Contents of the field are one or more semicolon-separated levels of the units within the organization.
+Mensago:Keys:Value:: CONDITIONAL. This field contains the actual encryption key data. For public-key encryption, this is the contact’s public key in CryptoString format.
+
+Anniversary:: OPTIONAL. `Anniversary` maps to the vCard field `ANNIVERSARY`. This is the date of marriage or equivalent for the entity. Format is YYYYMMDD or MMDD.
+
+Birthday:: OPTIONAL. `Birthday` maps to the vCard field `BDAY`. The birth date of the entity. Format is YYYYMMDD or MMDD.
+
+Email:: OPTIONAL. This field contains a list of field groups containing a label for  the e-mail address and the address itself. Each entry in `Email` maps to an individual vCard `EMAIL` field. An asterisk (’*’) MAY be appended to the `Label` value to indicate the preferred contact address.
+
+Organization:: OPTIONAL. `Organization` maps to the vCard `ORG` field. The field contains a list of strings denoting the levels of the units within the organization.
 
 Title:: OPTIONAL. `Title` maps to the vCard `TITLE` field. It contains the title or job position of the entity.
 
@@ -174,15 +176,15 @@ Categories:: OPTIONAL. `Categories` maps to the vCard `CATEGORIES` field. It con
 
 Website:: OPTIONAL. `Website` specifies the URL of a website for the entity and maps to the vCard field `WEBSITE`.
 
-Photo:: OPTIONAL.
+Photo:: OPTIONAL. A field group containing photo information for the contact. The `Photo` field is not required, but if present, all of its subfields MUST be present.
 
-Photo:Mime:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. It contains the MIME type of the data stored in the `Data` field. Mensago clients MUST support `image/webp`, `image/png`, and `image/jpg` display. Because of the flexibility, quality, and smaller sizes of the format, WEBP images should be preferred. Support for other formats is optional, but support for animated profile photos is discouraged.
+Photo:Mime:: CONDITIONAL. This field contains the MIME type of the data stored in the `Data` field. Mensago clients MUST support `image/webp`, `image/png`, and `image/jpg` display. Because of the flexibility, quality, and smaller sizes of the format, WEBP images should be preferred. Support for other formats is optional. Support for animated profile photos is discouraged.
 
-Photo:Data:: CONDITIONAL. This field is REQUIRED if the `Photo` field group is to be used. The data in this field MUST be no larger than 500KiB before encoding is applied.
+Photo:Data:: CONDITIONAL. This field contains Base85-encoded file data for the photo. The data in this field MUST be no larger than 500KiB before encoding is applied.
 
 Languages:: OPTIONAL. `Languages` roughly maps to the vCard `LANG` field. It is a list of languages used in communications with the entity. The languages are listed in order of preference from most preferred to least. The codes themselves MUST follow the format established in the https://en.wikipedia.org/wiki/ISO_639-3[ISO 639-3] standard.
 
-Notes:: OPTIONAL. Contains miscellaneous text notes stored in MSTM format. This field MAY NOT contain any attachment-type data – it MUST contain only text – but it MAY contain any other kind of MSTM-permitted data, such as links or tables.
+Notes:: OPTIONAL. Contains miscellaneous text notes stored in SFTM format. This field MUST NOT contain any attachment-type data, such as pictures or other kinds of files, but it MAY contain any other kind of SFTM-permitted data, such as links or tables. Attachment data MUST use the `Attachments` field described below.
 
 Attachments:: OPTIONAL. This field group contains miscellaneous data intended to be associated with the entity.
 
