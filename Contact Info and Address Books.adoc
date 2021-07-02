@@ -23,35 +23,23 @@ The overall payload structure is that of a list of dictionaries containing conta
 
 [source,json]
 ----
-[
-    {
-        "Version" : "1.0",
+[   {   "Version" : "1.0",
         "Sensitivity" : "Private",
         "EntityType" : "individual",
         "Source" : "owner",
         "Update" : "no",
         "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36",
-        "Name" : {
-            "Formatted" : "Richard Brannan",
-            "Nicknames" : [
-                "Rick"
-            ],
-            "Given" : "Richard",
-            "Family" : "Brannan",
-            "Additional" : [
-                "Michael"
-            ],
-            "Prefixes" : [
-                "Mr."
-            ],
-            "Suffixes" : [
-                "Ph. D"
-            ]
-        },
+        "FormattedName" : "Richard Brannan",
+        "Nicknames" : [ "Rick" ],
+        "GivenName" : "Richard",
+        "FamilyName" : "Brannan",
+        "AdditionalNames" : [ "Michael" ],
+        "Prefixes" : [ "Mr." ],
+        "Suffixes" : [ "Ph. D" ],
         "Gender" : "Male",
 
-        "MailingAddresses" : {
-            "Work" : {
+        "MailingAddresses" : [
+            {   "Label" : "Work",
                 "StreetAddress" : "1013 Hickman St.",
                 "ExtendedAddress" : "Suite D",
                 "Locality" : "Bensenville",
@@ -59,7 +47,7 @@ The overall payload structure is that of a list of dictionaries containing conta
                 "PostalCode" : "60106",
                 "Country" : "United States"
             },
-            "Home" : {
+            {   "Label" : "Home",
                 "POBox" : "4315",
                 "Locality" : "Bensenville",
                 "Region" : "Illinois",
@@ -68,7 +56,7 @@ The overall payload structure is that of a list of dictionaries containing conta
             },
             "Other" : [
             ]
-        },
+        ],
 
         "Phone" : {
             "Home" : "555-555-1234",
@@ -76,41 +64,42 @@ The overall payload structure is that of a list of dictionaries containing conta
             "Mobile" : "555-555-9090"
         },
 
-        "Mensago" : {
-            "Home" : {
+        "Mensago" : [
+            {   "Label" : "Home",
                 "UserID" : "cavs4life",
                 "Preferred" : "yes",
                 "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
                 "Domain" : "mensago-example.com",
-                "Keys" : {
-                    "Primary" : {
+                "Keys" : [
+                    {
+                        "Label" : "Primary",
                         "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
                         "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
                     },
-                    "broadcast" : {
+                    {   "Label" : "Broadcast",
                         "KeyHash" : "BLAKE2B-256:J=G?Q=(N-G4291qY52MM2IzhAwNog7S?RfZu9T;g",
                         "Value" : "XSALSA20:{^ovBGUU<+;))|hPZtYgEs)NRcZbe~K5*l=x^r)w"
                     }
-                }
+                ]
             }
-        },
+        ],
 
         "Anniversary" : "20001004",
         "Birthday" : "19900415",
-        "Email" : {
-            "Work" : "rbrannan@contoso.com"
-        },
+        "Email" : [
+            {   "Label" : "Work",
+                "Address" : "rbrannan@contoso.com"
+            }
+        ],
 
         "Organization" : {
             "Name" : "Acme Widgets, Inc.",
-            "units" : "Administration; Finance; "
+            "Units" : [ "Administration" "Finance" ]
         },
 
         "Title" : "Chief Financial Officer",
 
-        "Categories" : [
-            "Executive"
-        ],
+        "Categories" : [ "Executive" ],
 
         "Website" : "https://www.example.com",
 
@@ -119,19 +108,16 @@ The overall payload structure is that of a list of dictionaries containing conta
             "Data" : "iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"
         },
 
-        "Languages" : [
-            "en"
-        ],
+        "Languages" : [ "en" ],
+        
         "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving"
     },
-    {
-        "Version" : "1.0",
+    {   "Version" : "1.0",
         "Sensitivity" : "Private",
         "EntityType" : "individual",
         "Source" : "client",
         "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36",
-    }
-]
+    }   ]
 ----
 
 == Field Definitions
