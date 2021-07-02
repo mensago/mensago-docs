@@ -186,13 +186,13 @@ Languages:: OPTIONAL. `Languages` roughly maps to the vCard `LANG` field. It is 
 
 Notes:: OPTIONAL. Contains miscellaneous text notes stored in SFTM format. This field MUST NOT contain any attachment-type data, such as pictures or other kinds of files, but it MAY contain any other kind of SFTM-permitted data, such as links or tables. Attachment data MUST use the `Attachments` field described below.
 
-Attachments:: OPTIONAL. This field group contains miscellaneous data intended to be associated with the entity.
+Attachments:: OPTIONAL. This list of field groups contains miscellaneous data intended to be associated with the entity. Although this field is not required, each field group is required to have all fields populated and valid.
 
-Attachments:Name:: CONDITIONAL. This field is REQUIRED if the `Attachments` field is used. It contains the name of the attached data. This name can be a file name, but is not required to be.
+Attachments:Name:: CONDITIONAL. It contains the name of the attached data. This name can be a file name, but is not required to be.
 
-Attachments:Mime:: CONDITIONAL. This field is REQUIRED if the `Attachments` field is used. It contains the MIME type of the encoded data.
+Attachments:Mime:: CONDITIONAL. It contains the MIME type of the encoded data.
 
-Attachments:Data:: CONDITIONAL. This field is REQUIRED if the `Attachments` field is used. It contains the actual Base85-encoded data of the attachment.
+Attachments:Data:: CONDITIONAL. It contains the actual Base85-encoded data of the attachment.
 
 == anchor:pips[]Personal Information Profiles
 
