@@ -24,7 +24,7 @@ The overall payload structure is that of a list of dictionaries containing conta
 [source,json]
 ----
 [   {   "Version" : "1.0",
-        "Sensitivity" : "private",
+        "Privacy" : "private",
         "EntityType" : "individual",
         "Source" : "owner",
         "Update" : "no",
@@ -107,7 +107,7 @@ The overall payload structure is that of a list of dictionaries containing conta
         "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving"
     },
     {   "Version" : "1.0",
-        "Sensitivity" : "private",
+        "Privacy" : "private",
         "EntityType" : "individual",
         "Source" : "client",
         "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36",
@@ -118,7 +118,7 @@ The overall payload structure is that of a list of dictionaries containing conta
 
 Version:: REQUIRED. API version of the payload.
 
-Sensitivity:: REQUIRED. How sensitive the contact information is. This may be `public`, `private`, or `secret`. This field has no vCard equivalent.
+Privacy:: REQUIRED. How sensitive the contact information is. This may be `public`, `private`, or `secret`. This field has no vCard equivalent.
 
 EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Values are `group`, `individual` (the default), or `org`. The `Member` field (listed below) is required for the `org` type and optional for `group`.
 
@@ -196,15 +196,15 @@ Attachments:Data:: CONDITIONAL. It contains the actual Base85-encoded data of th
 
 == anchor:pips[]Personal Information Profiles
 
-Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Personal Information Profiles enable a user to easily and quickly decide what information is shared or not shared. Each PIP has an information sensitivity class and a name. The name is chosen by the user and can be something as simple as "Family" or "Private". The information sensitivity class is limited to `public`, `private`, or `secret`.
+Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Personal Information Profiles enable a user to easily and quickly decide what information is shared or not shared. Each PIP has an information privacy class and a name. The name is chosen by the user and can be something as simple as "Family" or "Private". The information privacy class is limited to `public`, `private`, or `secret`.
 
 `public` - Information permitted to be visible by essentially anyone. Name, gender, and Mensago address belong to this class by default.
 
 `private` - Information that is more carefully controlled. Contact fields not listed above for the `public` profile are private by default.
 
-`secret` - Information that must be explicitly shared. This information sensitivity class does not have any default fields, but does exist for users to be able to protect information deemed sensitive.
+`secret` - Information that must be explicitly shared. This information privacy class does not have any default fields, but does exist for users to be able to protect information deemed sensitive.
 
-PIPs make information control simple. Contact Request Initiation (Stage 1) messages only send `public` class information by default, but users may customize the request and add `private` class information. `secret` class information is not permitted in these messages. Contact Request Acknowledgement (Stage 3) messages give the user the option to add information from one of their other profiles. This reponse message automatically sets the `Sensitivity` field to sensitivity class of the profile chosen. For example, if a user has a `private`-class "Family" profile, the contact information in the Acknowledgement message will be set to `private`.
+PIPs make information control simple. Contact Request Initiation (Stage 1) messages only send `public` class information by default, but users may customize the request and add `private` class information. `secret` class information is not permitted in these messages. Contact Request Acknowledgement (Stage 3) messages give the user the option to add information from one of their other profiles. This reponse message automatically sets the `Privacy` field to privacy class of the profile chosen. For example, if a user has a `private`-class "Family" profile, the contact information in the Acknowledgement message will be set to `private`.
 
 Profiles can also be customized. For example, a user may have a Public profile which includes a mailing address. In this case, all Contact Request Initiation (Stage 1) messages will be sent including this mailing address. Encryption keys cannot be added to a PIP; they are managed by the client itself.
 
@@ -254,7 +254,7 @@ are encouraged to share additional information to help the recipient validate wh
     "From" : "3cb11ab3-5482-4154-8ca1-dfa1cc79371c/contoso.com",
     "To" : "662679bd-3611-4d5e-a570-52812bdcc6f3/mensago-example.com",
     "Date" : "20190905T155323Z",
-    "Sensitivity" : "Public",
+    "Privacy" : "Public",
     "EntityType" : "individual",
     "Name" : {
         "Given" : "Richard",
