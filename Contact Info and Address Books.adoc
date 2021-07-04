@@ -82,7 +82,6 @@ Below is listed an example of a profile which utilizes most of the available fie
         "EntityType" : "individual",
         "Source" : "owner",
         "Update" : "no",
-        "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36"
     },
 
     "Public" : {
@@ -100,7 +99,7 @@ Below is listed an example of a profile which utilizes most of the available fie
             }
         },
     },
-    
+
     "Private" : {
         "Nicknames" : [ "Rick" ],
         "AdditionalNames" : [ "Michael" ],
@@ -177,15 +176,11 @@ Below is listed an example of a profile which utilizes most of the available fie
 
 == Field Definitions
 
-Version:: REQUIRED. API version of the payload.
+Header:Version:: REQUIRED. API version of the payload.
 
-Privacy:: REQUIRED. How sensitive the contact information is. This may be `public`, `private`, or `secret`. This field has no vCard equivalent.
+Header:EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Values are `group`, `individual` (the default), or `org`. The `Member` field (listed below) is required for the `org` type and optional for `group`.
 
-EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Values are `group`, `individual` (the default), or `org`. The `Member` field (listed below) is required for the `org` type and optional for `group`.
-
-Source:: REQUIRED. This field denotes the origin of the information. `owner` means that the information is updated by the entity itself – updates from the entity are sent to keep this information current. `client` means that the user’s client, not the owner, maintains this information. More information about this field and how the mechanism works can be found in the section _Updates and Client-Side Annotations_.
-
-ID:: CONDITIONAL. `ID` is just a unique identifier created by the client to link multiple entries, such as for user annotations. It is a required field on the client side, but it is never transmitted for any purpose.
+Header:Source:: REQUIRED. This field denotes the origin of the information. `owner` means that the information is updated by the entity itself – updates from the entity are sent to keep this information current. `client` means that the user’s client, not the owner, maintains this information. More information about this field and how the mechanism works can be found in the section _Updates and Client-Side Annotations_.
 
 FormattedName:: OPTIONAL. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
 
