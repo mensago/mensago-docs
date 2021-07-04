@@ -43,6 +43,25 @@ Mensago is built such that the server is little more than a file synchronization
 
 One major departure from traditional e-mail is that messages are not just for user communications. Because each message is encrypted, potentially sensitive information can be sent without concern, and Mensago clients send messages intended for others' client software. These system-level messages are used to perform platform-level tasks, such as support requests for the provider or contact information updates.
 
+=== CryptoString
+
+One of the many challenges with working with encryption is that keys and hashes are arbitrary-looking binary blobs of data -- they have zero meaning to people just looking at them. They also lack context or any other descriptive information; a 256-bit BLAKE2B hash looks the same as a SHA256 hash, but Heaven help you if you get something mixed up.
+
+The solution is to represent keys and hashes as text and pair an algorithm nametag with the text representation of the key or hash. For example, a sample 128-bit BLAKE2B hash in its binary form is represented in hex as `a6 30 2a b0 da ef 14 fb 9b 82 b9 69 3e 78 76 6b`. Without spaces, this is 32 characters. The same hash can be represented in CryptoString format as `BLAKE2B-128:rZ6h7+V2$mn}WG%K6rL(`.
+
+The format consists of the prefix, a colon for the separator, and the Base85-encoded binary data. Base85 was chosen because of its higher efficiency and source. The prefix consists of up to 24 characters, which may be capital ASCII letters, numbers, or dashes. A colon is used to separate the prefix from the encoded data.
+
+The official prefixes as of this writing are:
+
+- ED25519
+- CURVE25519
+- AES-128 / AES-256 / AES-384 / AES-512
+- SALSA20 / XSALSA20
+- SHA-256 / SHA-384 / SHA-512
+- SHA3-256 / SHA3-384 / SHA3-512
+- BLAKE2B-128 / BLAKE2B-256 / BLAKE2B-512
+- BLAKE3-128 / BLAKE3-256 / BLAKE3-512
+
 === Workspaces, Users, and Identity
 
 Workspaces are the central concept of the platform. Similar to mailboxes, they store user data, but the files themselves can be of different types, including tasks, messages, files, and calendar events. Workspaces have one of two types: individual and shared. Identity is linked to individual workspaces and represent a person. Shared workspaces are spaces for collaboration. Instead of providing identity, a permissions system determines what actions members may take and which folders they may access.
