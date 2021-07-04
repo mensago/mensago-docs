@@ -20,7 +20,7 @@ Mensago clients need to provide users the ability to communicate in an expressiv
 
 The problems which SFTM is intended to solve in replacing HTML for rich formatting are as follows:
 
-* _Unnecessary Complexity_ - No CSS. Simpler syntax. Easier parsing.
+* _Unnecessary Complexity_ - No CSS. Simpler syntax. Easier parsing. Whitespace characters in the document body -- except inside tags -- are preserved.
 
 * _Text Client Compatibility_ - HTML is notoriously bad for command line e-mail clients like Pine and Mutt. Mailing lists should have a much easier time compiling digests.
 
@@ -56,7 +56,7 @@ Because SFTM documents are UTF-8 encoded, few escapements are actually needed. I
 - `\u133;` - the left square bracket (`[`)
 - `\u135;` - the right square bracket (`]`)
 
-As seen in the list above, formatting for an escaped character is the prefix `\u` followed by the decimal value of the character and a semicolon. Although escape codes could be used for other characters, these are the only ones permitted at this time; it is better to just use the character itself for visual clarity and prevents obfuscation.
+As seen in the list above, formatting for an escaped character is the prefix `\u` followed by the decimal value of the character and a semicolon. Although escape codes could be used for other characters, these are the only ones permitted at this time; it is better to just use the character itself for visual clarity and to prevent obfuscation.
 
 Each parameter MUST follow the format of parameter name, equal sign, and value enclosed by double quotes. If a double quotation mark needs to be part of the parameter's value, its escape code must be used in its place. Unlike HTML, only double quotes are permitted to be used to enclose parameter values.
 
@@ -104,7 +104,7 @@ In the absence of specified formatting, documents should use these formatting de
 Although it is expected that most content will conform to this specification, there will be instances where it does not. This section defines some rules of thumb for handling incorrect content. 
 
 Auto-Close Where Appropriate::
-In the case of missing closing tags, add closing tags where appropriate. For example, some formatting tags like `bold` and `code` can be safely closed at the end of a document or when a `table` tag is encountered. Table-related tags like `cell` and `header` should be closed with a `table` closing tag. This will still make the document not display as intended, but undefined behavior can be reduced.
+In the case of missing closing tags, add closing tags where appropriate. For example, some formatting tags like `bold` and `code` can be safely closed at the end of a document or when a `table` tag is encountered. Table-related tags like `cell` and `header` should be closed with a `table` closing tag. This will still make the document not display as intended, but undefined behavior can be reduced. Also if the `document` or `body` tags are missing, the document text should be assumed to be body text and default formatting values used.
 
 Ignore Failing Data::
 Many kinds of errors can be handled simply by ignoring the bad data or doing nothing. If a closing tag is encountered which does not have a match, strip it out and move on. Nonstandard parameters can be ignored. If a tag is missing a required parameter, simply remove it -- and the corresponding closing tag -- before rendering. Colors that don't exist can either be black or continue the existing color. In short, it is better to display the content "poorly" than not at all.
@@ -129,7 +129,7 @@ None
 
 *Notes*
 
-This tag is used to enclose all text in the document. Any text preceding the opening tag or following the closing tag MUST be ignored or, even better, removed. Note that these parameters are all optional and MAY be ignored by the renderer.
+This tag is used to enclose all text in the document. Any text preceding the opening tag or following the closing tag MUST be ignored or, even better, removed. 
 
 === anchor:head[]Head
 
