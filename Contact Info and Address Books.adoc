@@ -13,33 +13,100 @@
 
 == Description
 
-Contact information and address book synchronization are part of the reason that Mensago is a platform and not merely a new e-mail application. Like other bits of information, each contact is contained in an individual file.
+Contact information and address book synchronization are one reason Mensago is a platform and not merely a new e-mail application. This document describes how Mensago contact information is structured, stored, communicated, and shared.
 
 == Structure
 
-The overall payload structure is that of a list of dictionaries containing contact information. Below is listed an example of a profile which utilizes most of the available fields. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
+Like other Mensago data, contact information is normally stored in JSON format. The overall structure is a dictionary containing information grouped into sub-dictionaries by privacy level.
 
-*Example:*
+At the top level, a contact contains two dictionaries: the header and a privacy group. The header contains a high-level description of the information, including the API version, the source of the information, and the type of entity described. A short example of the format is shown below.
 
 [source,json]
 ----
-[   {   "Version" : "1.0",
-        "Privacy" : "private",
+{
+    "Header" : {
+        "Version" : "1.0",
         "EntityType" : "individual",
         "Source" : "owner",
         "Update" : "no",
-        "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36",
+    },
+    "Public" : {
+        "GivenName" : "Fred",
+        "FamilyName" : "Kingsley",
+        "Gender" : "male",
+        "Mensago" : {
+            "Home" : {
+                "UserID" : "fkingsley",
+                "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
+                "Domain" : "example.com",
+            }
+        },
+    },
+    "Private" : {
+        "Birthday" : "19860314",
+    },
+    "Secret" : {
+        "Mensago" : {
+            "Home" : {
+                "Keys" : {
+                    "Verify" : {
+                        "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
+                        "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
+                    },
+                    "Encrypt" : {
+                        "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
+                        "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
+                    }
+                }
+            }
+        },
+    }
+}
+----
+
+=== Privacy Groups
+
+Privacy groups exist so that the user can control what personal information is shared with a balance of control and ease-of-use. A contact file can contain multiple privacy groups so that those people with whom the information is shared knows how carefully to guard said information. The name of the privacy group can be `public`, `private`, or `secret` in order of least private to most.
+
+Privacy levels are multilevel, similar to Cascading Style Sheets. When a contact request is sent, the sender chooses how much information to share; the contact request will contain information in the specified level and all others with a lower privacy level. For example, at the `private` level, any information contained in the `public` and `private` levels is shared, whereas choosing `public` only shares information at that level. If a field exists in multiple privacy levels, the information from the highest level is used. In this way, for example, a person may use a very generic `public` avatar and an actual photo used at the `private` level.
+
+*Example:*
+
+Below is listed an example of a profile which utilizes most of the available fields. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
+
+[source,json]
+----
+{
+    "Header" : {
+        "Version" : "1.0",
+        "EntityType" : "individual",
+        "Source" : "owner",
+        "Update" : "no",
+        "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36"
+    },
+
+    "Public" : {
         "FormattedName" : "Richard Brannan",
-        "Nicknames" : [ "Rick" ],
         "GivenName" : "Richard",
         "FamilyName" : "Brannan",
-        "AdditionalNames" : [ "Michael" ],
+        "Gender" : "Male",
         "Prefixes" : [ "Mr." ],
         "Suffixes" : [ "Ph. D" ],
-        "Gender" : "Male",
+        "Mensago" : {
+            "Home" : {
+                "UserID" : "cavs4life",
+                "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
+                "Domain" : "mensago-example.com",
+            }
+        },
+    },
+    
+    "Private" : {
+        "Nicknames" : [ "Rick" ],
+        "AdditionalNames" : [ "Michael" ],
 
-        "MailingAddresses" : [
-            {   "Label" : "Work",
+        "MailingAddresses" : {
+            "Work" : {
                 "StreetAddress" : "1013 Hickman St.",
                 "ExtendedAddress" : "Suite D",
                 "Locality" : "Bensenville",
@@ -47,44 +114,26 @@ The overall payload structure is that of a list of dictionaries containing conta
                 "PostalCode" : "60106",
                 "Country" : "United States"
             },
-            {   "Label" : "Home",
+            "Home" : {
                 "POBox" : "4315",
                 "Locality" : "Bensenville",
                 "Region" : "Illinois",
                 "PostalCode" : "60106",
                 "Country" : "United States"
             }
-        ],
+        },
 
-        "Phone" : [
-            { "Label": "Home", "Value" : "555-555-1234" },
-            { "Label": "Work", "Value" : "555-555-5678" },
-            { "Label": "Mobile*", "Value" : "555-555-9090"}
-        ],
-
-        "Mensago" : [
-            {   "Label" : "Home",
-                "UserID" : "cavs4life",
-                "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
-                "Domain" : "mensago-example.com",
-                "Keys" : [
-                    {   "Label" : "primary",
-                        "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
-                        "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
-                    },
-                    {   "Label" : "broadcast",
-                        "KeyHash" : "BLAKE2B-256:J=G?Q=(N-G4291qY52MM2IzhAwNog7S?RfZu9T;g",
-                        "Value" : "XSALSA20:{^ovBGUU<+;))|hPZtYgEs)NRcZbe~K5*l=x^r)w"
-                    }
-                ]
-            }
-        ],
+        "Phone" : {
+            "Home" : "555-555-1234",
+            "Work" : "555-555-5678",
+            "Mobile*" : "555-555-9090"
+        },
 
         "Anniversary" : "20001004",
         "Birthday" : "19900415",
-        "Email" : [
-            { "Label" : "Work", "Address" : "rbrannan@contoso.com" }
-        ],
+        "Email" : {
+            "Work" : "rbrannan@contoso.com"
+        },
 
         "Organization" : {
             "Name" : "Acme Widgets, Inc.",
@@ -106,12 +155,24 @@ The overall payload structure is that of a list of dictionaries containing conta
         
         "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving"
     },
-    {   "Version" : "1.0",
-        "Privacy" : "private",
-        "EntityType" : "individual",
-        "Source" : "client",
-        "ID" : "f81d9ec8-01a5-442e-80f4-09db2c7d4a36",
-    }   ]
+
+    "Secret" : {
+        "Mensago" : {
+            "Home" : {
+                "Keys" : {
+                    "encrypt" : {
+                        "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
+                        "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
+                    },
+                    "verify" : {
+                        "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
+                        "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
+                    }
+                }
+            }
+        },
+    }
+}
 ----
 
 == Field Definitions
@@ -242,8 +303,7 @@ Initiated by a client when a user requests contact with another user. The client
 
 *Contact Request: Stage 2 (Initiation)*
 
-Sent after the potential contact’s request key has been received. The client is not required to provide any more personal information than that which is already available in the user’s keycard. However, users
-are encouraged to share additional information to help the recipient validate who the sender is. With the exception of encryption keys, any field found in the Contacts Specification can be found as part the contact request payload. A sample payload is shown below.
+Sent after the potential contact’s request key has been received. The client is not required to provide any more personal information than that which is already available in the user’s keycard. However, users are encouraged to share additional information to help the recipient validate who the sender is. With the exception of encryption keys, any field found in the Contacts Specification can be found as part the contact request payload. A sample payload is shown below.
 
 [source,json]
 ----
