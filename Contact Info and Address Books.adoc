@@ -27,7 +27,6 @@ At the top level, a contact contains two dictionaries: the header and a privacy 
     "Header" : {
         "Version" : "1.0",
         "EntityType" : "individual",
-        "Source" : "owner",
         "Update" : "no",
     },
     "Public" : {
@@ -84,7 +83,6 @@ Below is listed an example of a profile which utilizes most of the available fie
     "Header" : {
         "Version" : "1.0",
         "EntityType" : "individual",
-        "Source" : "owner",
         "Update" : "no",
     },
 
@@ -188,7 +186,7 @@ Header:EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Value
 
 Header:Source:: REQUIRED. This field denotes the origin of the information. `owner` means that the information is updated by the entity itself – updates from the entity are sent to keep this information current. `client` means that the user’s client, not the owner, maintains this information. More information about this field and how the mechanism works can be found in the section _Updates and Client-Side Annotations_.
 
-Header:Update:: REQUIRED. Describes whether or not the information in the contact is intended to update existing information. This payload field is present only in contact information update messages.
+Header:Update:: CONDITIONAL. Describes whether or not the information in the contact is intended to update existing information and contains either the value 'no' or 'yes'. This payload field is REQUIRED in contact information update messages, but it is not present in other uses of the contact data.
 
 FormattedName:: OPTIONAL. Privacy level `public`. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
 
@@ -256,9 +254,57 @@ Attachments:Data:: CONDITIONAL. It contains the actual Base85-encoded data of th
 
 == Updates and Client-Side Annotations
 
-Mensago contact information is designed from the outset to always be up-to-date and places the responsibility on the information owner to keep it that way. This does, however, present a problem when the contact information is not complete or the user wishes to keep personal notes related to the contact. The solution lies in an information overlay accomplished through the contact’s `Source` field. A contact’s entry may contain an additional entry using the same `ID` field and the `Source` set to `client`. In this secondary entry only the required fields of a contact must be present along with the `ID` field. All other information is optional. If a contact’s entry only contains client-owned information and later owner-sourced information is added, the owner-sourced information takes priority and the existing client-owned data is converted into an annotation.
+Mensago contact information is designed from the outset to always be up-to-date and places the responsibility on the information owner to keep it that way. This does, however, present a problem when the contact information is not complete or the user wishes to keep personal notes related to the contact. The solution lies in an information overlay accomplished through an additional information group, "Annotations". In addition to the header and three Privacy Groups, a contact’s entry may contain a fifth group which is applied first and overridden by information in the three Privacy Groups. Take the following example:
 
-Information updates are sent whenever users update their contact information. These updates only send the changes. Fields which are deleted are sent with empty data.
+[source,json]
+----
+{
+    "Header" : {
+        "Version" : "1.0",
+        "EntityType" : "individual",
+        "Source" : "owner",
+    },
+    "Public" : {
+        "GivenName" : "Fred",
+        "FamilyName" : "Kingsley",
+        "Gender" : "male",
+        "Mensago" : {
+            "Home" : {
+                "UserID" : "fkingsley",
+                "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
+                "Domain" : "example.com",
+            }
+        },
+    },
+    "Private" : {
+        "Birthday" : "19860314",
+    },
+    "Secret" : {
+        "Mensago" : {
+            "Home" : {
+                "Keys" : {
+                    "Verify" : {
+                        "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
+                        "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
+                    },
+                    "Encrypt" : {
+                        "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
+                        "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
+                    }
+                }
+            }
+        },
+    },
+    "Annotations" : {
+        "Phone" : { "Mobile" : "555-345-1543" },
+        "Birthday" : "0314"
+    }
+}
+----
+
+In the above example, the contact has provided a number of fields. The user has filled in information related to the contact's mobile phone number and birth month and year. When the client works with the contact's data, it will display the full birthdate provided by the contact, but it will display the mobile phone number entered by the user. Annotations give the user the ability to "fill in the holes" while also ensuring that a contact is the authority on their own information.
+
+Information updates are sent whenever users update their contact information. These updates only send the changes. Fields which are deleted are sent with empty data. Updates cannot affect annotations, but if a contact deletes a field in an update, it may result in an annotation being displayed when it previously was not.
 
 == Contact Requests
 
