@@ -70,9 +70,15 @@ Privacy groups exist so that the user can control what personal information is s
 
 Privacy levels are multilevel, similar to Cascading Style Sheets. When a contact request is sent, the sender chooses how much information to share; the contact request will contain information in the specified level and all others with a lower privacy level. For example, at the `private` level, any information contained in the `public` and `private` levels is shared, whereas choosing `public` only shares information at that level. If a field exists in multiple privacy levels, the information from the highest level is used. In this way, for example, a person may use a very generic `public` avatar and an actual photo used at the `private` level.
 
+Public:: The least private information group. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefixes`, `Suffixes`, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
+
+Private:: Most contact information fields are found in this privacy group by default. If a contact request is sent including this level of information, information from the Public level is also included, but information from this level overrides any field in the Public group.
+
+Secret:: The most private of the groups. If a contact request is sent including this level of information, information from the other levels is also included, but information from this level overrides any field found in either of them. Mensago cryptography keys are in this group by default.
+
 *Example:*
 
-Below is listed an example of a profile which utilizes most of the available fields. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
+Below is listed an example of a profile which utilizes most of the available fields so that the structure of a contact can be better understood. 
 
 [source,json]
 ----
@@ -176,7 +182,7 @@ Below is listed an example of a profile which utilizes most of the available fie
 
 == Field Definitions
 
-Each of the fields defined in a contact are described below. Unless otherwise indicated, each field is assigned to the privacy group `private`.
+Each of the fields defined in a contact are described below. Unless otherwise indicated, each field is assigned to the privacy group `private`. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
 
 Header:Version:: REQUIRED. API version of the payload.
 
@@ -212,7 +218,7 @@ Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contac
 
 Mensago:Domain:: CONDITIONAL. `Domain` contains the fully-qualified domain of the contact's address. 
 
-Mensago:Keys:: CONDITIONAL. Privacy level `secret`. This field group sublist contains the contact’s Mensago encryption keys. Each key is named by its purpose. These are currently `signing`, `primary`, `social`, or `broadcast`. It is a required part of the `mensago` field group.
+Mensago:Keys:: CONDITIONAL. Privacy level `secret`. This field group sublist contains the contact’s Mensago encryption keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `mensago` field group.
 
 Mensago:Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
 
