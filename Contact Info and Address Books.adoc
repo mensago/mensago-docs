@@ -66,15 +66,13 @@ At the top level, a contact contains two dictionaries: the header and a privacy 
 
 === Privacy Groups
 
-Privacy groups exist so that the user can control what personal information is shared with a balance of control and ease-of-use. A contact file can contain multiple privacy groups so that those people with whom the information is shared knows how carefully to guard said information. The name of the privacy group can be `public`, `private`, or `secret` in order of least private to most.
+Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Privacy Groups enable a user to easily and quickly decide what information is shared or not shared. A contact file can contain multiple privacy groups so that those people with whom the information is shared knows how carefully to guard said information. The names of the three privacy groups are `Public`, `Private`, and `Secret` in order of least private to most. Privacy Groups can also be customized. For example, a user may opt to include their mailing address in the Public group. In this case, all initial Contact Request messages, described later in this document, will be sent including this mailing address. 
 
-Privacy levels are multilevel, similar to Cascading Style Sheets. When a contact request is sent, the sender chooses how much information to share; the contact request will contain information in the specified level and all others with a lower privacy level. For example, at the `private` level, any information contained in the `public` and `private` levels is shared, whereas choosing `public` only shares information at that level. If a field exists in multiple privacy levels, the information from the highest level is used. In this way, for example, a person may use a very generic `public` avatar and an actual photo used at the `private` level.
+Public:: Information permitted to be visible by essentially anyone. When a Contact Request message is sent to someone, information in this Privacy Group is included automatically. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefixes`, `Suffixes`, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
 
-Public:: The least private information group. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefixes`, `Suffixes`, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
+Private:: Information that is more carefully controlled; most contact information fields are found in this privacy group by default. If a contact request is sent including this level of information, information from the Public level is also included, but information from this level overrides any field in the Public group. In this way, for example, a person may use a very generic `Public` avatar and an actual photo used at the `Private` level.
 
-Private:: Most contact information fields are found in this privacy group by default. If a contact request is sent including this level of information, information from the Public level is also included, but information from this level overrides any field in the Public group.
-
-Secret:: The most private of the groups. If a contact request is sent including this level of information, information from the other levels is also included, but information from this level overrides any field found in either of them. Mensago cryptography keys are in this group by default.
+Secret:: Information that must be explicitly shared. Information in this group cannot be shared in an initial (Stage 1) Contact Request message, but can be included in later parts of the process. Mensago cryptography keys are in this group. The user may choose to put other fields in the `secret` group or may provide different values for this group in one or more fields.
 
 *Example:*
 
@@ -218,7 +216,7 @@ Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contac
 
 Mensago:Domain:: CONDITIONAL. `Domain` contains the fully-qualified domain of the contact's address. 
 
-Mensago:Keys:: CONDITIONAL. Privacy level `secret`. This field group sublist contains the contact’s Mensago encryption keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `mensago` field group.
+Mensago:Keys:: CONDITIONAL. Privacy level `secret`. This field group sublist contains the contact’s Mensago cryptographic keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `Mensago` field group. Handling for this field and its subfields is different from all others in this specification in that Mensago cryptographic keys MUST NOT exist in any other privacy group. These keys are automatically managed by client software and sent during the appropriate times during Contact Requests and contact information updates. Client software should generate a key set unique to each contact.
 
 Mensago:Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
 
@@ -255,20 +253,6 @@ Attachments:Name:: CONDITIONAL. It contains the name of the attached data. This 
 Attachments:Mime:: CONDITIONAL. It contains the MIME type of the encoded data.
 
 Attachments:Data:: CONDITIONAL. It contains the actual Base85-encoded data of the attachment.
-
-== anchor:pips[]Personal Information Profiles
-
-Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Personal Information Profiles enable a user to easily and quickly decide what information is shared or not shared. Each PIP has an information privacy class and a name. The name is chosen by the user and can be something as simple as "Family" or "Private". The information privacy class is limited to `public`, `private`, or `secret`.
-
-`public` - Information permitted to be visible by essentially anyone. Name, gender, and Mensago address belong to this class by default.
-
-`private` - Information that is more carefully controlled. Contact fields not listed above for the `public` profile are private by default.
-
-`secret` - Information that must be explicitly shared. This information privacy class does not have any default fields, but does exist for users to be able to protect information deemed sensitive.
-
-PIPs make information control simple. Contact Request Initiation (Stage 1) messages only send `public` class information by default, but users may customize the request and add `private` class information. `secret` class information is not permitted in these messages. Contact Request Acknowledgement (Stage 3) messages give the user the option to add information from one of their other profiles. This reponse message automatically sets the `Privacy` field to privacy class of the profile chosen. For example, if a user has a `private`-class "Family" profile, the contact information in the Acknowledgement message will be set to `private`.
-
-Profiles can also be customized. For example, a user may have a Public profile which includes a mailing address. In this case, all Contact Request Initiation (Stage 1) messages will be sent including this mailing address. Encryption keys cannot be added to a PIP; they are managed by the client itself.
 
 == Updates and Client-Side Annotations
 
