@@ -222,7 +222,7 @@ Anniversary:: OPTIONAL. `Anniversary` maps to the vCard field `ANNIVERSARY`. Thi
 
 Birthday:: OPTIONAL. `Birthday` maps to the vCard field `BDAY`. The birth date of the entity. Format is YYYYMMDD or MMDD.
 
-Email:: OPTIONAL. This field contains a list of field groups containing a label for  the e-mail address and the address itself. Each entry in `Email` maps to an individual vCard `EMAIL` field. An asterisk (’*’) MAY be appended to the `Label` value to indicate the preferred contact address.
+Email:: OPTIONAL. This field contains a list of field groups containing a label for  the e-mail address and the address itself. Each entry in `Email` maps to an individual vCard `EMAIL` field. An asterisk (’*’) MAY be appended to the key to indicate the preferred contact address.
 
 Organization:: OPTIONAL. `Organization` maps to the vCard `ORG` field. The field contains a list of strings denoting the levels of the units within the organization.
 
