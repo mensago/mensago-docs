@@ -182,8 +182,6 @@ Header:Version:: REQUIRED. API version of the payload.
 
 Header:EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Values are `group`, `individual` (the default), or `org`. The `Member` field (listed below) is required for the `org` type and optional for `group`.
 
-Header:Source:: REQUIRED. This field denotes the origin of the information. `owner` means that the information is updated by the entity itself – updates from the entity are sent to keep this information current. `client` means that the user’s client, not the owner, maintains this information. More information about this field and how the mechanism works can be found in the section _Updates and Client-Side Annotations_.
-
 Header:Update:: CONDITIONAL. Describes whether or not the information in the contact is intended to update existing information and contains either the value 'no' or 'yes'. This payload field is REQUIRED in contact information update messages, but it is not present in other uses of the contact data.
 
 FormattedName:: OPTIONAL. Privacy level `public`. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
