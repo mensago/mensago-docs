@@ -66,11 +66,11 @@ At the top level, a contact contains two dictionaries: the header and a privacy 
 
 Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Privacy Groups enable a user to easily and quickly decide what information is shared or not shared. A contact file can contain multiple privacy groups so that those people with whom the information is shared knows how carefully to guard said information. The names of the three privacy groups are `Public`, `Private`, and `Secret` in order of least private to most. Privacy Groups can also be customized. For example, a user may opt to include their mailing address in the Public group. In this case, all initial Contact Request messages, described later in this document, will be sent including this mailing address. 
 
-Public:: Information permitted to be visible by essentially anyone. When a Contact Request message is sent to someone, information in this Privacy Group is included automatically. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefixes`, `Suffixes`, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
+Public:: Information permitted to be visible by essentially anyone. When a Contact Request message is sent to someone, information in this Privacy Group is included automatically. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefixes`, `Suffixes`, `Social` subfields, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
 
 Private:: Information that is more carefully controlled; most contact information fields are found in this privacy group by default. If a contact request is sent including this level of information, information from the Public level is also included, but information from this level overrides any field in the Public group. In this way, for example, a person may use a very generic `Public` avatar and an actual photo used at the `Private` level.
 
-Secret:: Information that must be explicitly shared. Information in this group cannot be shared in an initial (Stage 1) Contact Request message, but can be included in later parts of the process. Mensago cryptography keys are in this group. The user may choose to put other fields in the `secret` group or may provide different values for this group in one or more fields.
+Secret:: Information that must be explicitly shared. Information in this group cannot be shared in an initial (Stage 1) Contact Request message, but can be included in later parts of the process. Mensago cryptography keys are in this group. The user may choose to put other fields in the `Secret` group or may provide different values for this group in one or more fields.
 
 *Example:*
 
@@ -176,7 +176,7 @@ Below is listed an example of a profile which utilizes most of the available fie
 
 == Field Definitions
 
-Each of the fields defined in a contact are described below. Unless otherwise indicated, each field is assigned to the privacy group `private`. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
+Each of the fields defined in a contact are described below. Unless otherwise indicated, each field is assigned to the privacy group `Private`. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
 
 Header:Version:: REQUIRED. API version of the payload.
 
@@ -184,21 +184,23 @@ Header:EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Value
 
 Header:Update:: CONDITIONAL. Describes whether or not the information in the contact is intended to update existing information and contains either the value 'no' or 'yes'. This payload field is REQUIRED in contact information update messages, but it is not present in other uses of the contact data.
 
-FormattedName:: OPTIONAL. Privacy level `public`. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
+FormattedName:: OPTIONAL. Privacy level `Public`. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
 
 Nicknames:: OPTIONAL. `Nicknames` maps to the vCard field `NICKNAME`.
 
-GivenName:: OPTIONAL. Privacy level `public`. The primary name for an entity. In many cultures, this is an individual’s first name.
+GivenName:: OPTIONAL. Privacy level `Public`. The primary name for an entity. In many cultures, this is an individual’s first name.
 
-FamilyName:: OPTIONAL. Privacy level `public`. The family name for an entity.
+FamilyName:: OPTIONAL. Privacy level `Public`. The family name for an entity.
 
 AdditionalNames:: OPTIONAL. A list of additional names for the entity. In English-speaking countries, this is generally an individual’s middle name(s) or initial.
 
-Prefixes:: OPTIONAL. Privacy level `public`. A list of prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
+Prefixes:: OPTIONAL. Privacy level `Public`. A list of prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
 
-Suffixes:: OPTIONAL. Privacy level `public`. A list of suffixes for an entity, such as "Esq." or "MD".
+Suffixes:: OPTIONAL. Privacy level `Public`. A list of suffixes for an entity, such as "Esq." or "MD".
 
-Gender:: OPTIONAL. Privacy level `public`. `Gender` maps to the vCard `GENDER` field’s gender identity component, which is a free-form text field.
+Gender:: OPTIONAL. Privacy level `Public`. `Gender` maps to the vCard `GENDER` field’s gender identity component, which is a free-form text field.
+
+Social:: OPTIONAL. Privacy level `Public`. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
 
 MailingAddresses:: OPTIONAL. This is a dictionary of dictionaries containing mailing address information. The label applied to each sub-dictionary indicates the type of address described, such as 'Home' or 'Work'. The fields used largely map to corresponding parameters of the vCard field `ADR`. The mappings of these fields are explained in relation to U.S. mailing addresses merely for the sake of clarity. `POBox` is for postal office boxes. `StreetAddress` contains the street address. Apartment or suite numbers should use `ExtendedAddress` and not be included in `StreetAddress`. When in doubt, consult the postal organization for a particular country for how these two fields should be used. `Locality`, `Region`, and `PostalCode` map to the city, state, and ZIP code for a U.S. address. `Country` is used for the country for an address.
 
@@ -210,7 +212,7 @@ Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contac
 
 Mensago:Domain:: CONDITIONAL. `Domain` contains the fully-qualified domain of the contact's address. 
 
-Mensago:Keys:: CONDITIONAL. Privacy level `secret`. This field group sublist contains the contact’s Mensago cryptographic keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `Mensago` field group. Handling for this field and its subfields is different from all others in this specification in that Mensago cryptographic keys MUST NOT exist in any other privacy group. These keys are automatically managed by client software and sent during the appropriate times during Contact Requests and contact information updates. Client software should generate a key set unique to each contact.
+Mensago:Keys:: CONDITIONAL. Privacy level `Secret`. This field group sublist contains the contact’s Mensago cryptographic keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `Mensago` field group. Handling for this field and its subfields is different from all others in this specification in that Mensago cryptographic keys MUST NOT exist in any other privacy group. These keys are automatically managed by client software and sent during the appropriate times during Contact Requests and contact information updates. Client software should generate a key set unique to each contact.
 
 Mensago:Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
 
