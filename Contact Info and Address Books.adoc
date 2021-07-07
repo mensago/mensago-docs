@@ -250,6 +250,8 @@ Attachments:Mime:: CONDITIONAL. It contains the MIME type of the encoded data.
 
 Attachments:Data:: CONDITIONAL. It contains the actual Base85-encoded data of the attachment.
 
+Custom:: OPTIONAL. This dictionary contains custom key-value pairs. Keys are expected to follow the style and case of other fields and values are expected to be strings. URLs embedded in these fields will be vetted like any others to help protect the user from phishing and other online attacks. 
+
 == Updates and Client-Side Annotations
 
 Mensago contact information is designed from the outset to always be up-to-date and places the responsibility on the information owner to keep it that way. This does, however, present a problem when the contact information is not complete or the user wishes to keep personal notes related to the contact. The solution lies in an information overlay accomplished through an additional information group, "Annotations". In addition to the header and three Privacy Groups, a contact’s entry may contain a fifth group which is applied first and overridden by information in the three Privacy Groups. Take the following example:
