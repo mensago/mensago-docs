@@ -66,7 +66,7 @@ At the top level, a contact contains two dictionaries: the header and a privacy 
 
 Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Privacy Groups enable a user to easily and quickly decide what information is shared or not shared. A contact file can contain multiple privacy groups so that those people with whom the information is shared knows how carefully to guard said information. The names of the three privacy groups are `Public`, `Private`, and `Secret` in order of least private to most. Privacy Groups can also be customized. For example, a user may opt to include their mailing address in the Public group. In this case, all initial Contact Request messages, described later in this document, will be sent including this mailing address. 
 
-Public:: Information permitted to be visible by essentially anyone. When a Contact Request message is sent to someone, information in this Privacy Group is included automatically. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefixes`, `Suffixes`, `Social` subfields, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
+Public:: Information permitted to be visible by essentially anyone. When a Contact Request message is sent to someone, information in this Privacy Group is included automatically. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefix`, `Suffixes`, `Social` subfields, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
 
 Private:: Information that is more carefully controlled; most contact information fields are found in this privacy group by default. If a contact request is sent including this level of information, information from the Public level is also included, but information from this level overrides any field in the Public group. In this way, for example, a person may use a very generic `Public` avatar and an actual photo used at the `Private` level.
 
@@ -89,7 +89,7 @@ Below is listed an example of a profile which utilizes most of the available fie
         "GivenName" : "Richard",
         "FamilyName" : "Brannan",
         "Gender" : "Male",
-        "Prefixes" : [ "Mr." ],
+        "Prefix" : "Mr.",
         "Suffixes" : [ "Ph. D" ],
         "Mensago" : {
             "Home" : {
@@ -184,7 +184,7 @@ Header:EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Value
 
 Header:Update:: CONDITIONAL. Describes whether or not the information in the contact is intended to update existing information and contains either the value 'no' or 'yes'. This payload field is REQUIRED in contact information update messages, but it is not present in other uses of the contact data.
 
-FormattedName:: OPTIONAL. Privacy level `Public`. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefixes and suffixes.
+FormattedName:: OPTIONAL. Privacy level `Public`. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefix and suffixes.
 
 Nicknames:: OPTIONAL. `Nicknames` maps to the vCard field `NICKNAME`.
 
@@ -194,7 +194,7 @@ FamilyName:: OPTIONAL. Privacy level `Public`. The family name for an entity.
 
 AdditionalNames:: OPTIONAL. A list of additional names for the entity. In English-speaking countries, this is generally an individual’s middle name(s) or initial.
 
-Prefixes:: OPTIONAL. Privacy level `Public`. A list of prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
+Prefix:: OPTIONAL. Privacy level `Public`. A prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
 
 Suffixes:: OPTIONAL. Privacy level `Public`. A list of suffixes for an entity, such as "Esq." or "MD".
 
@@ -356,7 +356,7 @@ Sent after the potential contact’s keycard has been resolved. The client is no
             "GivenName" : "Richard",
             "FamilyName" : "Brannan",
             "Gender" : "Male",
-            "Prefixes" : [ "Mr." ],
+            "Prefix" : "Mr.",
             "Suffixes" : [ "Ph. D" ],
             "Mensago" : {
                 "Home" : {
