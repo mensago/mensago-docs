@@ -208,7 +208,9 @@ Phone:: OPTIONAL. This field contains key-value pairs of phone numbers and their
 
 Mensago:: OPTIONAL. This field contains a list of field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it is present, all of its subfields are required to be present except possibly the `UserID` field.
 
-Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contact's address. `Workspace` contains the UUID numeric identifier used for the entity’s account. If `UserID` is empty or missing, the client MUST use the contact's workspace address, e.g. `cavsfan4life/example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/example.com`. 
+Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contact's address. If `UserID` is empty or missing, the client MUST use the contact's workspace address, e.g. `cavsfan4life/example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/example.com`.
+
+Mensago:Workspace:: CONDITIONAL. This field contains the user's workspace ID, i.e. the numeric UUID identifier used for the entity’s account. 
 
 Mensago:Domain:: CONDITIONAL. `Domain` contains the fully-qualified domain of the contact's address. 
 
