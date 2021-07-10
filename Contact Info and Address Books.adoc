@@ -206,7 +206,7 @@ MailingAddresses:: OPTIONAL. This is a dictionary of dictionaries containing mai
 
 Phone:: OPTIONAL. This field contains key-value pairs of phone numbers and their labels, such as "Fax" or "Mobile". Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. An asterisk (’*’) MAY be appended to the value of the key to indicate the preferred contact number.
 
-Mensago:: OPTIONAL. This field contains a list of field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it is present, all of its subfields are required to be present except possibly the `UserID` field.
+Mensago:: OPTIONAL. This field contains field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it is present, all of its subfields are required to be present except possibly the `UserID` field. An asterisk (’*’) MAY be appended to the value of the key to indicate the preferred address.
 
 Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contact's address. If `UserID` is empty or missing, the client MUST use the contact's workspace address, e.g. `cavsfan4life/example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/example.com`.
 
