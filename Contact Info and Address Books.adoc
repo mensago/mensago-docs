@@ -17,9 +17,7 @@ Contact information and address book synchronization are one reason Mensago is a
 
 == Structure
 
-Like other Mensago data, contact information is normally stored in JSON format. The overall structure is a dictionary containing information grouped into sub-dictionaries by privacy level.
-
-At the top level, a contact contains two dictionaries: the header and a privacy group. The header contains a high-level description of the information, including the API version, the source of the information, and the type of entity described. A short example of the format is shown below.
+Like other Mensago data, contact information is normally stored in JSON format. At the top level, a contact dictionary fields, including a header. The header contains a high-level description of the information, including the API version, the source of the information, and the type of entity described. A short example of the format is shown below.
 
 [source,json]
 ----
@@ -28,49 +26,37 @@ At the top level, a contact contains two dictionaries: the header and a privacy 
         "Version" : "1.0",
         "EntityType" : "individual"
     },
-    "Public" : {
-        "GivenName" : "Fred",
-        "FamilyName" : "Kingsley",
-        "Gender" : "male",
-        "Mensago" : {
-            "Home" : {
-                "UserID" : "fkingsley",
-                "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
-                "Domain" : "example.com",
-            }
-        },
+    "GivenName" : "Fred",
+    "FamilyName" : "Kingsley",
+    "Gender" : "male",
+    "Mensago" : {
+        "Home" : {
+            "UserID" : "fkingsley",
+            "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
+            "Domain" : "example.com",
+        }
     },
-    "Private" : {
-        "Birthday" : "19860314",
-    },
-    "Secret" : {
-        "Mensago" : {
-            "Home" : {
-                "Keys" : {
-                    "Verify" : {
-                        "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
-                        "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
-                    },
-                    "Encrypt" : {
-                        "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
-                        "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
-                    }
+    "Birthday" : "19860314",
+    "Mensago" : {
+        "Home" : {
+            "Keys" : {
+                "Verify" : {
+                    "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
+                    "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
+                },
+                "Encrypt" : {
+                    "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
+                    "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
                 }
             }
-        },
+        }
     }
 }
 ----
 
-=== Privacy Groups
+=== Contact Groups and Information Sharing
 
-Individuals and organizations alike have certain contact information which they share freely and other contact information which is more carefully guarded. Privacy Groups enable a user to easily and quickly decide what information is shared or not shared. A contact file can contain multiple privacy groups so that those people with whom the information is shared knows how carefully to guard said information. The names of the three privacy groups are `Public`, `Private`, and `Secret` in order of least private to most. Privacy Groups can also be customized. For example, a user may opt to include their mailing address in the Public group. In this case, all initial Contact Request messages, described later in this document, will be sent including this mailing address. 
-
-Public:: Information permitted to be visible by essentially anyone. When a Contact Request message is sent to someone, information in this Privacy Group is included automatically. By default the following fields are set to this level: `FormattedName`, `GivenName`, `FamilyName`, `Gender`, `Prefix`, `Suffixes`, `Social` subfields, and all `Mensago` fields except `Keys`. If a Mensago client implements introductions, only information at this level may be shared with others.
-
-Private:: Information that is more carefully controlled; most contact information fields are found in this privacy group by default. If a contact request is sent including this level of information, information from the Public level is also included, but information from this level overrides any field in the Public group. In this way, for example, a person may use a very generic `Public` avatar and an actual photo used at the `Private` level.
-
-Secret:: Information that must be explicitly shared. Information in this group cannot be shared in an initial (Stage 1) Contact Request message, but can be included in later parts of the process. Mensago cryptography keys are in this group. The user may choose to put other fields in the `Secret` group or may provide different values for this group in one or more fields.
+Because a person's contacts can number in the hundreds or thousands, it is recommended that client software organize contacts into groups if the software is designed for regular users. These contact groups MAY have privacy levels associated with them to empower users to have control over what personal information is shared with whom. This specification does not require privacy levels, although they are highly recommended. The precise fields which are sent to the recipient is almost completely determined by the client software; only the sender's address is required, which can be a regular Mensago address or just a workspace address.
 
 *Example:*
 
@@ -84,100 +70,93 @@ Below is listed an example of a profile which utilizes most of the available fie
         "EntityType" : "individual"
     },
 
-    "Public" : {
-        "FormattedName" : "Richard Brannan",
-        "GivenName" : "Richard",
-        "FamilyName" : "Brannan",
-        "Gender" : "Male",
-        "Prefix" : "Mr.",
-        "Suffixes" : [ "Ph. D" ],
-        "Mensago" : {
-            "Home" : {
-                "UserID" : "cavs4life",
-                "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
-                "Domain" : "example.com",
-            }
+    "FormattedName" : "Richard Brannan",
+    "GivenName" : "Richard",
+    "FamilyName" : "Brannan",
+    "Nicknames" : [ "Rick" ],
+    "AdditionalNames" : [ "Michael" ],
+    "Gender" : "Male",
+    "Prefix" : "Mr.",
+    "Suffixes" : [ "Ph. D" ],
+    "Mensago" : {
+        "Home" : {
+            "UserID" : "cavs4life",
+            "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
+            "Domain" : "example.com",
+        }
+    },
+    "Bio" : "The misadventures of some guy",
+
+    "MailingAddresses" : {
+        "Work" : {
+            "StreetAddress" : "1013 Hickman St.",
+            "ExtendedAddress" : "Suite D",
+            "Locality" : "Bensenville",
+            "Region" : "Illinois",
+            "PostalCode" : "60106",
+            "Country" : "United States"
         },
-        "Bio" : "The misadventures of some guy"
+        "Home" : {
+            "POBox" : "4315",
+            "Locality" : "Bensenville",
+            "Region" : "Illinois",
+            "PostalCode" : "60106",
+            "Country" : "United States"
+        }
     },
 
-    "Private" : {
-        "Nicknames" : [ "Rick" ],
-        "AdditionalNames" : [ "Michael" ],
-
-        "MailingAddresses" : {
-            "Work" : {
-                "StreetAddress" : "1013 Hickman St.",
-                "ExtendedAddress" : "Suite D",
-                "Locality" : "Bensenville",
-                "Region" : "Illinois",
-                "PostalCode" : "60106",
-                "Country" : "United States"
-            },
-            "Home" : {
-                "POBox" : "4315",
-                "Locality" : "Bensenville",
-                "Region" : "Illinois",
-                "PostalCode" : "60106",
-                "Country" : "United States"
-            }
-        },
-
-        "Phone" : {
-            "Home" : "555-555-1234",
-            "Work" : "555-555-5678",
-            "Mobile*" : "555-555-9090"
-        },
-
-        "Anniversary" : "20001004",
-        "Birthday" : "19900415",
-        "Email" : {
-            "Work" : "rbrannan@contoso.com"
-        },
-
-        "Organization" : {
-            "Name" : "Acme Widgets, Inc.",
-            "Units" : [ "Administration" "Finance" ]
-        },
-
-        "Title" : "Chief Financial Officer",
-
-        "Categories" : [ "Executive" ],
-
-        "Website" : "https://www.example.com",
-
-        "Photo" : {
-            "MimeType" : "image/png",
-            "Data" : "iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"
-        },
-
-        "Languages" : [ "en" ],
-        
-        "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving"
+    "Phone" : {
+        "Home" : "555-555-1234",
+        "Work" : "555-555-5678",
+        "Mobile*" : "555-555-9090"
     },
 
-    "Secret" : {
-        "Mensago" : {
-            "Home" : {
-                "Keys" : {
-                    "encrypt" : {
-                        "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
-                        "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
-                    },
-                    "verify" : {
-                        "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
-                        "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
-                    }
+    "Anniversary" : "20001004",
+    "Birthday" : "19900415",
+    "Email" : {
+        "Work" : "rbrannan@contoso.com"
+    },
+
+    "Organization" : {
+        "Name" : "Acme Widgets, Inc.",
+        "Units" : [ "Administration" "Finance" ]
+    },
+
+    "Title" : "Chief Financial Officer",
+
+    "Categories" : [ "Executive" ],
+
+    "Website" : "https://www.example.com",
+
+    "Photo" : {
+        "MimeType" : "image/png",
+        "Data" : "iBL{Q4GJ0x0000DNk~Le0000A0000A2nGNE0F5%wy#N3J1am@3R0s$N2z&@+hyVZp7)eAyR2Y?G{Qv*|e+D7|6ETWL6;e+j0BM>85Q>cpXaE2J07*qoM6N<$f&"
+    },
+
+    "Languages" : [ "en" ],
+    
+    "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving",
+
+    "Mensago" : {
+        "Home" : {
+            "Keys" : {
+                "encrypt" : {
+                    "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
+                    "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
+                },
+                "verify" : {
+                    "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
+                    "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
                 }
             }
-        },
+        }
     }
 }
 ----
 
 == Field Definitions
 
-Each of the fields defined in a contact are described below. Unless otherwise indicated, each field is assigned to the privacy group `Private`. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
+Each of the fields defined in a contact are described below. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
 
 Header:Version:: REQUIRED. API version of the payload.
 
@@ -185,25 +164,25 @@ Header:EntityType:: REQUIRED. `EntityType` maps to the vCard field `KIND`. Value
 
 Header:Update:: CONDITIONAL. Describes whether or not the information in the contact is intended to update existing information and contains either the value 'no' or 'yes'. This payload field is REQUIRED in contact information update messages, but it is not present in other uses of the contact data.
 
-FormattedName:: OPTIONAL. Privacy level `Public`. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefix and suffixes.
+FormattedName:: OPTIONAL. `Formatted` maps to the vCard field `FN`. This field is the full formatted version of the entity’s name, including prefix and suffixes.
 
 Nicknames:: OPTIONAL. `Nicknames` maps to the vCard field `NICKNAME`.
 
-GivenName:: OPTIONAL. Privacy level `Public`. The primary name for an entity. In many cultures, this is an individual’s first name.
+GivenName:: OPTIONAL. The primary name for an entity. In many cultures, this is an individual’s first name.
 
-FamilyName:: OPTIONAL. Privacy level `Public`. The family name for an entity.
+FamilyName:: OPTIONAL. The family name for an entity.
 
 AdditionalNames:: OPTIONAL. A list of additional names for the entity. In English-speaking countries, this is generally an individual’s middle name(s) or initial.
 
-Prefix:: OPTIONAL. Privacy level `Public`. A prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
+Prefix:: OPTIONAL. A prefix for an entity. For individuals in the United States, this translates to "Dr", "Mr", "Miss", etc.
 
-Suffixes:: OPTIONAL. Privacy level `Public`. A list of suffixes for an entity, such as "Esq." or "MD".
+Suffixes:: OPTIONAL. A list of suffixes for an entity, such as "Esq." or "MD".
 
-Gender:: OPTIONAL. Privacy level `Public`. `Gender` maps to the vCard `GENDER` field’s gender identity component, which is a free-form text field.
+Gender:: OPTIONAL. `Gender` maps to the vCard `GENDER` field’s gender identity component, which is a free-form text field.
 
-Social:: OPTIONAL. Privacy level `Public`. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
+Social:: OPTIONAL. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
 
-Bio:: OPTIONAL. Privacy level `Public`. This is a public-facing biographical string where a user can construct a quick blurb to summarize important aspects of their life and/or personality.
+Bio:: OPTIONAL. This is a public-facing biographical string where a user can construct a quick blurb to summarize important aspects of their life and/or personality.
 
 MailingAddresses:: OPTIONAL. This is a dictionary of dictionaries containing mailing address information. The label applied to each sub-dictionary indicates the type of address described, such as 'Home' or 'Work'. The fields used largely map to corresponding parameters of the vCard field `ADR`. The mappings of these fields are explained in relation to U.S. mailing addresses merely for the sake of clarity. `POBox` is for postal office boxes. `StreetAddress` contains the street address. Apartment or suite numbers should use `ExtendedAddress` and not be included in `StreetAddress`. When in doubt, consult the postal organization for a particular country for how these two fields should be used. `Locality`, `Region`, and `PostalCode` map to the city, state, and ZIP code for a U.S. address. `Country` is used for the country for an address.
 
@@ -217,7 +196,7 @@ Mensago:Workspace:: CONDITIONAL. This field contains the user's workspace ID, i.
 
 Mensago:Domain:: CONDITIONAL. `Domain` contains the fully-qualified domain of the contact's address. 
 
-Mensago:Keys:: CONDITIONAL. Privacy level `Secret`. This field group sublist contains the contact’s Mensago cryptographic keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `Mensago` field group. Handling for this field and its subfields is different from all others in this specification in that Mensago cryptographic keys MUST NOT exist in any other privacy group. These keys are automatically managed by client software and sent during the appropriate times during Contact Requests and contact information updates. Client software should generate a key set unique to each contact.
+Mensago:Keys:: CONDITIONAL. This field group sublist contains the contact’s Mensago cryptographic keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `Mensago` field group. These keys are automatically managed by client software and sent during the appropriate times during Contact Requests and contact information updates. Client software should generate a key set unique to each contact.
 
 Mensago:Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
 
@@ -259,7 +238,7 @@ Custom:: OPTIONAL. This dictionary contains custom key-value pairs. Keys are exp
 
 == Updates and Client-Side Annotations
 
-Mensago contact information is designed from the outset to always be up-to-date and places the responsibility on the information owner to keep it that way. This does, however, present a problem when the contact information is not complete or the user wishes to keep personal notes related to the contact. The solution lies in an information overlay accomplished through an additional information group, "Annotations". In addition to the header and three Privacy Groups, a contact’s entry may contain a fifth group which is applied first and overridden by information in the three Privacy Groups. Take the following example:
+Mensago contact information is designed from the outset to always be up-to-date and places the responsibility on the information owner to keep it that way. This does, however, present a problem when the contact information is not complete or the user wishes to keep personal notes related to the contact. The solution lies in an information overlay accomplished through an additional information group, "Annotations". Take the following example:
 
 [source,json]
 ----
@@ -269,36 +248,30 @@ Mensago contact information is designed from the outset to always be up-to-date 
         "EntityType" : "individual",
         "Source" : "owner",
     },
-    "Public" : {
-        "GivenName" : "Fred",
-        "FamilyName" : "Kingsley",
-        "Gender" : "male",
-        "Mensago" : {
-            "Home" : {
-                "UserID" : "fkingsley",
-                "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
-                "Domain" : "example.com",
-            }
-        },
+    "GivenName" : "Fred",
+    "FamilyName" : "Kingsley",
+    "Gender" : "male",
+    "Mensago" : {
+        "Home" : {
+            "UserID" : "fkingsley",
+            "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
+            "Domain" : "example.com",
+        }
     },
-    "Private" : {
-        "Birthday" : "19860314",
-    },
-    "Secret" : {
-        "Mensago" : {
-            "Home" : {
-                "Keys" : {
-                    "Verify" : {
-                        "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
-                        "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
-                    },
-                    "Encrypt" : {
-                        "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
-                        "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
-                    }
+    "Birthday" : "19860314",
+    "Mensago" : {
+        "Home" : {
+            "Keys" : {
+                "Verify" : {
+                    "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
+                    "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
+                },
+                "Encrypt" : {
+                    "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
+                    "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
                 }
             }
-        },
+        }
     },
     "Annotations" : {
         "Phone" : { "Mobile" : "555-345-1543" },
@@ -319,8 +292,8 @@ The Contact Request process is as follows:
 
 [arabic]
 . User #1 retrieves and validates User #2’s keycard. The keycard for User #2 contains an encryption key used to encrypt the contact request. More information on this process and keycards in general can be found in the Keycard Specification.
-. User #1 sends a request to User #2. This request contains whatever contact information User #1 has in the `Public` Privacy Group and possibly other information. It is signed by User #1’s request signing key so that User #2 can verify that the request actually came from User #1 and encrypted with User #2’s request encryption key so that no one except User #2 can read it. Once received, User #2 can determine if contact should be permitted.
-. User #2 may drop the request and optionally block future requests. If User #2 approves the request, an encrypted response is sent with User #2’s information. Unlike the initial request, User #2 can choose to share information from the `Private` Privacy Group.
+. User #1 sends a request to User #2. This request contains whatever personal contact information User #1 wishes to send. It is signed by User #1’s request signing key so that User #2 can verify that the request actually came from User #1 and encrypted with User #2’s request encryption key so that no one except User #2 can read it. Once received, User #2 can determine if contact should be permitted.
+. User #2 may drop the request and optionally block future requests. If User #2 approves the request, an encrypted response is sent with User #2’s information.
 . User #1 receives the approval and is asked if they would like to share any additional personal information with User #2. How much information is shared is up to User #1. This response also includes encryption and signature verification keys which are unique to that contact.
 
 This process makes it possible to exchange information without exposure to infrastructure and with a minimum of back-and-forth. The combination of contact requests and required encryption enables several security advantages:
@@ -354,24 +327,24 @@ Sent after the potential contact’s keycard has been resolved. The client is no
             "Version" : "1.0",
             "EntityType" : "individual",
         },
-        "Public" : {
-            "FormattedName" : "Richard Brannan",
-            "GivenName" : "Richard",
-            "FamilyName" : "Brannan",
-            "Gender" : "Male",
-            "Prefix" : "Mr.",
-            "Suffixes" : [ "Ph. D" ],
-            "Mensago" : {
-                "Home" : {
-                    "UserID" : "cavs4life",
-                    "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
-                    "Domain" : "example.com",
-                }
+        "FormattedName" : "Richard Brannan",
+        "GivenName" : "Richard",
+        "FamilyName" : "Brannan",
+        "Gender" : "Male",
+        "Prefix" : "Mr.",
+        "Suffixes" : [ "Ph. D" ],
+        "Mensago" : {
+            "Home" : {
+                "UserID" : "cavs4life",
+                "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
+                "Domain" : "example.com",
             }
         }
-    }
+    },
+    "Message" : "Richard Brannan is requesting permission to be able to contact you."
 }
 ----
+Unique to this specific contact request message is the `Message` field, which can contain a short custom message from the sender to the receiver. This field MAY contain SFTM content, but it MUST NOT contain hyperlinks or images of any kind. Clients MUST prevent the user from inserting hyperlinks into this field when sending contact requests, and clients MUST also strip any hyperlinks from received contact requests. This requirements are to prevent phishing attacks and spam.
 
 *Contact Request: Stage 3 (Response)*
 
