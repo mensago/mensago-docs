@@ -98,6 +98,7 @@ Below is listed an example of a profile which utilizes most of the available fie
                 "Domain" : "example.com",
             }
         },
+        "Bio" : "The misadventures of some guy"
     },
 
     "Private" : {
@@ -201,6 +202,8 @@ Suffixes:: OPTIONAL. Privacy level `Public`. A list of suffixes for an entity, s
 Gender:: OPTIONAL. Privacy level `Public`. `Gender` maps to the vCard `GENDER` field’s gender identity component, which is a free-form text field.
 
 Social:: OPTIONAL. Privacy level `Public`. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
+
+Bio:: OPTIONAL. Privacy level `Public`. This is a public-facing biographical string where a user can construct a quick blurb to summarize important aspects of their life and/or personality.
 
 MailingAddresses:: OPTIONAL. This is a dictionary of dictionaries containing mailing address information. The label applied to each sub-dictionary indicates the type of address described, such as 'Home' or 'Work'. The fields used largely map to corresponding parameters of the vCard field `ADR`. The mappings of these fields are explained in relation to U.S. mailing addresses merely for the sake of clarity. `POBox` is for postal office boxes. `StreetAddress` contains the street address. Apartment or suite numbers should use `ExtendedAddress` and not be included in `StreetAddress`. When in doubt, consult the postal organization for a particular country for how these two fields should be used. `Locality`, `Region`, and `PostalCode` map to the city, state, and ZIP code for a U.S. address. `Country` is used for the country for an address.
 
