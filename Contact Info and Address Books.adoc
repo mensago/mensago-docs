@@ -83,6 +83,16 @@ Below is listed an example of a profile which utilizes most of the available fie
             "UserID" : "cavs4life",
             "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
             "Domain" : "example.com",
+            "Keys" : {
+                "encrypt" : {
+                    "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
+                    "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
+                },
+                "verify" : {
+                    "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
+                    "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
+                }
+            }
         }
     },
     "Bio" : "The misadventures of some guy",
@@ -135,22 +145,7 @@ Below is listed an example of a profile which utilizes most of the available fie
 
     "Languages" : [ "en" ],
     
-    "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving",
-
-    "Mensago" : {
-        "Home" : {
-            "Keys" : {
-                "encrypt" : {
-                    "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
-                    "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
-                },
-                "verify" : {
-                    "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
-                    "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
-                }
-            }
-        }
-    }
+    "Notes" : "Hobbies: chainsaw carving, free climbing, underwater basket weaving"
 }
 ----
 
@@ -256,11 +251,6 @@ Mensago contact information is designed from the outset to always be up-to-date 
             "UserID" : "fkingsley",
             "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
             "Domain" : "example.com",
-        }
-    },
-    "Birthday" : "19860314",
-    "Mensago" : {
-        "Home" : {
             "Keys" : {
                 "Verify" : {
                     "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
@@ -273,6 +263,7 @@ Mensago contact information is designed from the outset to always be up-to-date 
             }
         }
     },
+    "Birthday" : "19860314",
     "Annotations" : {
         "Phone" : { "Mobile" : "555-345-1543" },
         "Birthday" : "0314"
@@ -338,6 +329,16 @@ Sent after the potential contact’s keycard has been resolved. The client is no
                 "UserID" : "cavs4life",
                 "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
                 "Domain" : "example.com",
+                "Keys" : {
+                    "encrypt" : {
+                        "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
+                        "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
+                    },
+                    "verify" : {
+                        "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
+                        "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
+                    }
+                }
             }
         }
     },
