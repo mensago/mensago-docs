@@ -29,28 +29,26 @@ Like other Mensago data, contact information is normally stored in JSON format. 
     "GivenName" : "Fred",
     "FamilyName" : "Kingsley",
     "Gender" : "male",
-    "Mensago" : {
-        "Home" : {
+    "Birthday" : "19860314",
+    "Mensago" : [
+        {   "Label" : "Home",
             "UserID" : "fkingsley",
             "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
             "Domain" : "example.com",
         }
-    },
-    "Birthday" : "19860314",
-    "Mensago" : {
-        "Home" : {
-            "Keys" : {
-                "Verify" : {
-                    "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
-                    "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
-                },
-                "Encrypt" : {
-                    "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
-                    "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
-                }
-            }
+    ],
+    "Keys" : [
+        {   "Label" : "Home",
+            "KeyType" : "encrypt",
+            "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
+            "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
+        },
+        {   "Label" : "Home",
+            "KeyType" : "verify",
+            "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
+            "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
         }
-    }
+    ]
 }
 ----
 
@@ -75,45 +73,55 @@ Below is listed an example of a profile which utilizes most of the available fie
     "FamilyName" : "Brannan",
     "Nicknames" : [ "Rick" ],
     "AdditionalNames" : [ "Michael" ],
-    "Gender" : "Male",
     "Prefix" : "Mr.",
     "Suffixes" : [ "Ph. D" ],
-    "Mensago" : {
-        "Home" : {
+    
+    "Gender" : "Male",
+    "Bio" : "The misadventures of some guy",
+    "Social" : {
+        "Twitter": "@richardbrannan19034"
+    },
+
+    "Mensago" : [
+        {   "Label" : "Home",
             "UserID" : "cavs4life",
             "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
-            "Domain" : "example.com",
-            "Keys" : {
-                "Encrypt" : {
-                    "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
-                    "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
-                },
-                "Verify" : {
-                    "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
-                    "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
-                }
-            }
+            "Domain" : "example.com"
         }
-    },
-    "Bio" : "The misadventures of some guy",
+    ],
 
-    "MailingAddresses" : {
-        "Work" : {
+    "Keys" : [
+        {   "Label" : "Home",
+            "KeyType" : "encrypt",
+            "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
+            "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
+        },
+        {   "Label" : "Home",
+            "KeyType" : "verify",
+            "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
+            "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
+        }
+    ],
+
+    "MailingAddresses" : [
+        {   "Label" : "Work",
             "StreetAddress" : "1013 Hickman St.",
             "ExtendedAddress" : "Suite D",
             "Locality" : "Bensenville",
             "Region" : "Illinois",
             "PostalCode" : "60106",
-            "Country" : "United States"
+            "Country" : "United States",
+            "Preferred" : "no"
         },
-        "Home" : {
+        {   "Label" : "Home",
             "POBox" : "4315",
             "Locality" : "Bensenville",
             "Region" : "Illinois",
             "PostalCode" : "60106",
-            "Country" : "United States"
+            "Country" : "United States",
+            "Preferred" : "yes"
         }
-    },
+    ],
 
     "Phone" : {
         "Home" : "555-555-1234",
@@ -127,16 +135,15 @@ Below is listed an example of a profile which utilizes most of the available fie
         "Work" : "rbrannan@contoso.com"
     },
 
-    "Organization" : {
-        "Name" : "Acme Widgets, Inc.",
-        "Units" : [ "Administration" "Finance" ]
-    },
-
+    "Organization" : "Acme Widgets, Inc.",
+    "OrgUnits" : [ "Administration" "Finance" ],
     "Title" : "Chief Financial Officer",
 
     "Categories" : [ "Executive" ],
 
-    "Website" : "https://www.example.com",
+    "Websites" : {
+        "Personal": "https://www.example.com"
+    },
 
     "Photo" : {
         "MimeType" : "image/png",
@@ -175,15 +182,15 @@ Suffixes:: OPTIONAL. A list of suffixes for an entity, such as "Esq." or "MD".
 
 Gender:: OPTIONAL. `Gender` maps to the vCard `GENDER` field’s gender identity component, which is a free-form text field.
 
-Social:: OPTIONAL. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
-
 Bio:: OPTIONAL. This is a public-facing biographical string where a user can construct a quick blurb to summarize important aspects of their life and/or personality.
 
-MailingAddresses:: OPTIONAL. This is a dictionary of dictionaries containing mailing address information. The label applied to each sub-dictionary indicates the type of address described, such as 'Home' or 'Work'. The fields used largely map to corresponding parameters of the vCard field `ADR`. The mappings of these fields are explained in relation to U.S. mailing addresses merely for the sake of clarity. `POBox` is for postal office boxes. `StreetAddress` contains the street address. Apartment or suite numbers should use `ExtendedAddress` and not be included in `StreetAddress`. When in doubt, consult the postal organization for a particular country for how these two fields should be used. `Locality`, `Region`, and `PostalCode` map to the city, state, and ZIP code for a U.S. address. `Country` is used for the country for an address.
+Social:: OPTIONAL. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
 
 Phone:: OPTIONAL. This field contains key-value pairs of phone numbers and their labels, such as "Fax" or "Mobile". Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. An asterisk (’*’) MAY be appended to the value of the key to indicate the preferred contact number.
 
-Mensago:: OPTIONAL. This field contains field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it is present, all of its subfields are required to be present except possibly the `UserID` field. An asterisk (’*’) MAY be appended to the value of the key to indicate the preferred address.
+Mensago:: OPTIONAL. This list contains field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it contains any field groups, each all fields except the `UserID` field are required. 
+
+Mensago:Label:: CONDITIONAL. This field contains the user-assigned name to the Mensago address information, such as `Home`, `Work`, etc.
 
 Mensago:UserID:: OPTIONAL. This field contains the 'friendly' part of the contact's address. If `UserID` is empty or missing, the client MUST use the contact's workspace address, e.g. `cavsfan4life/example.com` or `5ccc9ba6-9d4e-47d0-9c57-11ade969a88b/example.com`.
 
@@ -191,11 +198,37 @@ Mensago:Workspace:: CONDITIONAL. This field contains the user's workspace ID, i.
 
 Mensago:Domain:: CONDITIONAL. `Domain` contains the fully-qualified domain of the contact's address. 
 
-Mensago:Keys:: CONDITIONAL. This field group sublist contains the contact’s Mensago cryptographic keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `Mensago` field group. These keys are automatically managed by client software and sent during the appropriate times during Contact Requests and contact information updates. Client software should generate a key set unique to each contact.
+Mensago:Preferred:: OPTIONAL. Contains `yes` or `no` to indicate if it is the preferred Mensago address. Only one entry can have a `yes` value for this field, but all entries MAY have a `no` value, indicating no preference. If this field is omitted, it is assumed to have a value of `no`. NOTE: this value of this field is ignored if there is only one address defined. 
 
-Mensago:Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
+Keys:: CONDITIONAL. This field group list contains the contact’s Mensago cryptographic keys. Each key is named by its purpose. These are currently `verify`, `encrypt`, `social`, or `broadcast`. It is a required part of the `Mensago` field group. These keys are automatically managed by client software and sent during the appropriate times during Contact Requests and contact information updates. Client software should generate a key set unique to each contact.
 
-Mensago:Keys:Value:: CONDITIONAL. This field contains the actual encryption key data. For public-key encryption, this is the contact’s public key in CryptoString format.
+Keys:Label:: CONDITIONAL. This field contains the label of the Mensago address to which the key corresponds.
+
+Keys:KeyType:: CONDITIONAL. This field contains the type of cryptography key. It can either be `encrypt` or `verify`.
+
+Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
+
+Keys:Value:: CONDITIONAL. This field contains the actual encryption key data. For public-key encryption, this is the contact’s public key in CryptoString format.
+
+MailingAddresses:: OPTIONAL. This is a list of dictionaries contains mailing address information. The fields used largely map to corresponding parameters of the vCard field `ADR`. The mappings of these fields are explained below in relation to U.S. mailing addresses merely for the sake of clarity. All fields are optional 
+
+MailingAddresses:Label:: CONDITIONAL. This field indicates the type of mailing address described, such as 'Home' or 'Work'. It is a required field for each `MailingAddress` entry.
+
+MailingAddresses:POBox:: OPTIONAL. Postal office box information.
+
+MailingAddresses:StreetAddress:: OPTIONAL. The street address. Apartment numbers and suite numbers should use `ExtendedAddress`.
+
+MailingAddresses:ExtendedAddress:: OPTIONAL. Apartment or suite numbers should use `ExtendedAddress` and not be included in `StreetAddress`. When in doubt, consult the postal organization for a particular country for how these two fields should be used. 
+
+MailingAddresses:Locality:: OPTIONAL. This field maps to the city in a U.S. mailing address. Other locations will probably use this for the same purpose.
+
+MailingAddresses:Region:: OPTIONAL. This field maps to the state in a U.S. mailing address. Other locations will probably use this for a similar purpose.
+
+MailingAddresses:PostalCode:: OPTIONAL. This field maps to the ZIP code in a U.S. mailing address. Other locations will probably use this for a similar purpose.
+
+MailingAddresses:Country:: OPTIONAL. A string describing the country for the address.
+
+MailingAddresses:Preferred:: OPTIONAL. Contains `yes` or `no` to indicate if it is the preferred mailing address. Only one entry can have a `yes` value for this field, but all entries MAY have a `no` value, indicating no preference. If this field is omitted, it is assumed to have a value of `no`. NOTE: this value of this field is ignored if there is only one address defined. 
 
 Anniversary:: OPTIONAL. `Anniversary` maps to the vCard field `ANNIVERSARY`. This is the date of marriage or equivalent for the entity. Format is YYYYMMDD or MMDD.
 
@@ -203,13 +236,15 @@ Birthday:: OPTIONAL. `Birthday` maps to the vCard field `BDAY`. The birth date o
 
 Email:: OPTIONAL. This field contains a list of field groups containing a label for  the e-mail address and the address itself. Each entry in `Email` maps to an individual vCard `EMAIL` field. An asterisk (’*’) MAY be appended to the key to indicate the preferred contact address.
 
-Organization:: OPTIONAL. `Organization` maps to the vCard `ORG` field. The field contains a list of strings denoting the levels of the units within the organization.
+Organization:: OPTIONAL. This field contains the name of the organization to which the entity belongs. It maps to the first parameter of the `ORG` vCard field.
+
+OrgUnits:: OPTIONAL. This field contains a list of departments indicating the hierarchy in which the entity is classified.
 
 Title:: OPTIONAL. `Title` maps to the vCard `TITLE` field. It contains the title or job position of the entity.
 
 Categories:: OPTIONAL. `Categories` maps to the vCard `CATEGORIES` field. It contains a list of string values for tags to apply to the entity.
 
-Website:: OPTIONAL. `Website` specifies the URL of a website for the entity and maps to the vCard field `WEBSITE`.
+Websites:: OPTIONAL. This dictionary contains labels and associated URLs of websites associated with the entity and loosely maps to the vCard field `WEBSITE`.
 
 Photo:: OPTIONAL. A field group containing photo information for the contact. The `Photo` field is not required, but if present, all of its subfields MUST be present.
 
@@ -246,24 +281,26 @@ Mensago contact information is designed from the outset to always be up-to-date 
     "GivenName" : "Fred",
     "FamilyName" : "Kingsley",
     "Gender" : "male",
-    "Mensago" : {
-        "Home" : {
+    "Birthday" : "19860314",
+    "Mensago" : [
+        {   "Label" : "Home",
             "UserID" : "fkingsley",
             "Workspace" : "3f258107-19aa-43c1-86c6-30e3914e18b8",
             "Domain" : "example.com",
-            "Keys" : {
-                "Verify" : {
-                    "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
-                    "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
-                },
-                "Encrypt" : {
-                    "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
-                    "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
-                }
-            }
         }
-    },
-    "Birthday" : "19860314",
+    ],
+    "Keys" : [
+        {   "Label" : "Home",
+            "KeyType" : "verify",
+            "KeyHash" : "BLAKE2B-256:#ksGJdu4{=P3@UdZ787UB>kZ%S4bze?G?9uhF4fo",
+            "Value" : "ED25519:te#3G{*qG&_rK<Pfd6EWVeU_$){-Wxh|&+Gj)S<G"
+        },
+        {   "Label" : "Home",
+            "KeyType" : "encrypt",
+            "KeyHash" : "BLAKE2B-256:)}sRcq+f=Kyx2tg03mPbIq`>_u!ha4*pa0n$u!)v",
+            "Value" : "CURVE25519:)r)+9^WCSo!5s~9ru~Vy0`CcP$|Cees`oh9+I6ZT"
+        }
+    ],
     "Annotations" : {
         "Phone" : { "Mobile" : "555-345-1543" },
         "Birthday" : "0314"
@@ -324,23 +361,25 @@ Sent after the potential contact’s keycard has been resolved. The client is no
         "Gender" : "Male",
         "Prefix" : "Mr.",
         "Suffixes" : [ "Ph. D" ],
-        "Mensago" : {
-            "Home" : {
+        "Mensago" : [
+            {   "Label" : "Home",
                 "UserID" : "cavs4life",
                 "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
                 "Domain" : "example.com",
-                "Keys" : {
-                    "Encrypt" : {
-                        "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
-                        "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
-                    },
-                    "Verify" : {
-                        "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
-                        "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
-                    }
-                }
             }
-        }
+        ],
+        "Keys" : [
+            {   "Label" : "Home",
+                "KeyType" : "encrypt",
+                "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
+                "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
+            },
+            {   "Label" : "Home",
+                "KeyType" : "verify",
+                "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
+                "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
+            }
+        ]
     },
     "Message" : "Richard Brannan is requesting permission to be able to contact you."
 }
