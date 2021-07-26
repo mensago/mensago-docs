@@ -84,11 +84,11 @@ Below is listed an example of a profile which utilizes most of the available fie
             "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
             "Domain" : "example.com",
             "Keys" : {
-                "encrypt" : {
+                "Encrypt" : {
                     "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
                     "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
                 },
-                "verify" : {
+                "Verify" : {
                     "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
                     "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
                 }
@@ -330,11 +330,11 @@ Sent after the potential contact’s keycard has been resolved. The client is no
                 "Workspace" : "e3e98b45-b226-4926-b4ea-69ab16dd035e",
                 "Domain" : "example.com",
                 "Keys" : {
-                    "encrypt" : {
+                    "Encrypt" : {
                         "KeyHash" : "BLAKE2B-256:hf;9nd=_ucTPkRisv$!+^i1)A#WLUr09ji3p72E(",
                         "Value" : "CURVE25519:!u>#AhMqIC!?b5>LZwl}Vf{Aw2?+`>cMK@OFzEGp"
                     },
-                    "verify" : {
+                    "Verify" : {
                         "KeyHash" : "BLAKE2B-256:u<!zJ3~z%ByZ<1Cdb$Rr|0YNTfs8YD2Bc`S`KH5_",
                         "Value" : "ED25519:#J7q3bWP0z4(!WD3anbpY;~X|4=kp?PGg8ODEVhD"
                     }
