@@ -123,17 +123,27 @@ Below is listed an example of a profile which utilizes most of the available fie
         }
     ],
 
-    "Phone" : {
-        "Home" : "555-555-1234",
-        "Work" : "555-555-5678",
-        "Mobile*" : "555-555-9090"
-    },
+    "Phone" : [
+        {   "Label" : "Home",
+            "Number" : "555-555-1234"
+        },
+        {   "Label" : "Work",
+            "Number" : "555-555-5678"
+        }
+        {
+            "Label" : "Mobile",
+            "Number" : "555-555-9090",
+            "Preferred" : "yes"
+        }
+    ],
 
     "Anniversary" : "20001004",
     "Birthday" : "19900415",
-    "Email" : {
-        "Work" : "rbrannan@contoso.com"
-    },
+    "Email" : [
+        {   "Label" : "Work",
+            "Address" : "rbrannan@contoso.com"
+        }
+    ],
 
     "Organization" : "Acme Widgets, Inc.",
     "OrgUnits" : [ "Administration" "Finance" ],
@@ -186,7 +196,7 @@ Bio:: OPTIONAL. This is a public-facing biographical string where a user can con
 
 Social:: OPTIONAL. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
 
-Phone:: OPTIONAL. This field contains key-value pairs of phone numbers and their labels, such as "Fax" or "Mobile". Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. An asterisk (’*’) MAY be appended to the value of the key to indicate the preferred contact number.
+Phone:: OPTIONAL. This field contains a list of dictionaries which follow the same conventions as `MailingAddresses`. Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. 
 
 Mensago:: OPTIONAL. This list contains field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it contains any field groups, each all fields except the `UserID` field are required. 
 
@@ -234,7 +244,7 @@ Anniversary:: OPTIONAL. `Anniversary` maps to the vCard field `ANNIVERSARY`. Thi
 
 Birthday:: OPTIONAL. `Birthday` maps to the vCard field `BDAY`. The birth date of the entity. Format is YYYYMMDD or MMDD.
 
-Email:: OPTIONAL. This field contains a list of field groups containing a label for  the e-mail address and the address itself. Each entry in `Email` maps to an individual vCard `EMAIL` field. An asterisk (’*’) MAY be appended to the key to indicate the preferred contact address.
+Email:: OPTIONAL. This field contains a list of dictionaries which follow the same conventions as `MailingAddresses`. Each entry in `Email` maps to an individual vCard `EMAIL` field.
 
 Organization:: OPTIONAL. This field contains the name of the organization to which the entity belongs. It maps to the first parameter of the `ORG` vCard field.
 
