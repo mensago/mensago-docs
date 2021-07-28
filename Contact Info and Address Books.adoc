@@ -312,7 +312,9 @@ Mensago contact information is designed from the outset to always be up-to-date 
         }
     ],
     "Annotations" : {
-        "Phone" : { "Mobile" : "555-345-1543" },
+        "Phone" : { "Label" : "Mobile",
+                        "Number" : "555-345-1543" 
+                },
         "Birthday" : "0314"
     }
 }
