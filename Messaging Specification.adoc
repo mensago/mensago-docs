@@ -42,6 +42,7 @@ MENSAGO
 {
     "Version": "1.0",
     "Receiver": "G!$Rod&LyJ6-yNaemQ?i`l&*|{V&aco)IUNj!RuS3VbAVQ5@BFu!lQDF+6&n>Zjm7h6#cL<jct?4uqj@#SYJ=n3@GqIuXvwJyfK>$uQ}u%kTd_L?rC1uNRLe0@<is)NRiCl?Ws;EI!0}a}H1c!-Z}lLp@SBdiAEK>86z",
+    "SendTime": "20190905T155400Z",
     "Sender": "65}GwUkZNN42t=#`4wj4V~Z~ND97KHB1pnvzmpwUgcjANT>3_j9+}!u)pvsgD07Sr3EC@K$~hc&(jpsJQ|}eT8=N7`t$}KgF9qi~dDVA{5W^uq9zx_LR$KKseCbt4_y6Lqj6xAQfK^jjrS;Cx4~mLV<mnnjk*cY*!W$ZaGTfo&",
     "Date": "20190905T155323Z",
     "KeyHash": "BLAKE2B-256:cy)wynX>FX1!`%3rR}t1ILJTtM*q)|cI_^ycs9D?",
@@ -115,6 +116,8 @@ _Body_ - REQUIRED. A string of UTF-8 characters of any length. Escapement of con
 _Images_ - CONDITIONAL. A list of dictionaries containing image data used as embedded message content. Unlike images stored as attachments, items in this field are considered to be an integrated part of the message and are not stored separately in the filesystem. This field is only required if images are embedded, not attached. Aside from its name and different purpose, it follows the same format as the _Attachments_ field.
 
 _Attachments_ - OPTIONAL. A list of dictionaries containing attached data. Attachment format is listed below.
+
+_SendTime_ - OPTIONAL. This field is actually found in the unencrypted envelope header. It specifies the requested date and time that the message should be processed. Delivery is handled on a best-effort basis, so the message is not guaranteed to be processed at that exact time. The client may request that the queued message be deleted up to the specified date and time, enabling scheduled message sending and also the ability to undo sending a message. If this field is not present, the message will be processed for delivery as soon as possible.
 
 *Attachment Fields*
 
