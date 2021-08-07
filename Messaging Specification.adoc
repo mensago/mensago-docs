@@ -13,15 +13,15 @@
 
 == Description
 
-The reason for Mensago’ existence is to replace e-mail with a secure, private, and otherwise better technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are for communications management. This specification describes messaging workflows and the payload portion of a client file which is used for messaging. The wrapper information for the client file, i.e. encryption type, recipient address, etc., is described in the Mensago Client-Server API specification.
+The reason for Mensago’ existence is to replace e-mail with a secure, private, and otherwise superior technology. Messages are long-form text communications which can be divided into two classes: system messages and user messages. User messages are just that: communications written by users to be sent to other users. System messages, on the other hand, are for communications management. This specification describes messaging workflows and data structure.
 
 == Encryption Keys
 
-Each Mensago workspace uses multiple encryption keys. Two of the reasons for this are flexibility and security: concerns are better separated and if a key should be compromised, it is far easier to update the one key for one component of the system than to update all of them.
+Each Mensago workspace uses multiple encryption keys. Two of the reasons for this are flexibility and security: concerns are better separated and if a key should be compromised, it is far easier to update a key for one component of the system than to update all of them.
 
 *Message Encryption/Signing Keys* : Each contact in a workspace's address book is assigned its own unique keypairs which are used for signing and encrypting messages, preventing contacts from sharing keys. 
 
-*Contact Request Encryption Key* : This asymmetric keypair is only used for contact requests. The public half of this key and the public half of the user's Contact Request Signing Key (below) are published the user’s keycard and are easily-accessible public information, unlike all of a workspace's other encryption and signing keys.
+*Contact Request Encryption Key* : This asymmetric keypair is only used for contact requests. The public half of this key and the public half of the user's Contact Request Signing Key (details below) are published the user’s keycard and are easily-accessible public information, unlike all of a workspace's other encryption and signing keys.
 
 *Contact Request Signing Key* : This asymmetric keypair is for signing contact requests before they are encrypted.
 
@@ -29,12 +29,11 @@ Each Mensago workspace uses multiple encryption keys. Two of the reasons for thi
 
 *Storage Key*: This symmetric key is used to encrypt client files for storage and synchronization on the server.
 
-*Key Request Key* : This one-time-use asymmetric key is generated when encryption keys are requested for the first of a user’s devices to access a shared workspace. It is discarded after the encryption keys for
-a shared workspace have been obtained.
+*Key Request Key* : This one-time-use asymmetric key is generated when encryption keys are requested for the first of a user’s devices to access a shared workspace. It is discarded after the encryption keys for a shared workspace have been obtained.
 
 == Payload Structures
 
-Every user file on a Mensago server is stored in encrypted form. All binary data is Base85-encoded so that it is human-readable at a basic level in the event of the need for an administrator's intervention. Listed below is a sample of the contents of one of these files.
+Every user file on a Mensago server is stored in encrypted form. All binary data is Base85-encoded so that it is human-readable at a basic level in the event of the need for an administrator's intervention. Listed below is a sample of the contents of one of these files. 
 
 [source]
 ----
@@ -73,7 +72,7 @@ When fully decrypted, the message envelope information would look like this:
 }
 ----
 
-The `PayloadKey` field would just contain a 32-byte blob of binary data that was used for the encryption key. The payload, which was kept separate in the file, would look like this:
+ The `PayloadKey` field would just contain a 32-byte blob of binary data that was used for the encryption key. The payload, which was kept separate in the file, would look like this:
 
 [source,json]
 ----
@@ -88,6 +87,8 @@ The `PayloadKey` field would just contain a 32-byte blob of binary data that was
   "Body": "It was a bright cold day in April, and the clocks were striking thirteen."
 }
 ----
+
+Additional details about the envelope fields can be found in the Mensago Client-Server API specification. 
 
 The actual structure of the file is quite simple. It is structured such that the basic information about the file can be read and parsed without having to read in the payload, which can get quite large. The first line is the magic file identifier `MENSAGO`. The envelope lines follow. Typically this is one line of minified JSON, but pretty-printed JSON data is also acceptable. File readers should read in line data until a line consisting of 10 dashes (`----------`) is read. This line functions as the payload marker. File readers interested only in the payload metadata can stop at this point, parse the JSON data, and move on. Following the payload marker is one line containing the algorithm used to encrypt the payload in CryptoString prefix format. For more information about the CryptoString format, please consult the Mensago Platform Overview. The rest of the file is the Base85-encoded encrypted payload.
 
@@ -186,8 +187,7 @@ Time: 2021-05-11 16:23:08 UTC
 
 *Support Request*
 
-Support requests are sent to the address specified in the organization’s keycard, or if not specified, the required Admin address. Like an abuse report, a support request is structurally similar to a standard user
-message except that the subtype is `supportrequest`. The subject MUST contain a summary of the problem, and the body of the message MUST contain the description of the problem experienced by the submitter. Note that administrators are well within their rights to mute users who abuse the support request system, and service providers are not restricted from charging users for support.
+Support requests are sent to the address specified in the organization’s keycard, or if not specified, the required Admin address. Like an abuse report, a support request is structurally similar to a standard user message except that the subtype is `supportrequest`. The subject MUST contain a summary of the problem, and the body of the message MUST contain the description of the problem experienced by the submitter. Note that administrators are well within their rights to mute users who abuse the support request system, and service providers are not restricted from charging users for support.
 
 [source,json]
 ----
