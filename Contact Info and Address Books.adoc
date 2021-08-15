@@ -302,7 +302,8 @@ Attachments:Mime:: CONDITIONAL. It contains the MIME type of the encoded data.
 
 Attachments:Data:: CONDITIONAL. It contains the actual Base85-encoded data of the attachment.
 
-Custom:: OPTIONAL. This dictionary contains custom key-value pairs. Keys are expected to follow the style and case of other fields and values are expected to be strings. URLs embedded in these fields will be vetted like any others to help protect the user from phishing and other online attacks. 
+Custom:: OPTIONAL. The Custom field exists to permit storage of non-standard data. It contains a list of dictionary entries, similar to Phone or Messaging. Each entry is expected to have the customary Label and Value fields. For security reasons, software clients are expected to treat entries in this field as generic text and permit no integration outside of clipboard operations.
+
 
 == Updates and Client-Side Annotations
 
