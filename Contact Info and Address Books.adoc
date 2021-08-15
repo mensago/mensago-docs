@@ -133,14 +133,14 @@ Below is listed an example of a profile which utilizes most of the available fie
 
     "Phone" : [
         {   "Label" : "Home",
-            "Number" : "555-555-1234"
+            "Value" : "555-555-1234"
         },
         {   "Label" : "Work",
-            "Number" : "555-555-5678"
+            "Value" : "555-555-5678"
         }
         {
             "Label" : "Mobile",
-            "Number" : "555-555-9090",
+            "Value" : "555-555-9090",
             "Preferred" : "yes"
         }
     ],
@@ -210,7 +210,11 @@ Social:Value:: CONDITIONAL. Entries in the Social field are optional, but if an 
 
 Social:Preferred:: OPTIONAL. Contains `yes` or `no` to indicate if it is the preferred social media network. Only one entry can have a `yes` value for this field, but all entries MAY have a `no` value, indicating no preference. If this field is omitted, it is assumed to have a value of `no`. NOTE: this value of this field is ignored if there is only one network defined. 
 
-Phone:: OPTIONAL. This field contains a list of dictionaries which follow the same conventions as `MailingAddresses`. Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. 
+Phone:Label:: CONDITIONAL. The Phone field is used to store phone numbers for the entity. The Phone field and its entries are optional, but if an entry exists, it MUST have both a Label and a Value. The Label field contains the type of phone, such as 'Home', 'Work, 'Landline', 'Mobile', etc. Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. 
+
+Phone:Value:: CONDITIONAL. The Phone field is used to store phone numbers for the entity. The Phone field and its entries are optional, but if an entry exists, it MUST have both a Label and a Value. The Value field contains the entity's phone number. The phone number's format is regional and country codes are optional.
+
+Phone:Preferred:: OPTIONAL. Contains `yes` or `no` to indicate if it is the preferred phone number. Only one entry can have a `yes` value for this field, but all entries MAY have a `no` value, indicating no preference. If this field is omitted, it is assumed to have a value of `no`. NOTE: this value of this field is ignored if there is only one number defined. 
 
 Mensago:: OPTIONAL. This list contains field groups containing the components of each the contact’s Mensago addresses. The `Mensago` field itself is not required, but if it contains any field groups, each all fields except the `UserID` field are required. 
 
@@ -337,7 +341,7 @@ Mensago contact information is designed from the outset to always be up-to-date 
     ],
     "Annotations" : {
         "Phone" : { "Label" : "Mobile",
-                        "Number" : "555-345-1543" 
+                    "Value" : "555-345-1543" 
                 },
         "Birthday" : "0314"
     }
