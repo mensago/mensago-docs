@@ -78,9 +78,11 @@ Below is listed an example of a profile which utilizes most of the available fie
     
     "Gender" : "Male",
     "Bio" : "The misadventures of some guy",
-    "Social" : {
-        "Twitter": "@richardbrannan19034"
-    },
+    "Social" : [
+        {   "Label" : "Twitter",
+            "Value" : "@richardbrannan19034"
+        }
+    ],
 
     "Mensago" : [
         {   "Label" : "Home",
@@ -151,9 +153,11 @@ Below is listed an example of a profile which utilizes most of the available fie
 
     "Categories" : [ "Executive" ],
 
-    "Websites" : {
-        "Personal": "https://www.example.com"
-    },
+    "Websites" : [
+        {   "Label": "Personal",
+            "Value": "https://www.example.com"
+        }
+    ],
 
     "Photo" : {
         "MimeType" : "image/png",
@@ -194,7 +198,9 @@ Gender:: OPTIONAL. `Gender` maps to the vCard `GENDER` field’s gender identity
 
 Bio:: OPTIONAL. This is a public-facing biographical string where a user can construct a quick blurb to summarize important aspects of their life and/or personality.
 
-Social:: OPTIONAL. This is a dictionary where the key is the name of the social network and the value is the username (or other identifier) or a URL to the user's page on that social network. The keys use capitalization which exactly matches that used by the network. A not-exhaustive  list of examples would include Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, Pixelfed.
+Social:Label:: CONDITIONAL. Entries in the Social field are optional, but if an entry exists, it MUST have both a Label and a Value. The Label field contains the name of the social network. The label is expected to use the capitalization which exactly matches that used by the network. A not-exhaustive list of examples would include Reddit, Facebook, Twitter, Instagram, LinkedIn, Diaspora, Identi.ca, Mastodon, and Pixelfed.
+
+Social:Value:: CONDITIONAL. Entries in the Social field are optional, but if an entry exists, it MUST have both a Label and a Value. The Value field contains the URL for the profile page of the entity on the network's website. If the social media network does not have public profile pages for its users, this field contains the identifier for the entity.
 
 Phone:: OPTIONAL. This field contains a list of dictionaries which follow the same conventions as `MailingAddresses`. Note that the vCard field `TEL` roughly maps to this, as the names of the phone numbers are not rigidly defined, unlike the types in the vCard standard. 
 
@@ -254,7 +260,9 @@ Title:: OPTIONAL. `Title` maps to the vCard `TITLE` field. It contains the title
 
 Categories:: OPTIONAL. `Categories` maps to the vCard `CATEGORIES` field. It contains a list of string values for tags to apply to the entity.
 
-Websites:: OPTIONAL. This dictionary contains labels and associated URLs of websites associated with the entity and loosely maps to the vCard field `WEBSITE`.
+Websites:Label:: CONDITIONAL. Entries in the Websites field are optional, but if an entry exists, it MUST have both a Label and a Value. The Label field contains the type of website, such as 'Business', 'Personal', or the actual name of the site.
+
+Websites:Value:: CONDITIONAL. Entries in the Websites field are optional, but if an entry exists, it MUST have both a Label and a Value. The Value field contains the URL of the website.
 
 Photo:: OPTIONAL. A field group containing photo information for the contact. The `Photo` field is not required, but if present, all of its subfields MUST be present.
 
