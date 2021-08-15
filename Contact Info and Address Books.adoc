@@ -105,6 +105,12 @@ Below is listed an example of a profile which utilizes most of the available fie
         }
     ],
 
+    "Messaging" : [
+        {   "Label" : "Signal",
+            "Value" : "555-555-9090",
+        }
+    ]
+
     "MailingAddresses" : [
         {   "Label" : "Work",
             "StreetAddress" : "1013 Hickman St.",
@@ -225,6 +231,12 @@ Keys:KeyType:: CONDITIONAL. This field contains the type of cryptography key. It
 Keys:KeyHash:: CONDITIONAL. This field contains the hash of the encryption key. The hash is Base85-encoded and prefixed by the hashing algorithm. It is a required part of the `Mensago` field group.
 
 Keys:Value:: CONDITIONAL. This field contains the actual encryption key data. For public-key encryption, this is the contact’s public key in CryptoString format.
+
+Messaging:Label:: CONDITIONAL. The Messaging field is used to store information about instant messaging and chat services utilized by the entity. The Messaging field and its entries are optional, but if an entry exists, it MUST have both a Label and a Value. The Label field contains the name of the messaging service. 
+
+Messaging:Value:: CONDITIONAL. The Messaging field is used to store information about instant messaging and chat services utilized by the entity. The Messaging field and its entries are optional, but if an entry exists, it MUST have both a Label and a Value. The Value field contains the identifier for the entity on the messaging service. The format of the identifier depends on the service itself. For example, Signal uses the entity's phone number and Element uses the format `@username@example.com`.
+
+Messaging:Preferred:: OPTIONAL. Contains `yes` or `no` to indicate if it is the preferred messaging/chat method. Only one entry can have a `yes` value for this field, but all entries MAY have a `no` value, indicating no preference. If this field is omitted, it is assumed to have a value of `no`. NOTE: this value of this field is ignored if there is only one service defined. 
 
 MailingAddresses:: OPTIONAL. This is a list of dictionaries contains mailing address information. The fields used largely map to corresponding parameters of the vCard field `ADR`. The mappings of these fields are explained below in relation to U.S. mailing addresses merely for the sake of clarity. All fields are optional 
 
