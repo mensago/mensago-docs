@@ -17,7 +17,7 @@ Contact information and address book synchronization are one reason Mensago is a
 
 == Structure
 
-Like other Mensago data, contact information is normally stored in JSON format. At the top level, a contact dictionary fields, including a header. The header contains a high-level description of the information, including the API version, the source of the information, and the type of entity described. A short example of the format is shown below.
+Like other Mensago data, contact information is normally stored in JSON format. At the top level, a contact contains dictionary fields and includes a header. The header contains a high-level description of the information, including the API version, the source of the information, and the type of entity described. A short example of the format is shown below.
 
 [source,json]
 ----
@@ -178,7 +178,7 @@ Below is listed an example of a profile which utilizes most of the available fie
 
 == Field Definitions
 
-Each of the fields defined in a contact are described below. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloguing information for contacts who do not have a Mensago address, even this field is not required.
+Each of the fields defined in a contact are described below. Most of these fields map directly to those found in the https://tools.ietf.org/html/rfc6350[vCard standard]. However, unlike the vCard standard, almost every field is optional so that a Mensago workspace account can be maintained with the only identifying information for the account being its numeric address. However, in the interest of cataloging information for contacts who do not have a Mensago address, even this field is not required.
 
 Header:Version:: REQUIRED. API version of the payload.
 
