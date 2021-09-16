@@ -416,6 +416,24 @@ _Sends an item to another server_
 
 This command works exactly like UPLOAD except that the server processes it for delivery to another domain instead of for local storage. The message uploaded is expected to have encrypted delivery information sections for both the sending and receiving servers. Items uploaded via SEND without delivery information should be expected to be deleted by the server. The Domain parameter specifies the receiving domain, enabling the server to know where to deliver the message without having to decrypt the sender header. Note that the recipient's domain is used and not the recipient's entire address.
 
+=== SENDFAST
+
+_Sends an item to another server. Unlike SEND, SENDFAST only operates on small messages_
+
+[cols="1,3a"]
+|===
+| Parameters |
+* Hash
+* Domain
+| Returns | * 200 OK
+| Possible Errors 
+| * 404 NOT FOUND
+* 409 QUOTA INSUFFICIENT
+* 414 LIMIT REACHED
+|===
+
+This command works more or less the same as SEND except that it is optimized to send messages that are smaller than the 8KiB command limit when sent over the wire. All other requirements for SEND still stand: the message uploaded is expected to have encrypted delivery information sections for both the sending and receiving servers, etc. Because the message is small, it is not necessary to have handling for messages larger than can fit into RAM, no disk usage is needed, and processing is significantly faster.
+
 === UPLOAD
 _Upload an item to the server_
 
