@@ -423,7 +423,6 @@ _Sends an item to another server. Unlike SEND, SENDFAST only operates on small m
 [cols="1,3a"]
 |===
 | Parameters |
-* Hash
 * Domain
 | Returns | * 200 OK
 | Possible Errors 
