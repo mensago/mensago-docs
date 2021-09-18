@@ -424,6 +424,7 @@ _Sends an item to another server. Unlike SEND, SENDFAST only operates on small m
 |===
 | Parameters |
 * Domain
+* Message
 | Returns | * 200 OK
 | Possible Errors 
 | * 404 NOT FOUND
@@ -431,7 +432,7 @@ _Sends an item to another server. Unlike SEND, SENDFAST only operates on small m
 * 414 LIMIT REACHED
 |===
 
-This command works more or less the same as SEND except that it is optimized to send messages that are smaller than the 8KiB command limit when sent over the wire. All other requirements for SEND still stand: the message uploaded is expected to have encrypted delivery information sections for both the sending and receiving servers, etc. Because the message is small, it is not necessary to have handling for messages larger than can fit into RAM, no disk usage is needed, and processing is significantly faster.
+This command works more or less the same as SEND except that it is optimized to send messages that are smaller than the 8KiB command limit when sent over the wire. All other requirements for SEND still stand: the message uploaded is expected to have encrypted delivery information sections for both the sending and receiving servers, etc. Because the message is small, it is not necessary to have handling for messages larger than can fit into RAM, no disk usage is needed, and processing is significantly faster. The Message field contains the text of the message to be sent. It uses the exact same format as that of a message stored on disk, which is detailed in the Mensago Messaging Specification.
 
 === UPLOAD
 _Upload an item to the server_
