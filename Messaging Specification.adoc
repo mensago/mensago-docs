@@ -40,12 +40,12 @@ Every user file on a Mensago server is stored in encrypted form. All binary data
 MENSAGO
 {
     "Version": "1.0",
-    "Receiver": "G!$Rod&LyJ6-yNaemQ?i`l&*|{V&aco)IUNj!RuS3VbAVQ5@BFu!lQDF+6&n>Zjm7h6#cL<jct?4uqj@#SYJ=n3@GqIuXvwJyfK>$uQ}u%kTd_L?rC1uNRLe0@<is)NRiCl?Ws;EI!0}a}H1c!-Z}lLp@SBdiAEK>86z",
+    "Receiver": "CURVE25519:G!$Rod&LyJ6-yNaemQ?i`l&*|{V&aco)IUNj!RuS3VbAVQ5@BFu!lQDF+6&n>Zjm7h6#cL<jct?4uqj@#SYJ=n3@GqIuXvwJyfK>$uQ}u%kTd_L?rC1uNRLe0@<is)NRiCl?Ws;EI!0}a}H1c!-Z}lLp@SBdiAEK>86z",
     "SendTime": "20190905T155400Z",
-    "Sender": "65}GwUkZNN42t=#`4wj4V~Z~ND97KHB1pnvzmpwUgcjANT>3_j9+}!u)pvsgD07Sr3EC@K$~hc&(jpsJQ|}eT8=N7`t$}KgF9qi~dDVA{5W^uq9zx_LR$KKseCbt4_y6Lqj6xAQfK^jjrS;Cx4~mLV<mnnjk*cY*!W$ZaGTfo&",
+    "Sender": "CURVE25519:65}GwUkZNN42t=#`4wj4V~Z~ND97KHB1pnvzmpwUgcjANT>3_j9+}!u)pvsgD07Sr3EC@K$~hc&(jpsJQ|}eT8=N7`t$}KgF9qi~dDVA{5W^uq9zx_LR$KKseCbt4_y6Lqj6xAQfK^jjrS;Cx4~mLV<mnnjk*cY*!W$ZaGTfo&",
     "Date": "20190905T155323Z",
     "KeyHash": "BLAKE2B-256:cy)wynX>FX1!`%3rR}t1ILJTtM*q)|cI_^ycs9D?",
-    "PayloadKey": "2Iuql{B^xtCES?}`Sy-o-z##Jzo&blqkQMk_Vg@yrNal66#^p2X9waP??5078`D#ab*_n4sNR1glHWqEaf_wQ53z~vRl1o<?JaRMugPL#gjI)<sAv6DTm_@6^#"
+    "PayloadKey": "CURVE25519:2Iuql{B^xtCES?}`Sy-o-z##Jzo&blqkQMk_Vg@yrNal66#^p2X9waP??5078`D#ab*_n4sNR1glHWqEaf_wQ53z~vRl1o<?JaRMugPL#gjI)<sAv6DTm_@6^#"
 }
 ----------
 XSALSA20
