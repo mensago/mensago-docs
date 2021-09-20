@@ -17,7 +17,7 @@ Contact information and address book synchronization are one reason Mensago is a
 
 == Structure
 
-Like other Mensago data, contact information is normally stored in JSON format. At the top level, a contact contains dictionary fields and includes a header. The header contains a high-level description of the information, including the API version, the source of the information, and the type of entity described. A short example of the format is shown below.
+Like other Mensago data, contact information is normally structured in JSON format. At the top level, a contact contains dictionary fields and includes a header. The header contains a high-level description of the information, including the API version, the source of the information, and the type of entity described. A short example of the format is shown below.
 
 [source,json]
 ----
@@ -109,7 +109,7 @@ Below is listed an example of a profile which utilizes most of the available fie
         {   "Label" : "Signal",
             "Value" : "555-555-9090",
         }
-    ]
+    ],
 
     "MailingAddresses" : [
         {   "Label" : "Work",
