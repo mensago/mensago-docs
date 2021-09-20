@@ -18,15 +18,13 @@ Client-server communications on the Mensago platform take inspiration from a num
 * To provide a synchronization mechanism for a user’s devices.
 * To provide identity services
 
-Communication between Mensago clients and servers is a synchronous text-based protocol which operates on TCP port 2001. The protocol is line-oriented and meant to be easy to parse and validate. Client-server commands focus on authentication, synchronization, and message delivery because client data is encrypted by default.
-
 == Technology Conventions
 
-Compatibility with POP, IMAP, and SMTP has prompted great heroics in the more than 40 years since e-mail’s invention, but these protocols are the root cause behind the many problems which plague modern e-mail. A fresh start is needed, based on best-of-breed technologies and methods available now.
+Compatibility with POP, IMAP, and SMTP has prompted great heroics in the more than 40 years since e-mail’s invention, but these protocols are the root cause behind the many problems which plague modern e-mail. A fresh start is needed, based on best-of-breed technologies and methods available now. Communication between Mensago clients and servers is a synchronous text-based protocol which operates on TCP port 2001. Commands use JSON for data serialization for easy parsing and validation. Client-server commands focus on authentication, synchronization, and message delivery because client data is encrypted by default.
 
-Like those that came before, Mensago' client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The JSON schema used for commands consists of strings and, in certain cases, lists of strings. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted. All time values are standardized on UTC and, with a few exceptions, are in the compact https://en.wikipedia.org/wiki/ISO_8601[ISO8601] format `YYYYMMDDTHHMMSSZ`.
+Like those that came before, Mensago's client-server protocol is text-based for greater flexibility and easier troubleshooting. UTF-8 is the default text encoding to provide a well-supported means of representing text for all communities. JSON is used for data serialization because it is human-readable, flexible, easy to parse, and easy to validate. The JSON schema used for commands consists of strings and, in certain cases, lists of strings. The version of Base85 encoding defined in https://tools.ietf.org/html/rfc1924[RFC 1924] is smaller than Base64 and designed to be compatible with source code. It is the standard encoding except where noted. All time values are standardized on UTC and, with a few exceptions, are in the compact https://en.wikipedia.org/wiki/ISO_8601[ISO8601] format `YYYYMMDDTHHMMSSZ`.
 
-Strong, efficient, and proven algorithms are used for encryption. ChaCha20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms without relying on hardware acceleration. Argon2id is utilized for password hashing.
+Strong, efficient, and proven algorithms are used for encryption. XSalsa20 and Elliptic Curve 25519 are preferred algorithms for symmetric and asymmetric encryption, respectively. BLAKE2b is a fast hashing algorithm which yields comparable or better results than SHA2 and SHA3 algorithms without relying on hardware acceleration. Argon2id is utilized for password hashing.
 
 == Client Files
 
@@ -37,9 +35,7 @@ The Mensago server's main role is storage and synchronization of opaque data fil
 3. A separator line consisting of 10 dashes (ASCII 45) followed by a carriage return and line feed
 4. The Base85-encoded encrypted payload.
 
-The envelope information is standard JSON-formatted data. The listing below is formatted for readability, but in day-to-day usage, minified JSON is the norm. The payload for a client file begins with a line containing a CryptoString identifier indicating the encryption type. For more information about the CryptoString format, please consult the Mensago Platform Overview. The payload data then begins on a new line. The unencrypted payload itself is JSON-structured data, detailed further below.
-
-The payload encryption type is currently either XSALSA20 or AES-256. The XSalsa20 cipher uses Poly1305 for message authentication and the AES ciphers use GCM. XSalsa20 is preferred because it is faster overall without depending on hardware acceleration.
+The envelope information is standard JSON-formatted data. The listing below is formatted for readability, but in day-to-day usage, minified JSON is the norm. The payload for a client file begins with a line containing a CryptoString identifier indicating the encryption type. For more information about the CryptoString format, please consult the Mensago Platform Overview. The payload data then begins on a new line. The unencrypted payload itself is JSON-structured data, detailed further below. The payload encryption type is currently XSALSA20.
 
 [source]
 ----
@@ -137,9 +133,9 @@ Mensago servers will ensure certain directories exist within the workspace stora
 
 == Settings Sync and Server-Side Storage
 
-In order to provide the highest level of privacy and security for user data, the server is given a minimal level of trust. This means that it can be utilized for basic functions to assist client software, but all user data must be inaccessible from the server side.
+In order to provide the highest level of privacy and security for user data, the server is given a minimal level of trust. This means that it can be utilized for basic functions to assist client software, but all user data must be inaccessible from the server side in any meaningful way.
 
-Server-side storage for data other than client files should be stored in workspace's `settings` directory. Device-specific key exchange archives should be stored here. Client software may also store application-specific settings information in an encrypted archive file, as well. Although JSON is recommended as a storage format inside the encrypted archive, the exact format is determined by the application.
+Server-side storage for data other than client files should be stored in a workspace's `settings` directory. Device-specific key exchange archives should be stored here. Client software may also store application-specific settings information in an encrypted archive file, as well. Although JSON is recommended as a storage format inside the encrypted archive, the exact format is determined by the application.
 
 The name of the settings file is determined by the client software. The file is expected to be encrypted by a key used just for settings storage. The recommended format for maximum privacy is to use the first 32 characters of the Base64-encoded hash of the encryption key followed by a period and a number indicating the version. An example would look like this: `f9c9e42c25002e7148dceea7d687fea89.23`. Base64 is needed in this case because many of the symbols utilized by Base85 are forbidden for filesystem use.
 
