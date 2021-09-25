@@ -296,7 +296,7 @@ _A command used to keep the connection alive_
 | * None
 |===
 
-IDLE is sent by clients to notify the server that it is still connected and active. An optional parameter, `CountUpdates`, contains the client's current date and time in ISO8601 format standard for the platform and requests that the server count the number of updates pending. The server always returns `200 OK` unless there is some sort of internal error. If an update count was requested, it is returned as the field `UpdateCount` and contains an integer of the number of update records pending.
+IDLE is sent by clients to notify the server that it is still connected and active. An optional parameter, `CountUpdates`, contains the client's current date and time in UTC UNIX format and requests that the server count the number of updates pending. The server always returns `200 OK` unless there is some sort of internal error. If an update count was requested, it is returned as the field `UpdateCount` and contains an integer of the number of update records pending.
 
 === LIST
 
