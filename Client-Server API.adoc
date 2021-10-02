@@ -263,26 +263,26 @@ _Requests all changes since the time specified_
 
 The client requests a list of updates since the requested time. Unlike most commands, time is submitted in UTC seconds since the Epoch, better known as UNIX time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 16384 byte limit for message sizes creates a rough upper boundary of 300-350 update records. The `UpdateCount` field contains the total number of updates from that point on, even if the updates themselves cannot all be returned in the response. A client can know that it is current if `UpdateCount` equals the number of items in the `Updates` field or if `UpdateCount` is zero.
 
-There are three types of updates: CREATE, DELETE, and MOVE.
+There are five types of updates: CREATE, DELETE, MOVE, MKDIR, and RMDIR.
 
 ....
 Updates : [
-	{	"Type" : "Create", 
+	{	"Type" : "CREATE", 
 		"Data" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
 		"Time" : "1616083888"
 	},
-	{	"Type" : "Move",
+	{	"Type" : "MOVE",
 		"Data" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / ec795b28-ea77-4b5d-b860-6d484222feb1",
 		"Time" : "1616083888"
 	},
-	{	"Type" : "Delete",
+	{	"Type" : "DELETE",
 		"Data" : "/ ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
 		"Time" : "1616083888"
 	}
 ]
 ....
 
-`Create` and `Delete` updates list the full path of the new item and is received even if the item is not part of the selected directory. `Move` updates follow the format of the MOVE command, providing the full path of the item prior to the move and then the new directory to which it was moved. Both paths are returned in the same string, in this case.
+`CREATE` and `DELETE` updates list the full path of the new item and is received even if the item is not part of the selected directory. They also operate only on files.`MKDIR` and `RMDIR` are specific to directories. `RMDIR` is only used to remove empty directories. In order to delete a directory and its contents, all files must be `DELETE`ed before the directory can be removed with `RMDIR`. `MOVE` updates follow the format of the MOVE command, providing the full path of the item prior to the move and then the new directory to which it was moved. Both paths are returned in the same string, in this case.
 
 === IDLE
 
@@ -362,12 +362,11 @@ Moves an item. The item is expected to be in the current directory and may be a 
 
 === RMDIR
 
-_Deletes a directory_
+_Removes a directory_
 
 [cols="1,3a"]
 |===
 | Parameters | * Path
-* _optional:_ Recursive
 | Returns | * 200 OK
 
 | Possible Errors 
@@ -375,7 +374,7 @@ _Deletes a directory_
 * 408 RESOURCE EXISTS
 |===
 
-Deletes a workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. If the Recursive flag is set to true, the command recursively deletes the directory and all of its contents. If the Recursive flag is set to false, a non-empty directory will cause a 408 RESOURCE EXISTS error.
+Removes an empty workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. A non-empty directory will cause a 408 RESOURCE EXISTS error.
 
 === SELECT
 
