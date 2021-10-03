@@ -268,16 +268,24 @@ There are five types of updates: CREATE, DELETE, MOVE, MKDIR, and RMDIR.
 ....
 Updates : [
 	{	"Type" : "CREATE", 
-		"Data" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Time" : "1616083888"
+		"Data" : "/ wsp 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Time" : "1616083886"
 	},
+	{	"Type" : "MKDIR",
+		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Time" : "1616083886"
+	}
 	{	"Type" : "MOVE",
-		"Data" : "/ 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Time" : "1616083888"
+		"Data" : "/ wsp 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Time" : "1616083887"
 	},
 	{	"Type" : "DELETE",
-		"Data" : "/ ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
 		"Time" : "1616083888"
+	}
+	{	"Type" : "RMDIR",
+		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Time" : "1616083889"
 	}
 ]
 ....
