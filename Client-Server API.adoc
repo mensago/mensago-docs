@@ -1,6 +1,12 @@
 = Mensago Client-Server API
-Jon Yoder <jsyoder@mailfence.com>
-v1.0, 2019-08-10
+:author: Jon Yoder
+:email: jon@yoder.cloud
+:revdate: 2021-10-07
+:revnumber: 1.1
+:description: Spec for Mensago client-server communications
+:keywords: Mensago, client-server, commands
+:toc: preamble
+:table-stripes: odd
 
 *Status:* Draft (incomplete) +
 *Abstract:* Spec for Mensago client-server communications
