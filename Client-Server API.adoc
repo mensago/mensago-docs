@@ -147,10 +147,6 @@ The name of the settings file is determined by the client software. The file is 
 
 The device-checking feature of Mensago Identity Services provides a relatively painless form of multifactor authentication while also providing a way for new devices to receive the keys used by clients. Specific information on this process can be found in the Identity Services design document.
 
-== Update Notifications
-
-Because of the wide variety of possible uses for the platform, clients are afforded several options to obtain updates. The GETUPDATES command provides a simple, if heavy, means of getting updates. This method is not recommended for update polling. The IDLE command may be used to obtain a count of updates pending for the device based on the previous time updates were checked. To enable a form of push notifications, any command which returns a `200 OK` status may also include the field `UpdateCount`, which contains a string of the number of updates pending. This field is only sent once, so checking incoming successful messages for this extra field is key to responsive, low-overhead update checking.
-
 == Command Reference
 
 For any command listed below, `400 BAD REQUEST` is returned by the  server if a command does not match expected syntax. It also may be returned if a command argument contains invalid data.
@@ -267,36 +263,7 @@ _Requests all changes since the time specified_
 ** Updates
 |===
 
-The client requests a list of updates since the requested time. Unlike most commands, time is submitted in UTC seconds since the Epoch, better known as UNIX time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 16384 byte limit for message sizes creates a rough upper boundary of 300-350 update records. The `UpdateCount` field contains the total number of updates from that point on, even if the updates themselves cannot all be returned in the response. A client can know that it is current if `UpdateCount` equals the number of items in the `Updates` field or if `UpdateCount` is zero.
-
-There are five types of updates: CREATE, DELETE, MOVE, MKDIR, and RMDIR.
-
-....
-Updates : [
-	{	"Type" : "CREATE", 
-		"Data" : "/ wsp 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Time" : "1616083886"
-	},
-	{	"Type" : "MKDIR",
-		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Time" : "1616083886"
-	}
-	{	"Type" : "MOVE",
-		"Data" : "/ wsp 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Time" : "1616083887"
-	},
-	{	"Type" : "DELETE",
-		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Time" : "1616083888"
-	}
-	{	"Type" : "RMDIR",
-		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
-		"Time" : "1616083889"
-	}
-]
-....
-
-`CREATE` and `DELETE` updates list the full path of the new item and is received even if the item is not part of the selected directory. They also operate only on files.`MKDIR` and `RMDIR` are specific to directories. `RMDIR` is only used to remove empty directories. In order to delete a directory and its contents, all files must be `DELETE`ed before the directory can be removed with `RMDIR`. `MOVE` updates follow the format of the MOVE command, providing the full path of the item prior to the move and then the new directory to which it was moved. Both paths are returned in the same string, in this case.
+The client requests a list of updates since the requested time. Unlike most commands, time is submitted in UTC seconds since the Epoch, better known as UNIX time. The server responds with `200 OK` and the list of updates in the Updates field. The updates themselves are returned in chronological order from oldest to newest. Any number of updates can be returned by the server's response, but staying within the 16384 byte limit for message sizes creates a rough upper boundary of 150 update records. The `UpdateCount` field contains the total number of updates from that point on, even if the updates themselves cannot all be returned in the response. A client can know that it is current if `UpdateCount` equals the number of items in the `Updates` field or if `UpdateCount` is zero. For more details about GETUPDATES and update handling, please see the <<Update Notifications>> section.
 
 === IDLE
 
@@ -487,6 +454,71 @@ _Sets the disk quota for one or more workspaces_
 |===
 
 SETQUOTA customizes a workspace's disk quota size. The Size parameter is measured in mebibytes and is expected to be an integer greater than 0. The Workspaces parameter is a string containing a comma-separated list of workspace IDs. If issued by a non-administrator, `403 FORBIDDEN` is returned. Note that if the quota for a workspace has been set to a value less than its current disk usage, the workspace will be unable to send messages or upload any new user files until either the quota increased to greater than its usage or the usage is decreased to less than its quota.
+
+
+== Update Notifications
+
+Because of the wide variety of possible uses for the platform, clients are afforded several options to obtain updates. The GETUPDATES command provides a simple, if heavy, means of getting updates. This method is not recommended for update polling. The IDLE command may be used to obtain a count of updates pending for the device based on the previous time updates were checked. To enable a form of push notifications, any command which returns a `200 OK` status may also include the field `UpdateCount`, which contains a string of the number of updates pending. This field is only sent once, so checking incoming successful messages for this extra field is key to responsive, low-overhead update checking.
+
+Below is a sample of the different types of updates: CREATE, DELETE, MOVE, MKDIR, RMDIR, and REPLACE.
+
+....
+Updates : [
+	{	"ID" : "11",
+		"Type" : "CREATE", 
+		"Data" : "/ wsp 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Source" : "",
+	},
+	{	"ID" : "12",
+		"Type" : "MKDIR",
+		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Source" : "32a492ab-da80-4b4c-ad89-eff9c78a4ee8"
+	}
+	{	"ID" : "15",
+		"Type" : "MOVE",
+		"Data" : "/ wsp 721a1b2f-8703-4d23-8f9e-7275c647b63e 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Source" : "32a492ab-da80-4b4c-ad89-eff9c78a4ee8"
+	},
+	{	"ID" : "16",
+		"Type" : "DELETE",
+		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Source" : "32a492ab-da80-4b4c-ad89-eff9c78a4ee8"
+	},
+	{	"ID" : "20",
+		"Type" : "RMDIR",
+		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1",
+		"Source" : "32a492ab-da80-4b4c-ad89-eff9c78a4ee8"
+	},
+	{	"ID" : "35",
+		"Type" : "REPLACE",
+		"Data" : "/ wsp ec795b28-ea77-4b5d-b860-6d484222feb1 1579216613.5143.ec795b28-ea77-4b5d-b860-6d484222feb1 / wsp ec795b28-ea77-4b5d-b860-6d484222feb1 1616083889.9216.0a7d9f78-e44c-47e6-bba1-997cc9b56e80",
+		"Source" : "32a492ab-da80-4b4c-ad89-eff9c78a4ee8"
+	},
+]
+....
+
+Update records are created for each event which occurs in the workspace. The `ID` field is a unique integer identifier for the update assigned by the server because unusual things sometimes happen to servers in terms of time-handling. Records are intended to be processed from lowest record ID to greatest. The `Source` field contains the ID of the device which performed the original action. In the case of `CREATE` records originated by the server for new incoming messages this field is blank.
+
+CREATE::
+	Issued when a new item is created in the workspace. The `Data` field contains the full path of the new item, including file name.
+
+DELETE::
+	Represents the deleting of a file. The `Data` field contains the full path of the new item, including file name.
+
+COPY::
+	Created when a file is duplicated. The `Data` field contains the full path of the original item and the full path of the new one. Because filenames are intended to be unique to a server, the new file will have a different filename from the old.
+
+MOVE::
+	Describes moving a file from one folder to another. The `Data` field contains two paths: the first the full path to the file to be moved, including filename, and the second is the path of the folder to which the file was moved.
+
+MKDIR::
+	Denotes that a directory has been created. The `Data` field contains the path of the folder created. Because the MKDIR command can create a folder and any missing parent folders, only one entry is created for the entire hierarchy.
+
+RMDIR::
+	This record is added when a folder is removed.
+
+REPLACE::
+	Stands for an instance where one file was replaced with another using the REPLACE command. 
 
 
 == Status Codes
