@@ -350,7 +350,6 @@ _Uploads a file to replace another one_
 | Parameters | * OldPath
 * NewPath
 * Size
-* Path
 * _resume only:_ TempName
 * _resume only:_ Offset
 | Returns | * 100 CONTINUE
