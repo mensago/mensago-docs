@@ -341,6 +341,25 @@ _Moves an item from the selected path to another on the server_
 
 Moves an item. The item is expected to be in the current directory and may be a file or subdirectory. The destination path is expected to be a standard Mensago server-side path to a directory. `404 NOT FOUND` is returned if the item does not exist. `404 RESOURCE EXISTS` is returned if an entry in the destination already exists with that name.
 
+=== REPLACE
+
+_Uploads a file to replace another one_
+
+[cols="1,3a"]
+|===
+| Parameters | * OldPath
+* NewPath
+* Size
+* Path
+* _resume only:_ TempName
+* _resume only:_ Offset
+| Returns | * 100 CONTINUE
+** TempName
+| Returns | * 200 OK
+|===
+
+Functionally speaking, this command is little different from UPLOAD. The client uploads a file intended to replace the one specified in `OldPath`. The file in `OldPath` is deleted and its replacement is uploaded to `NewPath`. REPLACE is intended to provide an atomic way of updating a file, such as a newly-delivered message with its processed counterpart or a note file with an updated version.
+
 === RMDIR
 
 _Removes a directory_
