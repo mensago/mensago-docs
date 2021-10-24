@@ -317,13 +317,14 @@ _Creates a new directory_
 [cols="1,3a"]
 |===
 | Parameters | * Path
+| * ClientPath
 | Returns | * 200 OK
 
 | Possible Errors 
 | * 408 RESOURCE EXISTS
 |===
 
-Create a workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. The command works similarly to the UNIX command `mkdir -p`, which creates directories and parent directorys as needed to ensure that the entire path exists. If the leaf already exists, `408 RESOURCE EXISTS` is returned.
+Create a workspace directory. The directory path is a standard Mensago server-side path which indicates the path to be created relative to the root of the workspace. The command works similarly to the UNIX command `mkdir -p`, which creates directories and parent directorys as needed to ensure that the entire path exists. The Path parameter contains the UUID-based server-side path. ClientPath, on the other hand, contains the CryptoString-formatted encrypted path which contains the user-facing names used by the client. For example, the Path could contain `/ 0c49773d-20c0-4597-b1c0-631249f453cd 24d5f43f-4541-47ae-8fc2-be0d6eba0bc9` while the decrypted ClientPath would be `/ messages bills`. If the leaf already exists, `408 RESOURCE EXISTS` is returned.
 
 === MOVE
 
