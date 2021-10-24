@@ -174,13 +174,15 @@ _Deletes a file from the current directory_
 
 [cols="1,3a"]
 |===
-| Parameters | * Path
+| Parameters | * PathCount
+| * Path0
+| * [Path1...]
 | Returns | * 200 OK
 | Possible Errors 
 | * 404 NOT FOUND
 |===
 
-Deletes a file from the current directory.
+Deletes a file from the current directory. PathCount indicates the number of items to delete. The full path to each item to delete is placed in Path0, Path1, Path2, and so on. This command does not work on directories.
 
 === DELIVER
 
