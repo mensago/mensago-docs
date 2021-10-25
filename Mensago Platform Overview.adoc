@@ -1,4 +1,14 @@
 = Mensago Platform Overview
+:author: Jon Yoder
+:email: jon@yoder.cloud
+:revdate: 2021-10-25
+:revnumber: 1.0
+:description: Overview of the Mensago platform
+:keywords: Mensago, overview, cryptostring, security
+:toc: preamble
+:table-stripes: odd
+
+*Status:* Draft (incomplete) +
 
 == Introduction
 
@@ -78,7 +88,7 @@ Concerning formatting, UUIDs, user IDs, domains, and addresses in general are re
 
 A device is merely an access method to a Mensago server. Each user has a list of associated devices for his/her workspace, each identified by a UUID and its own asymmetric encryption key. Each application may utilize its own device ID. Thus, an Android phone with separate applications for accessing calendar, contacts, messages, notes, and tasks could have 6 different device IDs whereas a desktop PC running an all-in-one client could just have one. For maximum compatibility, there are defined locations for client-side user data.
 
-== Section Versioning
+== Versioning
 
 API versions take the form of X.Y.Z: X is major version, Y is minor version, Z is patch level.
 
@@ -88,4 +98,12 @@ API versions take the form of X.Y.Z: X is major version, Y is minor version, Z i
 
 == License
 
-The Mensago specification is distributed under the Creative Commons CC-BY-SA license.
+The Mensago specification is distributed under the Creative Commons CC-BY-SA license unless otherwise noted.
+
+== Security and Threat Modeling
+
+As a platform, Mensago places minimum trust in infrastructure and plans for compromise.
+
+=== Server
+
+A Mensago server is intended to act as an verifying third party for identity services and to provide message delivery and device synchronization.
