@@ -76,7 +76,7 @@ Obtaining and verifying a recipient's keycard is required before any contact can
 
 It is unfortunate that so many security-oriented systems are forced to depend on an insecure system like DNS. Nevertheless, it has proved difficult to replace. DNS records are used by keycard resolvers to obtain basic configuration information and as a way to validate organization keycards.
 
-Securing a domain’s resource records with DNSSEC cannot be recommended enough. When DNSSEC signatures are present, a hash of the public key in the server's TLS certificate in DNS and used to validate the domain’s TLS certificate. In such situations, a certificate signed by a recognized third-party certificate authority (CA) is not required. In light of CA compromises in recent years, this is a notable benefit. Without the presence of DNSSEC, resolvers MUST require the TLS certificate of a Mensago server to be signed by a recognized third party CA.
+Securing a domain’s resource records with DNSSEC cannot be recommended enough. When validated DNSSEC signatures are present, a facility similar to https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities[DANE] may be used to validate the domain’s TLS certificate. In such situations, a certificate signed by a recognized third-party certificate authority (CA) is not required. In light of CA compromises in recent years, this is a notable benefit. Without the presence of DNSSEC, resolvers MUST require the TLS certificate of a Mensago server to be signed by a recognized third party CA.
 
 Aside from the optional SRV record used for client autoconfiguration, TXT records are required, providing a second source of information about a server. The organization's Primary Verification Key is required to be stored in DNS and is used to assist in confirming a server's identity. 
 
@@ -87,8 +87,8 @@ When working with DNS TXT records and the maximum length of 255 characters per s
 Given the complicated nature of configuring e-mail clients, automatic configuration is considered a requirement for the platform. An administrator can add an SRV record to inform clients of the fully-qualified domain name and port used by its Mensago server. This DNS record is optional. If not provided, clients check if the organization has a `mensago` subdomain, i.e. `mensago.subdomain.example.com` and, if not, work its way up the domain hierarchy. For example, for the domain `subdomain.example.com`, a client would perform the following steps:
 
 . Check for an SRV record with the service type `_mensago`, and use the supplied FQDN and port if it exists
-. Perform a DNS lookup for `mensago.subdomain.example.com`
-. Perform a DNS lookup for `mensago.example.com`
+. Perform an A or AAAA lookup for `mensago.subdomain.example.com`
+. Perform an A or AAAA lookup for `mensago.example.com`
 . Attempt to connect to `example.com`
 
 The default port, 2001, is always used unless there is an SRV record in DNS which specified otherwise. If there is no SRV record and nothing is found at any of the specified subdomains, the organization is assumed to not offer Mensago services.
