@@ -1,12 +1,14 @@
 # Mensago Platform Documentation
 
-This respository contains architectural design documents for the Mensago end-to-end encrypted communications platform. These should be considered canonical design documents for developers wishing to implement software for the platform. It may also be interesting for anyone wanting to learn more about how the platform works and for rationale behind design decisions. 
+This respository contains architectural design documents for the Mensago end-to-end encrypted communications platform. These should be considered canonical design documents for developers wishing to implement software for the platform. It may also be interesting for anyone wanting to learn more about how the platform works and for rationale behind design decisions. All documentation found here is found are in draft state and should be largely be considered complete. Draft documents will brought to final, complete state when related code reaches its first beta release.
 
 ## The Documents
 
 For a high-level introduction to the platform, consult the [Platform Overview](https://github.com/mensago/mensago-docs/blob/master/Mensago%20Platform%20Overview.adoc).
 
 Those wishing to use Mensago services to confirm a user's identity or utilize their cryptography keys should read about [Identity Services](https://github.com/mensago/mensago-docs/blob/master/Identity%20Services.adoc). Also helpful if you want to implemented [Passwordless Logins](https://github.com/mensago/mensago-docs/blob/master/Passwordless%20HTTP%20Auth.adoc) using Mensago.
+
+The [Security](https://github.com/mensago/mensago-docs/blob/master/Security.adoc) document offers information for those interested in how Mensago handles different types of threats.
 
 Other documents are described below:
 
