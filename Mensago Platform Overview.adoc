@@ -110,4 +110,22 @@ A Mensago server is intended to act as an verifying third party for identity ser
 
 ==== Spam
 
-Depending on the sources consulted, a large percentage of all e-mail sent is spam, which for the purposes of this project, is defined as unsolicited commercial e-mail. It could be something as simple as a pharmaceutical-related messages from an unreputable source. The Mensago definition of spam also includes communications like unwanted newsletters sent by a legitimate business. Many online vendors use dark patterns to trick users into signing up for a mailing list for their products or simply skip to the end and automatically sign all customers up. Although less malicious, junk e-mail is a major productivity sink because it adds to the clutter a person must deal with. More technical users can manage e-mail subscriptions, but less-savvy users don't know how and don't learn how for a variety of reasons. These users are essentially trapped.
+Depending on the sources consulted, a large percentage of all e-mail sent is spam, which for the purposes of this project, is defined as unsolicited commercial e-mail. It could be something as simple as a pharmaceutical-related messages from an unreputable source. The Mensago definition of spam also includes communications like unwanted newsletters sent by a legitimate business. Many online vendors use dark patterns to trick users into signing up for a mailing list for their products or simply skip to the end and automatically sign all customers up. Although less malicious, junk e-mail is a major productivity sink because it adds to the clutter a person must deal with. More technical users can manage e-mail subscriptions, but less-savvy users don't know how and don't learn how for a variety of reasons. These users are essentially trapped. This is completely unacceptable.
+
+Spam e-mail is enabled by several different factors:
+
+- A message can be sent to anyone without their consent
+- Limitations on traffic volume are a function of server product features and administrator configuration
+- Protocols place no limits on the number of recipients a message may have
+
+To eliminate spam, the following provisions have been made:
+
+- All contact is opt-in, giving users control over who can send them messages
+- The protocol allows an individual to send a message to up to 25 recipients. Larger groups of people require use of a shared workspace.
+- Server software is required to have traffic controls in place for all workspaces
+- Users can utilize the built-in abuse reporting mechanisms to report spammers their administrator
+- Administrators can block domains reported to have bad behavior.
+- Administrators have an incentive to police their users to that the entire domain doesn't get blocked by other instances.
+- Contact requests are the only kind of unsolicited message permitted to be sent, and client software is required to strip embedded links and images from any requests received. Client software is also expected to be engineered to prevent users from sending contact requests with links or images.
+- Client software can enable users to automatically block contact requests from specific users or entire domains.
+
