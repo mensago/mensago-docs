@@ -102,8 +102,12 @@ The Mensago specification is distributed under the Creative Commons CC-BY-SA lic
 
 == Security and Threat Modeling
 
-As a platform, Mensago places minimum trust in infrastructure and plans for compromise.
+As a platform, Mensago places minimum trust in infrastructure, plans for compromise, and expects bad behavior.
 
 === Server
 
-A Mensago server is intended to act as an verifying third party for identity services and to provide message delivery and device synchronization.
+A Mensago server is intended to act as an verifying third party for identity services and to provide message delivery and device synchronization. It also provides facilities to protect the organization from bad behavior.
+
+==== Spam
+
+Depending on the sources consulted, a large percentage of all e-mail sent is spam, which for the purposes of this project, is defined as unsolicited commercial e-mail. It could be something as simple as a pharmaceutical-related messages from an unreputable source. The Mensago definition of spam also includes communications like unwanted newsletters sent by a legitimate business. Many online vendors use dark patterns to trick users into signing up for a mailing list for their products or simply skip to the end and automatically sign all customers up. Although less malicious, junk e-mail is a major productivity sink because it adds to the clutter a person must deal with. More technical users can manage e-mail subscriptions, but less-savvy users don't know how and don't learn how for a variety of reasons. These users are essentially trapped.
