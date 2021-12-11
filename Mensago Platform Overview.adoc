@@ -104,11 +104,7 @@ The Mensago specification is distributed under the Creative Commons CC-BY-SA lic
 
 As a platform, Mensago places minimum trust in infrastructure, plans for compromise, and expects bad behavior.
 
-=== Server
-
-A Mensago server is intended to act as an verifying third party for identity services and to provide message delivery and device synchronization. It also provides facilities to protect the organization from bad behavior.
-
-==== Spam
+=== Spam
 
 Depending on the sources consulted, a large percentage of all e-mail sent is spam, which for the purposes of this project, is defined as unsolicited commercial e-mail. It could be something as simple as a pharmaceutical-related messages from an unreputable source. The Mensago definition of spam also includes communications like unwanted newsletters sent by a legitimate business. Many online vendors use dark patterns to trick users into signing up for a mailing list for their products or simply skip to the end and automatically sign all customers up. Although less malicious, junk e-mail is a major productivity sink because it adds to the clutter a person must deal with. More technical users can manage e-mail subscriptions, but less-savvy users don't know how and don't learn how for a variety of reasons. These users are essentially trapped. This is completely unacceptable.
 
@@ -120,7 +116,8 @@ Spam e-mail is enabled by several different factors:
 
 To eliminate spam, the following provisions have been made:
 
-- All contact is opt-in, giving users control over who can send them messages
+- The identity of each sender is cryptographically-verifiable and is fixed for the lifetime of each account
+- All contact is opt-in, giving users control over who can send them message
 - The protocol allows an individual to send a message to up to 25 recipients. Larger groups of people require use of a shared workspace.
 - Server software is required to have traffic controls in place for all workspaces
 - Users can utilize the built-in abuse reporting mechanisms to report spammers their administrator
@@ -129,3 +126,17 @@ To eliminate spam, the following provisions have been made:
 - Contact requests are the only kind of unsolicited message permitted to be sent, and client software is required to strip embedded links and images from any requests received. Client software is also expected to be engineered to prevent users from sending contact requests with links or images.
 - Client software can enable users to automatically block contact requests from specific users or entire domains.
 
+=== Phishing
+
+Phishing is a major security threat to computing infrastructure, regardless of its location. Malicious actors rely on phishing as one major way to gain a foothold in a target network. As such, prevention is the name of the game for the Mensago platform. Currently the provisions on the platform should prevent most phishing attacks. These provisions are the following:
+
+
+- Strong sender and recipient identity prevents malicious actors from pretending to be someone else
+- All contact is opt-in
+- Traffic limiting prevents sending message broadcasts to entire organizations
+- Links and images are stripped from contact requests
+- https://github.com/mensago/mensago-docs/blob/master/Safe%20Formatted%20Text%20Markup.adoc[Safe Formatted Text Markup (SFTM)], the rich text format used for Mensago messages, prohibits embedding remote content and executable code of any kind.
+- Client software is highly encouraged to deobfuscate links and perform other processing to provide users with information about link targets before the user clicks navigates through the link.
+- Client software is also highly encouraged to use https://en.wikipedia.org/wiki/Content_Disarm_%26_Reconstruction[Content Disarm and Reconstruction] techniques to analyze attachments, generate safe previews, and give users a simple way of identifying the potential for an attachment to compromise their system.
+- Although a user's contacts are given a certain amount of trust, boundaries to unsafe workflow vectors, e.g. file attachments and browser links, are checked in case a contact has been compromised by a malicious actor to leverage the relationship.
+ 
