@@ -84,7 +84,8 @@ When fully decrypted, the message envelope information would look like this:
   "Date": "20190905T155323Z",
   "ThreadID": "2280c1f2-d9c0-440c-a182-967b16ba428a",
   "Subject": "Sample User Message",
-  "Body": "It was a bright cold day in April, and the clocks were striking thirteen."
+  "Body": "It was a bright cold day in April, and the clocks were striking thirteen.",
+  "RandomPadding":"K&SBp<791P2v{A653nehe"
 }
 ----
 
@@ -113,6 +114,8 @@ _ThreadID_ - REQUIRED. A UUID is used to represent the conversation ID.
 _Subject_ - REQUIRED. A string up to 100 characters in length. The characters MUST be valid printable UTF-8 characters or a space. Note that while the field itself is required, the field itself MAY be empty.
 
 _Body_ - REQUIRED. A string of UTF-8 characters of any length. Escapement of content for JSON compliance is required.
+
+_RandomPadding_ - OPTIONAL. A string of Base85-encoded random bytes obtained from a cryptographically-safe source. This field has no other purpose than to make wire-level surveillance more difficult. No requirements are made on the minimum or maximum size of the padding, although too large an amount may cause performance degradation.
 
 _Images_ - CONDITIONAL. A list of dictionaries containing image data used as embedded message content. Unlike images stored as attachments, items in this field are considered to be an integrated part of the message and are not stored separately in the filesystem. This field is only required if images are embedded, not attached. Aside from its name and different purpose, it follows the same format as the _Attachments_ field.
 
