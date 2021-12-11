@@ -146,3 +146,19 @@ Phishing is a major security threat to computing infrastructure, regardless of i
 - Client software is highly encouraged to deobfuscate links and perform other processing to provide users with information about link targets before the user clicks navigates through the link.
 - Client software is also highly encouraged to use https://en.wikipedia.org/wiki/Content_Disarm_%26_Reconstruction[Content Disarm and Reconstruction] techniques to analyze attachments, generate safe previews, and give users a simple way of identifying the potential for an attachment to compromise their system.
 - Although a user's contacts are given a certain amount of trust, boundaries to unsafe workflow vectors, e.g. file attachments and browser links, are checked in case a contact has been compromised by a malicious actor to leverage the relationship.
+
+=== Network Attacks
+
+Because of such great focus on securing Mensago from user-level attacks, less effort is needed to secure the platform from the network itself.
+
+==== Man in the Middle Attacks
+
+MITM attacks can target an organization's server or a specific user. The greatest danger of MITM server attacks lies in depending on TLS certificates. Current threat management software depends on deep packet inspection to analyze HTTPS traffic. DPI is possible because of TLS certificates. It is recommended that Mensago administrators utilize DNSSEC so that the DANE-like identity protection built into the platform prevents MITM attacks. Clients MUST refuse to connect to a server which fails keycard registration. Users can help prevent user MITM attacks by using https://github.com/mensago/mensago-docs/blob/master/Identity%20Services.adoc#mensago-address-fingerprints[fingerprint-based format] for their address. 
+
+==== Firewall Blocking
+
+State-level actors often block secure services like https://signal.org[Signal]. Working around such infrastructure-level hostility is not easy. Mensago servers are able to communicate on any port so long as the organization's SRV record in DNS is configured to indicate the port expected. Likewise, Mensago messages are transport-independent, so messages can be exchanged between two users so long as the transport software can provide the necessary bridging. Some communications, such as keycard resolution, may require interaction with a server unless the client software provides workarounds.
+
+==== Packet Sniffing
+
+Surveillance and analysis of network traffic is ongoing by more https://en.wikipedia.org/wiki/Global_surveillance_disclosures_(2013%E2%80%93present)[government agencies] than just the NSA and GCHQ. The https://github.com/darkwyrm/oganesson[Oganesson] messaging layer utilized by Mensago includes a random amount of random data as padding in protocol communications to frustrate these efforts. Client software is also permitted to add random amounts of padding to message payloads in addition to the wire-level padding.
