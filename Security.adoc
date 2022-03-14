@@ -14,7 +14,7 @@ toc::[]
 
 As a platform, Mensago places minimum trust in infrastructure, plans for compromise, and expects bad behavior. All actors in the interaction model are assumed to be a threat of some kind and are assigned a level of trust based on the actor's assets and potential for attack. 
 
-The threat model focuses on a few specific actors: the client device, the server, other servers, and the network itself, ordered by greatest trust to least. The most trusted device in the model is the client's device. Although some protetions can help in the case of a client compromise, it is limited at that point and dependence on proper device administration is required. 
+The threat model focuses on a few specific actors: the client device, the server, other servers, and the network itself, ordered by greatest trust to least. The most trusted device in the model is the client's device. Although some protections can help in the case of a client compromise, it is limited at that point and dependence on proper device administration is required. 
 
 Mensago servers are architected under the assumption that the administrator is under subpoena to provide information to a hostile government entity. Logging is designed specifically to track errors and small-scale bad behavior, such as a password compromise or account bruteforce attempts. An organization's server also functions as a certification authority that stores and vouches for a user's certificate chain. The information given to a server for message delivery is the minimum possible. Because of how the message encryption is structured, it is actually more private to send a message to a recipient at another organization than one inside the same one.
 
@@ -35,12 +35,12 @@ Spam e-mail is enabled by several different factors:
 To eliminate spam, the following provisions have been made:
 
 - The identity of each sender is cryptographically-verifiable and is fixed for the lifetime of each account
-- All contact is opt-in, giving users control over who can send them message
+- All contact is opt-in, giving users control over who can send them a message
 - The protocol allows an individual to send a message to up to 25 recipients. Larger groups of people require use of a shared workspace.
 - Server software is required to have traffic controls in place for all workspaces
 - Users can utilize the built-in abuse reporting mechanisms to report spammers their administrator
 - Administrators can block domains reported to have bad behavior.
-- Administrators have an incentive to police their users to that the entire domain doesn't get blocked by other instances.
+- Administrators have an incentive to police their users so that the entire domain doesn't get blocked by other instances.
 - Contact requests are the only kind of unsolicited message permitted to be sent, and client software is required to strip embedded links and images from any requests received. Client software is also expected to be engineered to prevent users from sending contact requests with links or images.
 - Client software can enable users to automatically block contact requests from specific users or entire domains.
 
@@ -71,4 +71,4 @@ State-level actors often block secure services like https://signal.org[Signal]. 
 
 === Packet Sniffing
 
-Surveillance and analysis of network traffic is ongoing by more https://en.wikipedia.org/wiki/Global_surveillance_disclosures_(2013%E2%80%93present)[government agencies] than just the NSA and GCHQ. The https://github.com/darkwyrm/oganesson[Oganesson] messaging layer utilized by Mensago includes a random amount of random data as padding in protocol communications to frustrate these efforts. Client software is also permitted to add random amounts of padding to message payloads in addition to the wire-level padding.
+Surveillance and analysis of network traffic is ongoing by more https://en.wikipedia.org/wiki/Global_surveillance_disclosures_(2013%E2%80%93present)[government agencies] than just the NSA and GCHQ. TLS provides some protection from this, but client software is also permitted to add random amounts of padding to message payloads in addition to the wire-level padding.
